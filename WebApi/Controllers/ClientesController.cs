@@ -26,6 +26,7 @@ namespace WebApi.Controllers
                 {
                     return Ok(result);
                 }
+                Console.WriteLine("Teste");
                 return null;
             }
             catch
