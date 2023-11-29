@@ -1,4 +1,4 @@
-﻿using ApiPedido.Models;
+﻿using LibraryShared.Models;
 
 namespace WebApi.Repository
 {
@@ -9,5 +9,7 @@ namespace WebApi.Repository
         Task<Cliente?> GetCliente(int id);
 
         Task<Cliente?> AddCliente(Cliente cliente);
+
+        Task<List<Cliente>?> GetClientesNome(string nome);
     }
 }

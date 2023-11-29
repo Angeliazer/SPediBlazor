@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using ApiPedido.Models.Enumeradores;
+using LibraryShared.Models.Enumeradores;
 
-namespace ApiPedido.Models
+
+namespace LibraryShared.Models
 {
     public class Cliente
     {

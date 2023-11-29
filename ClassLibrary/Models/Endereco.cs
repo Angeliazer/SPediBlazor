@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using LibraryShared.Models.Enumeradores;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ApiPedido.Models.Enumeradores;
 
-namespace ApiPedido.Models
+namespace LibraryShared.Models
 {
     public class Endereco
     {

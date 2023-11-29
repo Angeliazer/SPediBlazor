@@ -1,4 +1,4 @@
-﻿using ApiPedido.Models;
+﻿using LibraryShared.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Data

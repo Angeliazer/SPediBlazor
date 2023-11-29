@@ -1,8 +1,7 @@
-﻿namespace ApiPedido.Models.Enumeradores
+﻿namespace LibraryShared.Models.Enumeradores
 {
     public enum ETipoCliente : int
     {
-        Fisica = 0, 
-        Juridica = 1
+        Fisica, Juridica
     }
 }

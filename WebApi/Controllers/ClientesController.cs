@@ -1,4 +1,4 @@
-﻿using ApiPedido.Models;
+﻿using LibraryShared.Models;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Repository;
 
@@ -60,6 +60,25 @@ namespace WebApi.Controllers
             try
             {
                 var clientes = await _repository.GetClientes();
+
+                if (clientes?.Count != 0)
+                {
+                    return Ok(clientes);
+                }
+                return NotFound("Banco de dados Vazio....!");
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro no Banco de Dados...!");
+            }
+        }
+
+        [HttpGet("{nome}")]
+        public async Task<ActionResult<List<Cliente>>> GetClientesNome(string nome)
+        {
+            try
+            {
+                var clientes = await _repository.GetClientesNome(nome);
 
                 if (clientes?.Count != 0)
                 {

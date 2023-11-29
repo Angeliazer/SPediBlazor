@@ -1,4 +1,4 @@
-﻿namespace ApiPedido.Models.Enumeradores
+﻿namespace LibraryShared.Models.Enumeradores
 {
     public enum EEstado : int
     {

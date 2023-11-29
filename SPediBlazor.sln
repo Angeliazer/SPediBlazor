@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebBlazor", "WebBlazor\WebBlazor.csproj", "{9C3E43D6-CA76-43F5-BCB8-27BEFA28E4A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary", "ClassLibrary\ClassLibrary.csproj", "{6FF0761A-5FF4-4B6F-ACD2-9A496ADB558A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryShared", "ClassLibrary\LibraryShared.csproj", "{6FF0761A-5FF4-4B6F-ACD2-9A496ADB558A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
