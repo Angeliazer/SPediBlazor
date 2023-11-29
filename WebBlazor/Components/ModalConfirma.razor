@@ -2,15 +2,15 @@
 
 @if (Exibir)
 {
-    <div class="modal shadow-lg" tabindex="-1" style="display:block; border:double">
+    <div class="modal" tabindex="-1" style="display:block; border:double">
 
         <div class="modal-dialog modal-dialog-centered">
 
-            <div class="modal-content" style="background-color:azure">
+            <div class="modal-content" style="background-color:aqua">
 
                 <div class="modal-header">
-                    <div class="modal-title">
-                        <h3>@Title</h3>
+                    <div class="modal-title" style="color:red">
+                        <h5>@Title</h5>
                     </div>
                     <div>
                         <button type="button" class="btn-close" data-dismiss="modal" @onclick="Close"></button>
