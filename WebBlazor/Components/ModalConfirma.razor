@@ -1,0 +1,64 @@
+﻿@rendermode InteractiveServer
+
+@if (Exibir)
+{
+    <div class="modal shadow-lg" tabindex="-1" style="display:block; border:double">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content" style="background-color:azure">
+
+                <div class="modal-header">
+                    <div class="modal-title">
+                        <h3>@Title</h3>
+                    </div>
+                    <div>
+                        <button type="button" class="btn-close" data-dismiss="modal" @onclick="Close"></button>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    @ChildContent
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn-sm btn-danger" @onclick="@(()=>SimExcluir())">Sim</button>
+                    <button class="btn-sm btn-primary" @onclick="@(()=>NaoExcluir())">Não</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool Exibir { get; set; } = false;
+    [Parameter] public RenderFragment ChildContent { get; set; } = null!;
+    [Parameter] public string AcaoResultante { get; set; } = null!;
+    [Parameter] public string Title { get; set; } = null!;
+    [Parameter] public EventCallback EventodeRetorno { get; set; }
+
+    public void Close()
+    {
+        Exibir = false;
+        AcaoResultante = "";
+    }
+
+    public async Task SimExcluir()
+    {
+        AcaoResultante = "D";
+        await FuncaoDeCallBack();
+        Exibir = false;
+    }
+
+    public async Task NaoExcluir()
+    {
+        AcaoResultante = "N";
+        await FuncaoDeCallBack();
+        Exibir = false;
+    }
+
+    public async Task FuncaoDeCallBack()
+    {
+        await EventodeRetorno.InvokeAsync();
+    }
+}

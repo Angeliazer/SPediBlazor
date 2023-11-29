@@ -71,5 +71,22 @@ namespace WebApi.Repository
                 return null;
             }
         }
+
+        public async Task<Cliente?> RemoveCliente(int id)
+        {
+            Cliente cliente = await _context.Clientes.FirstOrDefaultAsync(x => x.ClienteId == id);
+            if (cliente.ClienteId != id)
+            {
+                return new Cliente();
+            }
+            else
+            {
+                var result = _context.Clientes.Remove(cliente);
+                await _context.SaveChangesAsync();
+                return cliente;
+            }
+        }
+
     }
 }
+

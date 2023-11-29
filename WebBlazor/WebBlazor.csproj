@@ -10,4 +10,8 @@
     <ProjectReference Include="..\ClassLibrary\LibraryShared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Components\Pages\Clientes.razor" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,101 @@
+﻿@page "/clientes"
+@attribute [StreamRendering]
+@inject HttpClient _http
+@rendermode InteractiveServer
+
+<PageTitle>Clientes</PageTitle>
+
+<h3>Clientes</h3>
+
+@if (Show)
+{
+    <ModalConfirma @ref="ModalConf" Exibir=@Show Title="Confirma Exclusão?" EventodeRetorno="@(()=>RetornoFuncao())">
+        <div>
+            <br />
+            <br />
+            <h4>Cliente: @Objcliente.NomeCliente</h4>
+        </div>
+    </ModalConfirma>
+}
+
+
+@if (clientes == null)
+{
+    <p><em>Aguarde...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome Cliente</th>
+                <th>Nro Telefone</th>
+                <th>Contato     </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in clientes)
+            {
+                <tr>
+                    <td>@item.NomeCliente</td>
+                    <td>@item.NroTelefone</td>
+                    <td>@item.NomeContato</td>
+                    <td><button class="btn-sm btn-danger" data-toggle="modal" @onclick="@(() => Apagar(item))">Apagar </button></td>
+                    <td><button class="btn-sm btn-primary" @onclick="@(() => Seleciona(item))">Seleção</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code
+ {
+    ModalConfirma? ModalConf = null;
+
+    public List<Cliente>? clientes = null!;
+    public bool Show = false;
+    public Cliente Objcliente = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        clientes = await _http.GetFromJsonAsync<List<Cliente>>(@"/api/v1/clientes");
+    }
+
+    public void Apagar(Cliente cliente)
+    {
+        Show = true;
+        Objcliente = new();
+        Objcliente = cliente;
+    }
+
+    public async Task RetornoFuncao()
+    {
+        switch (ModalConf?.AcaoResultante)
+        {
+            case "D":
+                Show = false;
+                await ApagaRegistro();
+                break;
+
+            case "N":
+                Show = false;
+                break;
+
+            default:
+
+                break;
+        }
+    }
+
+    public async Task ApagaRegistro()
+    {
+        await _http.DeleteFromJsonAsync<Cliente>($@"/api/v1/clientes/{Objcliente.ClienteId}");
+        await OnInitializedAsync();
+    }
+
+    public async Task Seleciona(Cliente cliente)
+    {
+
+    }
+
+}

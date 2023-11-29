@@ -54,6 +54,25 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<Cliente>> RemoveCliente(int id)
+        {
+            try
+            {
+                var cliente = await _repository.RemoveCliente(id);
+
+                if (cliente == null)
+                {
+                    return NotFound($"Cliente com o Id = {id} não foi Encontrado....!");
+                }
+                return Ok(cliente);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro no Banco de Dados...!");
+            }
+        }
+
         [HttpGet]
         public async Task<ActionResult<List<Cliente>>> GetClientes()
         {
