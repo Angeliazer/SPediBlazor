@@ -69,12 +69,12 @@ namespace WebApi.Repository
             else
             {
                 return null;
-            }
+            }  
         }
 
         public async Task<Cliente?> RemoveCliente(int id)
         {
-            Cliente cliente = await _context.Clientes.FirstOrDefaultAsync(x => x.ClienteId == id);
+            var cliente = await _context.Clientes.FirstOrDefaultAsync(x => x.ClienteId == id);
             if (cliente.ClienteId != id)
             {
                 return new Cliente();
