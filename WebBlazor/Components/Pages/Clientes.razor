@@ -2,6 +2,7 @@
 @attribute [StreamRendering]
 @inject HttpClient _http
 @rendermode @(new InteractiveServerRenderMode (prerender:false))
+@inject NavigationManager Topag
 
 <PageTitle>Clientes</PageTitle>
 
@@ -111,6 +112,6 @@
     }
     public void NewCliente()
     {
-
+        Topag.NavigateTo("/newcliente");
     }
 }
