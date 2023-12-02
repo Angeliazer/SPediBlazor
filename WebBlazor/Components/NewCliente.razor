@@ -10,11 +10,11 @@
             <div class="col">
                 <div>
                     <label class="col-7">Nome do Cliente</label>
-                    <label class="col-4">Nome do Contato</label>
+                    <label class="col-4 mx-1">Nome do Contato</label>
                 </div>
                 <div>
                     <InputText class="col-7" style="border-radius:4px" @bind-Value="@Cliente.NomeCliente">Nome do Cliente</InputText>
-                    <InputText class="col-4" style="border-radius:4px" @bind-Value="@Cliente.NomeContato">Nome do Cliente</InputText>
+                    <InputText class="col-4 mx-1" style="border-radius:4px" @bind-Value="@Cliente.NomeContato">Nome do Cliente</InputText>
                 </div>
             </div>
         </div>
@@ -24,18 +24,16 @@
                 <div>
                     <label class="col-2">Tipo Cliente</label>
 
-                    @if (TipoCliente == "Fisica")
+                    @if ((int)TipoCliente == 0)
                     {
-                        TipoDocumento = "CPF";
+                        <label class="col-2 mx-2" style="text-align: right; text-align: right">CPF</label>
                     }
                     else
                     {
-                        TipoDocumento = "CNPJ";
+                        <label class="col-3 mx-2" style="text-align: right; text-align: right">CNPJ</label>
                     }
-                    <label class="col-2" style="text-align: right; text-align: right">@TipoDocumento</label>
-                    <label class="col-2" style="text-align: right; text-align: right">Nro Telefone</label>
-                    <label class="col-2" style="text-align: right; text-align: right">Limite de Crédito</label>
-
+                    <label class="col-2 mx-0" style="text-align: right; text-align: right">Nro Telefone</label>
+                    <label class="col-2 mx-1" style="text-align: right; text-align: right">Limite de Crédito</label>
 
                 </div>
                 <div>
@@ -46,13 +44,19 @@
                         }
                     </InputSelect>
 
-                    <InputText class="col-2" style="border-radius: 4px; text-align: right" @bind-Value="@NroDocumento"></InputText>
+                    @if ((int)TipoCliente == 0)
+                    {
+                        <InputText class="col-2 mx-2" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.CpfCliente"></InputText>
+                    }
+                    else
+                    {
+                        <InputText class="col-3 mx-2" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.CnpjCliente"></InputText>
+                    }
+                    <InputText class="col-2 mx-0" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.NroTelefone"></InputText>
 
-                    <InputText class="col-2" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.NroTelefone"></InputText>
+                    <InputNumber class="col-2 mx-1" style="border-radius:4px; text-align:right" @bind-Value="@Cliente.LimiteCredito"></InputNumber>
 
-                    <InputNumber class="col-2" style="border-radius:4px; text-align:right" @bind-Value="@Cliente.LimiteCredito"></InputNumber>
-
-
+                    <hr />
                 </div>
             </div>
         </div>
@@ -70,9 +74,8 @@
 @code {
 
     public Cliente Cliente = new();
-    public string TipoCliente = "Fisica";
+    public ETipoCliente TipoCliente;
     public string TipoDocumento = "CPF";
-    public string NroDocumento = string.Empty;
     public DateTime DataCadastro = DateTime.Now;
 
     public void Voltar()
