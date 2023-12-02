@@ -32,7 +32,10 @@
                     {
                         TipoDocumento = "CNPJ";
                     }
-                    <label class="col-2">@TipoDocumento</label>
+                    <label class="col-2" style="text-align: right; text-align: right">@TipoDocumento</label>
+                    <label class="col-2" style="text-align: right; text-align: right">Nro Telefone</label>
+                    <label class="col-2" style="text-align: right; text-align: right">Limite de Crédito</label>
+
 
                 </div>
                 <div>
@@ -43,7 +46,12 @@
                         }
                     </InputSelect>
 
-                    <InputText class="col-2" style="border-radius:4px" @bind-Value="@NroDocumento"></InputText>
+                    <InputText class="col-2" style="border-radius: 4px; text-align: right" @bind-Value="@NroDocumento"></InputText>
+
+                    <InputText class="col-2" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.NroTelefone"></InputText>
+
+                    <InputNumber class="col-2" style="border-radius:4px; text-align:right" @bind-Value="@Cliente.LimiteCredito"></InputNumber>
+
 
                 </div>
             </div>
@@ -65,6 +73,7 @@
     public string TipoCliente = "Fisica";
     public string TipoDocumento = "CPF";
     public string NroDocumento = string.Empty;
+    public DateTime DataCadastro = DateTime.Now;
 
     public void Voltar()
     {
