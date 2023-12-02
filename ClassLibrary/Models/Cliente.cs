@@ -44,9 +44,9 @@ namespace LibraryShared.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal LimiteCredito { get; set; }
 
-        [Display(Name = "Data de Cadastro")]
- //      [Required(ErrorMessage = "O campo {0} é Obrigatório")]
-        public DateOnly DataCadastro { get; set; }
+ //       [Display(Name = "Data de Cadastro")]
+ ////      [Required(ErrorMessage = "O campo {0} é Obrigatório")]
+ //       public DateOnly DataCadastro { get; set; }
 
         public List<Endereco> Enderecos { get; set; } = new();   
     }

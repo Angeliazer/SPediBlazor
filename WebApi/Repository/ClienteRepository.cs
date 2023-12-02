@@ -17,9 +17,20 @@ namespace WebApi.Repository
         {
             if (cliente != null)
             {
-                var result = await _context.Clientes.AddAsync(cliente);
-                await _context.SaveChangesAsync();
-                return result.Entity;
+                using var trans = _context.Database.BeginTransaction();
+                try
+                {
+                    var result = await _context.Clientes.AddAsync(cliente);
+                    await _context.SaveChangesAsync();
+
+                    trans.Commit();
+
+                    return result.Entity;
+                }
+                catch
+                {
+                    trans.Rollback();
+                }
             }
             return null;
         }
@@ -69,7 +80,7 @@ namespace WebApi.Repository
             else
             {
                 return null;
-            }  
+            }
         }
 
         public async Task<Cliente?> RemoveCliente(int id)
