@@ -1,11 +1,12 @@
 ﻿using LibraryShared.Models.Enumeradores;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibraryShared.Models
 {
     public class Endereco
     {
-        [Key]
+        [Key, ForeignKey("ClienteId")]
         public int EnderecoId { get; set; }
 
         public ETipoEndereco TipoEnd { get; set; }

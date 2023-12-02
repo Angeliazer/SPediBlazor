@@ -2,6 +2,6 @@
 {
     public enum ETipoEndereco : int
     {
-        Faturamento, Entrega, Cobrança
+        Entrega, Faturamento, Cobranca
     }
 }

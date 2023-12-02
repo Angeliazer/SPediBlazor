@@ -22,8 +22,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn-sm btn-danger" @onclick="@(()=>SimExcluir())">Sim</button>
-                    <button class="btn-sm btn-primary" @onclick="@(()=>NaoExcluir())">Não</button>
+                    <button class="btn-sm btn-danger" @onclick="@(()=>AcaoSim())">Sim</button>
+                    <button class="btn-sm btn-primary" @onclick="@(()=>AcaoNao())">Não</button>
                 </div>
             </div>
         </div>
@@ -43,14 +43,14 @@
         AcaoResultante = "";
     }
 
-    public async Task SimExcluir()
+    public async Task AcaoSim()
     {
-        AcaoResultante = "D";
+        AcaoResultante = "S";
         await FuncaoDeCallBack();
         Exibir = false;
     }
 
-    public async Task NaoExcluir()
+    public async Task AcaoNao()
     {
         AcaoResultante = "N";
         await FuncaoDeCallBack();

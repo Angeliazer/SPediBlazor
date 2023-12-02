@@ -6,26 +6,18 @@
 
 <PageTitle>Clientes</PageTitle>
 
+<h3>Clientes </h3>
+
 <div class="container">
 
-    <h3>Clientes</h3>
-    @if (Show)
-    {
-        <ModalConfirma @ref="ModalConf" Exibir=@Show Title="Confirma Exclusão?" EventodeRetorno="@(()=>RetornoFuncao())">
-            <div>
-                <br />
-                <br />
-                <h6>Cliente: @Objcliente.NomeCliente</h6>
-            </div>
-        </ModalConfirma>
-    }
     @if (clientes == null)
     {
         <p><em>Aguarde...</em></p>
     }
     else
     {
-        <button class="btn-sm btn-primary" style="font-style:italic" @onclick="NewCliente">Novo Cliente</button>
+        <button class="btn-sm btn-primary" style="font-style:italic" @onclick="NewCliente">+ Novo Cliente</button>
+
         <table class="table">
             <thead>
                 <tr>
@@ -87,7 +79,7 @@
         Show = false;
         switch (ModalConf?.AcaoResultante)
         {
-            case "D":
+            case "S":
                 await ApagaRegistro();
                 break;
 
