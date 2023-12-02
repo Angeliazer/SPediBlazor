@@ -5,18 +5,66 @@
 
 <div class="container">
     <h5>Novo Cliente</h5>
+    <EditForm Model="@Cliente" OnValidSubmit="Salvar">
+        <div class="row">
+            <div class="col">
+                <div>
+                    <label class="col-7">Nome do Cliente</label>
+                    <label class="col-4">Nome do Contato</label>
+                </div>
+                <div>
+                    <InputText class="col-7" style="border-radius:4px" @bind-Value="@Cliente.NomeCliente">Nome do Cliente</InputText>
+                    <InputText class="col-4" style="border-radius:4px" @bind-Value="@Cliente.NomeContato">Nome do Cliente</InputText>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col">
+                <div>
+                    <label class="col-2">Tipo Cliente</label>
+
+                    @if (TipoCliente == "Fisica")
+                    {
+                        TipoDocumento = "CPF";
+                    }
+                    else
+                    {
+                        TipoDocumento = "CNPJ";
+                    }
+                    <label class="col-2">@TipoDocumento</label>
+
+                </div>
+                <div>
+                    <InputSelect class="col-2 form-select-sm" style="border-radius:4px" @bind-Value="@TipoCliente">
+                        @foreach (var opc in Enum.GetValues(typeof(ETipoCliente)))
+                        {
+                            <option>@opc</option>
+                        }
+                    </InputSelect>
+
+                    <InputText class="col-2" style="border-radius:4px" @bind-Value="@NroDocumento"></InputText>
+
+                </div>
+            </div>
+        </div>
 
 
 
-    <p></p>
-    <button class="btn-sm btn-primary" @onclick="Voltar">Voltar</button>
-    <button class="btn-sm btn-success" @onclick="Salvar">Salvar</button>
+        <p></p>
+        <button class="btn-sm btn-primary" @onclick="Voltar">Voltar</button>
+        <button type="submit" class="btn-sm btn-success">Salvar</button>
+
+    </EditForm>
 </div>
 
 
 @code {
 
-
+    public Cliente Cliente = new();
+    public string TipoCliente = "Fisica";
+    public string TipoDocumento = "CPF";
+    public string NroDocumento = string.Empty;
 
     public void Voltar()
     {
