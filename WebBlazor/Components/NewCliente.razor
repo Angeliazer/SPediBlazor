@@ -1,0 +1,31 @@
+﻿@page "/newcliente"
+@inject NavigationManager ToPag
+@rendermode InteractiveServer
+
+
+<div class="container">
+    <h5>Novo Cliente</h5>
+
+
+
+    <p></p>
+    <button class="btn-sm btn-primary" @onclick="Voltar">Voltar</button>
+    <button class="btn-sm btn-success" @onclick="Salvar">Salvar</button>
+</div>
+
+
+@code {
+
+
+
+    public void Voltar()
+    {
+        ToPag.NavigateTo("/clientes");
+
+    }
+
+    public void Salvar()
+    {
+
+    }
+}
