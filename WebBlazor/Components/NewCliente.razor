@@ -55,27 +55,142 @@
                     <InputText class="col-2 mx-0" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.NroTelefone"></InputText>
 
                     <InputNumber class="col-2 mx-1" style="border-radius:4px; text-align:right" @bind-Value="@Cliente.LimiteCredito"></InputNumber>
-
-                    <hr />
                 </div>
             </div>
         </div>
+        <hr />
+        <div>
+            <label>---- Endereços ----</label>
+        </div>
+        <div class="card-header shadow border-2">
+            @if (!IdEnt)
+            {
+                <button class="btn-sm btn-outline-primary" @onclick="MudaEnt">Entrega    </button>
+            }
+            else
+            {
+                <button class="btn-sm btn-outline-primary disabled">Entrega    </button>
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <div>
+                                <label class="col-5">Nome da Rua</label>
+                                <label class="col-1 mx-1">Nro</label>
+                                <label class="col-1 mx-1">Bairro</label>
+                                <label class="col-2 mx-1">Cidade</label>
+                                <label class="col-1 mx-1">Estado</label>
+                                <label class="col-1 mx-1">Cep</label>
+
+                            </div>
+                            <div>
+                                <InputText class="col-5" style="border-radius: 4px" @bind-Value="@Cliente.Enderecos[0].NomeRua"></InputText>
+
+                                <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Numero"></InputText>
+
+                                <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Bairro"></InputText>
+
+                                <InputText class="col-2 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Cidade"></InputText>
+
+                                <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Bairro"></InputText>
+                                
+                                <InputSelect class="col-2 form-select-sm" style="border-radius:4px" @bind-Value="@CodEstado">
+                                    @foreach (var opc_est in Enum.GetValues(typeof(EEstado)))
+                                    {
+                                        <option>@opc_est</option>
+                                    }
+                                </InputSelect>
+
+                                <InputText class="col-2 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Cep"></InputText>
+
+                            </div>
 
 
 
+
+
+
+
+                        </div>
+
+
+
+
+                    </div>
+
+
+
+                    <p>
+                        <button class="btn-sm btn-outline-danger" @onclick="MudaEnt">Exclui    </button>
+                    </p>
+                </div>
+            }
+        </div>
         <p></p>
-        <button class="btn-sm btn-primary" @onclick="Voltar">Voltar</button>
-        <button type="submit" class="btn-sm btn-success">Salvar</button>
+        <div class="card-header shadow">
+            @if (!IdFat)
+            {
+                <button class="btn-sm btn-outline-primary" @onclick="MudaFat">Faturamento</button>
+            }
+            else
+            {
+                <button class="btn-sm btn-outline-primary disabled">Faturamento    </button>
 
+                <p>
+                    <button class="btn-sm btn-outline-danger" @onclick="MudaFat">Exclui    </button>
+                </p>
+            }
+        </div>
+        <p></p>
+        <div class="card-header shadow">
+            @if (!IdCob)
+            {
+                <button class="btn-sm btn-outline-primary" @onclick="MudaCob">Cobrança   </button>
+            }
+            else
+            {
+                <button class="btn-sm btn-outline-primary disabled">Cobrança    </button>
+
+                <p>
+                    <button class="btn-sm btn-outline-danger" @onclick="MudaCob">Exclui    </button>
+                </p>
+            }
+        </div>
     </EditForm>
 </div>
 
 @code {
-
     public Cliente Cliente = new();
     public ETipoCliente TipoCliente;
     public string TipoDocumento = "CPF";
     public DateTime DataCadastro = DateTime.Now;
+    public List<Endereco> Endereco = new();
+    public bool IdEnt = false;
+    public bool IdFat = false;
+    public bool IdCob = false;
+    public int CodEstado = 0;
+
+    protected override void OnInitialized()
+    {
+        Cliente.Enderecos.Add(new Endereco());
+        Cliente.Enderecos.Add(new Endereco());
+        Cliente.Enderecos.Add(new Endereco());
+    }
+
+    public void MudaEnt()
+    {
+        IdEnt = !IdEnt;
+    }
+
+    public void MudaFat()
+    {
+        IdFat = !IdFat;
+    }
+
+    public void MudaCob()
+    {
+        IdCob = !IdCob;
+    }
 
     public void Voltar()
     {
