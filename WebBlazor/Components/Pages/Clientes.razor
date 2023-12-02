@@ -1,50 +1,54 @@
 ﻿@page "/clientes"
 @attribute [StreamRendering]
 @inject HttpClient _http
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode (prerender:false))
 
 <PageTitle>Clientes</PageTitle>
 
-<h3>Clientes</h3>
-@if (Show)
-{
-    <ModalConfirma @ref="ModalConf" Exibir=@Show Title="Confirma Exclusão?" EventodeRetorno="@(()=>RetornoFuncao())">
-        <div>
-            <br />
-            <br />
-            <h6>Cliente: @Objcliente.NomeCliente</h6>
-        </div>
-    </ModalConfirma>
-}
-@if (clientes == null)
-{ 
-    <p><em>Aguarde...</em></p>
-}
-else
-{ 
-    <table class="table">
-        <thead> 
-            <tr>
-                <th>Nome Cliente</th> 
-                <th>Nro Telefone</th>
-                <th>Contato     </th>
-            </tr> 
-        </thead>
-        <tbody>
-            @foreach (var item in clientes)
-            {
+<div class="container">
+
+    <h3>Clientes</h3>
+    @if (Show)
+    {
+        <ModalConfirma @ref="ModalConf" Exibir=@Show Title="Confirma Exclusão?" EventodeRetorno="@(()=>RetornoFuncao())">
+            <div>
+                <br />
+                <br />
+                <h6>Cliente: @Objcliente.NomeCliente</h6>
+            </div>
+        </ModalConfirma>
+    }
+    @if (clientes == null)
+    {
+        <p><em>Aguarde...</em></p>
+    }
+    else
+    {
+        <button class="btn-sm btn-primary" style="font-style:italic" @onclick="NewCliente">Novo Cliente</button>
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@item.NomeCliente</td>
-                    <td>@item.NroTelefone</td>
-                    <td>@item.NomeContato</td>
-                    <td><button class="btn-sm btn-danger" data-toggle="modal" @onclick="@(() => Apagar(item))">Deletar </button></td>
-                    <td><button class="btn-sm btn-primary" @onclick="@(()=>Seleciona(item))">Pedido</button></td>
-                    <td><button class="btn-sm btn-secondary" @onclick="@(()=>Seleciona(item))">Alterar</button></td>
+                    <th>Nome Cliente</th>
+                    <th>Nro Telefone</th>
+                    <th>Contato     </th>
                 </tr>
-            }
-        </tbody>
-    </table>
-}
+            </thead>
+            <tbody>
+                @foreach (var item in clientes)
+                {
+                    <tr>
+                        <td>@item.NomeCliente</td>
+                        <td>@item.NroTelefone</td>
+                        <td>@item.NomeContato</td>
+                        <td><button class="btn-sm btn-danger" data-toggle="modal" @onclick="@(() => Apagar(item))">Deletar </button></td>
+                        <td><button class="btn-sm btn-primary" @onclick="@(()=>Seleciona(item))">Pedido</button></td>
+                        <td><button class="btn-sm btn-secondary" @onclick="@(()=>Seleciona(item))">Alterar</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
 
 @code
  {
@@ -92,10 +96,10 @@ else
 
     public void Seleciona(Cliente cliente)
     {
-        //Seleciona Clliente para Digitação do Pedido
-        Console.WriteLine(cliente.ClienteId);
 
-        Console.WriteLine("Ok");
     }
+    public void NewCliente()
+    {
 
+    }
 }
