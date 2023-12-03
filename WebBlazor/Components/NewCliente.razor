@@ -86,21 +86,21 @@
                             <label class="col-1 mx-1">Cep</label>
 
                         </div>
-                        <InputText class="col-5 mx-0" style="border-radius: 4px" @bind-Value="@Cliente.Enderecos[0].NomeRua"></InputText>
+                        <InputText class="col-5 mx-0" style="border-radius: 4px" @bind-Value="@Cliente.LEnderecos[0].NomeRua"></InputText>
 
-                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Numero"></InputText>
+                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.LEnderecos[0].Numero"></InputText>
 
-                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Bairro"></InputText>
+                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.LEnderecos[0].Bairro"></InputText>
 
-                        <InputText class="col-2 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Cidade"></InputText>
+                        <InputText class="col-2 mx-1" style="border-radius:4px" @bind-Value="@Cliente.LEnderecos[0].Cidade"></InputText>
 
-                        <InputSelect class="col-1 form-select-sm" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Estado">
+                        <InputSelect class="col-1 form-select-sm" style="border-radius:4px" @bind-Value="@Cliente.LEnderecos[0].Estado">
                             @foreach (var opc_est in Enum.GetValues(typeof(EEstado)))
                             {
                                 <option>@opc_est</option>
                             }
                         </InputSelect>
-                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Cep"></InputText>
+                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.LEnderecos[0].Cep"></InputText>
                     </div>
                 </div>
             }
@@ -126,21 +126,21 @@
                             <label class="col-1 mx-1">Cep</label>
 
                         </div>
-                        <InputText class="col-5 mx-0" style="border-radius: 4px" @bind-Value="@Cliente.Enderecos[1].NomeRua"></InputText>
+                        <InputText class="col-5 mx-0" style="border-radius: 4px" @bind-Value="@Cliente.LEnderecos[1].NomeRua"></InputText>
 
-                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[1].Numero"></InputText>
+                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.LEnderecos[1].Numero"></InputText>
 
-                        <InputText class="col-2 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[1].Bairro"></InputText>
+                        <InputText class="col-2 mx-1" style="border-radius:4px" @bind-Value="@Cliente.LEnderecos[1].Bairro"></InputText>
 
-                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[1].Cidade"></InputText>
+                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.LEnderecos[1].Cidade"></InputText>
 
-                        <InputSelect class="col-1 form-select-sm" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[1].Estado">
+                        <InputSelect class="col-1 form-select-sm" style="border-radius:4px" @bind-Value="@Cliente.LEnderecos[1].Estado">
                             @foreach (var opc_est in Enum.GetValues(typeof(EEstado)))
                             {
                                 <option>@opc_est</option>
                             }
                         </InputSelect>
-                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[1].Cep"></InputText>
+                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.LEnderecos[1].Cep"></InputText>
                     </div>
                 </div>
             }
@@ -166,21 +166,21 @@
                             <label class="col-1 mx-1">Estado</label>
                             <label class="col-1 mx-1">Cep</label>
                         </div>
-                        <InputText class="col-5 mx-0" style="border-radius: 4px" @bind-Value="@Cliente.Enderecos[2].NomeRua"></InputText>
+                        <InputText class="col-5 mx-0" style="border-radius: 4px" @bind-Value="@Cliente.LEnderecos[2].NomeRua"></InputText>
 
-                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[2].Numero"></InputText>
+                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.LEnderecos[2].Numero"></InputText>
 
-                        <InputText class="col-2 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[2].Bairro"></InputText>
+                        <InputText class="col-2 mx-1" style="border-radius:4px" @bind-Value="@Cliente.LEnderecos[2].Bairro"></InputText>
 
-                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[2].Cidade"></InputText>
+                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.LEnderecos[2].Cidade"></InputText>
 
-                        <InputSelect class="col-1 form-select-sm" style="border-radius:4px" @bind-Value="Cliente.Enderecos[2].Estado">
+                        <InputSelect class="col-1 form-select-sm" style="border-radius:4px" @bind-Value="Cliente.LEnderecos[2].Estado">
                             @foreach (var opc_est in Enum.GetValues(typeof(EEstado)))
                             {
                                 <option>@opc_est</option>
                             }
                         </InputSelect>
-                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[2].Cep"></InputText>
+                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.LEnderecos[2].Cep"></InputText>
                     </div>
                 </div>
             }
@@ -241,31 +241,31 @@
 
     protected override void OnInitialized()
     {
-        Cliente.Enderecos.Add(new Endereco());
-        Cliente.Enderecos.Add(new Endereco());
-        Cliente.Enderecos.Add(new Endereco());
-        Cliente.Enderecos[0].TipoEnd = ETipoEndereco.Entrega;
-        Cliente.Enderecos[1].TipoEnd = ETipoEndereco.Faturamento;
-        Cliente.Enderecos[2].TipoEnd = ETipoEndereco.Cobranca;
+        Cliente.LEnderecos.Add(new Endereco());
+        Cliente.LEnderecos.Add(new Endereco());
+        Cliente.LEnderecos.Add(new Endereco());
+        Cliente.LEnderecos[0].TipoEnd = ETipoEndereco.Entrega;
+        Cliente.LEnderecos[1].TipoEnd = ETipoEndereco.Faturamento;
+        Cliente.LEnderecos[2].TipoEnd = ETipoEndereco.Cobranca;
     }
 
     public void MudaEnt()
     {
         IdEnt = !IdEnt;
-        Cliente.Enderecos[0] = new();
+        Cliente.LEnderecos[0] = new();
     }
 
     public void MudaFat()
     {
         IdFat = !IdFat;
-        Cliente.Enderecos[1] = new();
+        Cliente.LEnderecos[1] = new();
     }
 
     public void MudaCob()
     {
         IdCob = !IdCob;
-        Cliente.Enderecos[2] = new();
-        Cliente.Enderecos[2].TipoEnd = ETipoEndereco.Cobranca;
+        Cliente.LEnderecos[2] = new();
+        Cliente.LEnderecos[2].TipoEnd = ETipoEndereco.Cobranca;
     }
 
     public void ConfirmaSalvar(Cliente cliente)

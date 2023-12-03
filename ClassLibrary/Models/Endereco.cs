@@ -6,7 +6,7 @@ namespace LibraryShared.Models
 {
     public class Endereco
     {
-        [Key, ForeignKey("ClienteId")]
+        [Key]
         public int EnderecoId { get; set; }
 
         public ETipoEndereco TipoEnd { get; set; }

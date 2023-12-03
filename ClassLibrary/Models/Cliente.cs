@@ -48,6 +48,6 @@ namespace LibraryShared.Models
  ////      [Required(ErrorMessage = "O campo {0} é Obrigatório")]
  //       public DateOnly DataCadastro { get; set; }
 
-        public List<Endereco> Enderecos { get; set; } = new();   
+        public List<Endereco> LEnderecos { get; set; } = new();   
     }
 }

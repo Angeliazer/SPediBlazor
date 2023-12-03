@@ -43,6 +43,8 @@
     }
 </div>
 
+<button class="btn-sm btn-secondary" @onclick="@(()=>Envia())">Banco de Dados</button>
+
 @if (Show)
 {
     <ModalConfirma @ref="ModalConf" Exibir=@Show Title="Confirma Exclusão?" EventodeRetorno="@(() => RetornoFuncao())">
@@ -56,15 +58,58 @@
 
 @code
  {
-    ModalConfirma? ModalConf = null;
+            ModalConfirma? ModalConf = null;
 
-    public List<Cliente>? clientes = null!;
-    public bool Show = false;
-    public Cliente Objcliente = null!;
+            public List<Cliente>? clientes = null!;
+            public bool Show = false;
+            public Cliente Objcliente = null!;
 
-    protected override async Task OnInitializedAsync()
-    {
-        clientes = await _http.GetFromJsonAsync<List<Cliente>>(@"/api/v1/clientes");
+            protected override async Task OnInitializedAsync()
+            {
+                clientes = await _http.GetFromJsonAsync<List<Cliente>>(@"/api/v1/clientes");
+            }
+
+            public async Task Envia()
+            {
+                Cliente cli = new Cliente
+                {
+                    NomeCliente = "Azer Felippe da Silva",
+                    CpfCliente = "0",
+                    CnpjCliente = "0",
+                    TipoCliente = ETipoCliente.Fisica,
+                    NroTelefone = "21967453273",
+                    NomeContato = "Yago",
+                    LimiteCredito = 25000,
+                    LEnderecos = new List<Endereco>
+            {
+                new Endereco {
+                    NomeRua="Rua Goiás",
+                    Numero = "216",
+                    Bairro = "Mutuá",
+                    Cidade = "São Gonçalo",
+                    Estado = EEstado.DF,
+                    Cep = "24460170",
+                    TipoEnd = ETipoEndereco.Entrega
+                },
+                new Endereco
+                {
+                    NomeRua = "Rua Santos da Cruz",
+                    Numero = "216",
+                    Bairro = "Mutuá",
+                    Cidade = "São Gonçalo",
+                    Estado = EEstado.DF,
+                    Cep = "24460170",
+                    TipoEnd = ETipoEndereco.Entrega
+                }
+            }
+        };
+
+        var result = await _http.PostAsJsonAsync<Cliente>("/api/v1/clientes", cli);
+
+        Console.WriteLine(result.StatusCode);
+
+
+
     }
 
     public void Apagar(Cliente cliente)
