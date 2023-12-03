@@ -38,7 +38,7 @@ namespace WebApi.Repository
         public async Task<Cliente?> GetCliente(int id)
         {
             var cliente = await _context.Clientes
-                .Include("Endereco")
+                .Include("Enderecos")
                 .FirstOrDefaultAsync(x => x.ClienteId == id);
             if (cliente != null)
             {
@@ -53,7 +53,7 @@ namespace WebApi.Repository
         public async Task<List<Cliente>?> GetClientes()
         {
             var clientes = await _context.Clientes
-             .Include("LEnderecos")
+             .Include(p => p.Enderecos)
              .OrderBy(x => x.NomeCliente)
              .AsNoTracking()
              .ToListAsync();
