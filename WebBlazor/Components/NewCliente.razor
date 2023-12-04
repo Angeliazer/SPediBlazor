@@ -1,6 +1,6 @@
 ﻿@page "/newcliente"
 @inject NavigationManager ToPag
-@rendermode @(new InteractiveServerRenderMode(prerender : false)  )
+@rendermode InteractiveServer
 @inject HttpClient _http
 
 
@@ -108,6 +108,7 @@
                     </div>
                 </div>
             }
+
             <p></p>
             @if (!IdFat)
             {
@@ -149,8 +150,8 @@
                 </div>
             }
             <p></p>
-            @if (!IdCob)
 
+            @if (!IdCob)
             {
                 <button class="col-2 btn-sm btn-outline-primary" @onclick="MudaCob">Cobrança</button>
                 <button class="col-2 btn-sm btn-outline-danger invisible">Exclui    </button>
@@ -178,7 +179,7 @@
 
                         <InputText class="col-2 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[2].Cidade"></InputText>
 
-                        <InputSelect class="col-1 form-select-sm" style="border-radius:4px" @bind-Value="Cliente.Enderecos[2].Estado">
+                        <InputSelect class="col-1 form-select-sm" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[2].Estado">
                             @foreach (var opc_est in Enum.GetValues(typeof(EEstado)))
                             {
                                 <option>@opc_est</option>
@@ -192,7 +193,7 @@
         <div class="card-footer">
             <div>
                 <button class="btn-sm btn-primary" @onclick="Voltar"> Voltar </button>
-                <button class="btn-sm btn-success" @onclick="@(() => ConfirmaSalvar(Cliente))"> Salvar </button>
+                <button class="btn-sm btn-success" @onclick="@(()=>ConfirmaSalvar(Cliente))"> Salvar </button>
             </div>
         </div>
     </EditForm>
@@ -200,7 +201,7 @@
 
 @if (Show)
 {
-    <ModalConfirma @ref="ModalConf" Exibir=@Show Title="Confirma Inclusão?" EventodeRetorno="@(() => RetornoFuncao())">
+    <ModalConfirma @ref="ModalConf" Exibir=@Show Title="Confirma Inclusão?" EventodeRetorno="@(()=>RetornoFuncao())">
         <div>
             <br />
             <br />
@@ -211,21 +212,19 @@
 
 @code
 {
-    public Cliente Cliente = new();
+    public Cliente Cliente = new() { };
     public ETipoCliente TipoCliente;
     public string TipoDocumento = "CPF";
     public DateTime DataCadastro = DateTime.Now;
     public bool IdEnt = false;
     public bool IdFat = false;
     public bool IdCob = false;
-    public int indice = -1;
-
-    public string[] listaTipo = null;
+    public string acao = "N";
 
     ModalConfirma? ModalConf = null;
 
     public bool Show = false;
-    public Cliente Objcliente = null!;
+    public Cliente Objcliente = new() { };
 
     public async Task RetornoFuncao()
     {
@@ -245,13 +244,16 @@
         }
     }
 
-    //protected override void OnInitialized()
-    //{
-    //    for (int i = 0; i < 3; i++)
-    //    {
-    //        Cliente.Enderecos.Add(new Endereco());
-    //    }
-    //}
+    protected override void OnInitialized()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            Cliente.Enderecos.Add(new Endereco());
+        }
+        Cliente.Enderecos[0].TipoEnd = ETipoEndereco.Entrega;
+        Cliente.Enderecos[1].TipoEnd = ETipoEndereco.Faturamento;
+        Cliente.Enderecos[2].TipoEnd = ETipoEndereco.Cobranca;
+    }
 
 
     public void MudaEnt()
@@ -259,12 +261,8 @@
         IdEnt = !IdEnt;
         if (!IdEnt)
         {
-            Cliente.Enderecos.RemoveAll(x => x.TipoEnd == ETipoEndereco.Entrega);
-        }
-        else
-        {
-            Cliente.Enderecos.Add(new Endereco());
-            Cliente.Enderecos[Cliente.Enderecos.Count()-1].TipoEnd = ETipoEndereco.Entrega;
+            var x = Cliente.Enderecos.FindIndex(x => x.TipoEnd == ETipoEndereco.Entrega);
+            Cliente.Enderecos[x].NomeRua = "";
         }
     }
 
@@ -273,13 +271,8 @@
         IdFat = !IdFat;
         if (!IdFat)
         {
-            Cliente.Enderecos.RemoveAll(x => x.TipoEnd == ETipoEndereco.Faturamento);
-        }
-        else
-        {
-            Cliente.Enderecos.Add(new Endereco());
-            Cliente.Enderecos[Cliente.Enderecos.Count() - 1].TipoEnd = ETipoEndereco.Faturamento;
-
+            var x = Cliente.Enderecos.FindIndex(x => x.TipoEnd == ETipoEndereco.Faturamento);
+            Cliente.Enderecos[x].NomeRua = "";
         }
     }
 
@@ -288,12 +281,8 @@
         IdCob = !IdCob;
         if (!IdCob)
         {
-            Cliente.Enderecos.RemoveAll(x => x.TipoEnd == ETipoEndereco.Cobranca);
-        }
-        else
-        {
-            Cliente.Enderecos.Add(new Endereco());
-            Cliente.Enderecos[Cliente.Enderecos.Count() - 1].TipoEnd = ETipoEndereco.Cobranca;
+            var x = Cliente.Enderecos.FindIndex(x => x.TipoEnd == ETipoEndereco.Cobranca);
+            Cliente.Enderecos[x].NomeRua = "";
         }
     }
 
@@ -301,6 +290,12 @@
     {
         Objcliente = new();
         Objcliente = cliente;
+
+        Objcliente.Enderecos.RemoveAll(x => x.NomeRua == null);
+
+        Cliente Cliente = new();
+
+        Cliente = Objcliente;
         Show = true;
     }
 
@@ -311,10 +306,12 @@
 
     public async Task Salvar()
     {
-        Show = false;
-
+        Console.WriteLine(Cliente);
 
         HttpResponseMessage cliente = await _http.PostAsJsonAsync<Cliente>("/api/v1/clientes", Cliente);
+        Show = false;
+
+        Console.WriteLine(Cliente);
 
     }
 }

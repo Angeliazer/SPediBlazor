@@ -36,28 +36,29 @@
     [Parameter] public string AcaoResultante { get; set; } = null!;
     [Parameter] public string Title { get; set; } = null!;
     [Parameter] public EventCallback EventodeRetorno { get; set; }
+    [Parameter] public Cliente Cli { get; set; } = null!;
 
     public void Close()
     {
         Exibir = false;
-        AcaoResultante = "";
+        AcaoResultante = "N";
     }
 
     public async Task AcaoSim()
     {
         AcaoResultante = "S";
-        await FuncaoDeCallBack();
+        await FuncaoDeCallBack(Cli);
         Exibir = false;
     }
 
     public async Task AcaoNao()
     {
         AcaoResultante = "N";
-        await FuncaoDeCallBack();
+        await FuncaoDeCallBack(Cli);
         Exibir = false;
     }
 
-    public async Task FuncaoDeCallBack()
+    public async Task FuncaoDeCallBack(Cliente Cli)
     {
         await EventodeRetorno.InvokeAsync();
     }
