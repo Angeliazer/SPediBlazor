@@ -1,6 +1,6 @@
 ﻿@page "/newcliente"
 @inject NavigationManager ToPag
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(prerender : false)  )
 @inject HttpClient _http
 
 
@@ -9,7 +9,7 @@
 <div class="card">
     <EditForm Model="@Cliente">
         <div class="card-header">
-            <ValidationSummary></ValidationSummary>
+            @*<ValidationSummary></ValidationSummary>*@
             <div class="row">
                 <div class="col">
                     <div>
@@ -90,7 +90,7 @@
 
                         </div>
                         <InputText class="col-5 mx-0" style="border-radius: 4px" @bind-Value="@Cliente.Enderecos[0].NomeRua"></InputText>
-                        <ValidationMessage For="@(()=>Cliente.Enderecos[0].NomeRua)"></ValidationMessage>
+                        @*<ValidationMessage For="@(()=>Cliente.Enderecos[0].NomeRua)"></ValidationMessage>*@
 
                         <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Numero"></InputText>
 
@@ -218,7 +218,9 @@
     public bool IdEnt = false;
     public bool IdFat = false;
     public bool IdCob = false;
-    public int indice = 0;
+    public int indice = -1;
+
+    public string[] listaTipo = null;
 
     ModalConfirma? ModalConf = null;
 
@@ -243,13 +245,13 @@
         }
     }
 
-    protected override void OnInitialized()
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            Cliente.Enderecos.Add(new Endereco());
-        }
-    }
+    //protected override void OnInitialized()
+    //{
+    //    for (int i = 0; i < 3; i++)
+    //    {
+    //        Cliente.Enderecos.Add(new Endereco());
+    //    }
+    //}
 
 
     public void MudaEnt()
@@ -257,7 +259,12 @@
         IdEnt = !IdEnt;
         if (!IdEnt)
         {
-            Cliente.Enderecos[0] = new Endereco();
+            Cliente.Enderecos.RemoveAll(x => x.TipoEnd == ETipoEndereco.Entrega);
+        }
+        else
+        {
+            Cliente.Enderecos.Add(new Endereco());
+            Cliente.Enderecos[Cliente.Enderecos.Count()-1].TipoEnd = ETipoEndereco.Entrega;
         }
     }
 
@@ -266,7 +273,13 @@
         IdFat = !IdFat;
         if (!IdFat)
         {
-            Cliente.Enderecos[1] = new Endereco();
+            Cliente.Enderecos.RemoveAll(x => x.TipoEnd == ETipoEndereco.Faturamento);
+        }
+        else
+        {
+            Cliente.Enderecos.Add(new Endereco());
+            Cliente.Enderecos[Cliente.Enderecos.Count() - 1].TipoEnd = ETipoEndereco.Faturamento;
+
         }
     }
 
@@ -275,7 +288,12 @@
         IdCob = !IdCob;
         if (!IdCob)
         {
-            Cliente.Enderecos[2] = new Endereco();
+            Cliente.Enderecos.RemoveAll(x => x.TipoEnd == ETipoEndereco.Cobranca);
+        }
+        else
+        {
+            Cliente.Enderecos.Add(new Endereco());
+            Cliente.Enderecos[Cliente.Enderecos.Count() - 1].TipoEnd = ETipoEndereco.Cobranca;
         }
     }
 
@@ -295,18 +313,8 @@
     {
         Show = false;
 
-        // Remove a Lista vazia
-        for (int i = 0; i < 3; i++)
-        {
-            if (Cliente.Enderecos[i].NomeRua == null)
-            {
-                Cliente.Enderecos.Remove(Cliente.Enderecos[i]);
-            }
-        }
 
-        var cliente = await _http.PostAsJsonAsync<Cliente>("/api/v1/clientes", Cliente);
-
-        ToPag.NavigateTo("/clientes");
+        HttpResponseMessage cliente = await _http.PostAsJsonAsync<Cliente>("/api/v1/clientes", Cliente);
 
     }
 }
