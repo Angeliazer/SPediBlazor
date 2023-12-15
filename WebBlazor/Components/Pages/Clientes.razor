@@ -18,7 +18,7 @@
     {
         <button class="btn-sm btn-primary" style="font-style:italic" @onclick="NewCliente">+ Novo Cliente</button>
 
-        <table class="table">
+        <table class="table col-md-12">
             <thead>
                 <tr>
                     <th>Nome Cliente</th>
@@ -34,8 +34,9 @@
                         <td>@item.NroTelefone</td>
                         <td>@item.NomeContato</td>
                         <td><button class="btn-sm btn-danger" data-toggle="modal" @onclick="@(() => Apagar(item))">Deletar </button></td>
-                        <td><button class="btn-sm btn-primary" @onclick="@(()=>Seleciona(item))">Pedido</button></td>
-                        <td><button class="btn-sm btn-secondary" @onclick="@(()=>Seleciona(item))">Alterar</button></td>
+                        <td><button class="btn-sm btn-primary" @onclick="@(() => Seleciona(item))">Pedido</button></td>
+                        <td><button class="btn-sm btn-secondary" @onclick="@(() => Seleciona(item))">Alterar</button></td>
+                        <td><button type="button" class="btn-sm btn-dark" @onclick="(() => Confirma(item))">Apaga</button></td>
                     </tr>
                 }
             </tbody>
@@ -43,45 +44,103 @@
     }
 </div>
 
-<button class="btn-sm btn-secondary" @onclick="@(()=>Envia())">Banco de Dados</button>
+@*<button class="btn-sm btn-secondary" @onclick="@(() => Envia())">Banco de Dados</button>*@
 
-@if (Show)
-{
-    <ModalConfirma @ref="ModalConf" Exibir=@Show Title="Confirma Exclusão?" EventodeRetorno="@(() => RetornoFuncao())">
-        <div>
-            <br />
-            <br />
-            <h6>Cliente: @Objcliente.NomeCliente</h6>
+@*@if (Show)
+    {
+        <ModalConfirma @ref="ModalConf" Exibir=@Show Title="Confirma Exclusão?" EventodeRetorno="@(() => RetornoFuncao())">
+            <div>
+                <br />
+                <br />
+                <h6>Cliente: @Objcliente.NomeCliente</h6>
+            </div>
+        </ModalConfirma>
+    }*@
+
+<Mensagens @ref="Mensa" Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="@(() => ReturnFuncao())"> </Mensagens>
+
+@*<div class="modal shadow-lg" id="CaixaMensagem" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display:@Mostra">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">
+                        <h4>@Titulo</h4>
+                    </div>
+                    <div>
+                        <button class="btn-sm btn-close" data-bs-dismiss="close" @onclick="Fechar"></button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <h5>@Msg</h5>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn-sm btn-danger" @onclick="() => ConfirmaDelete()" data-bs-dismiss="close">Excluir</button>
+                    <button class="btn-sm btn-secondary" data-bs-dismiss="close" @onclick="Fechar">Close</button>
+                </div>
+            </div>
         </div>
-    </ModalConfirma>
-}
+    </div>*@
 
 @code
  {
-            ModalConfirma? ModalConf = null;
+    ModalConfirma? ModalConf = null;
 
-            public List<Cliente>? clientes = null!;
-            public bool Show = false;
-            public Cliente Objcliente = null!;
+    Mensagens? Mensa = null;
 
-            protected override async Task OnInitializedAsync()
-            {
-                clientes = await _http.GetFromJsonAsync<List<Cliente>>(@"/api/v1/clientes");
-            }
+    public bool Confirm { get; set; } = false;
+    public string Mensag { get; set; } = string.Empty;
+    public string Titul { get; set; } = string.Empty;
+    public string Mostr { get; set; } = string.Empty;
 
-            public async Task Envia()
-            {
-                Cliente cli = new Cliente
-                {
-                    NomeCliente = "Azer Felippe da Silva",
-                    CpfCliente = "0",
-                    CnpjCliente = "0",
-                    TipoCliente = ETipoCliente.Fisica,
-                    NroTelefone = "21967453273",
-                    NomeContato = "Yago",
-                    LimiteCredito = 25000,
-                    Enderecos = new List<Endereco>
-            {
+
+    public List<Cliente>? clientes = null!;
+    public bool Show = false;
+    public Cliente Objcliente = null!;
+    public int Indice { get; set; } = 0;
+    public Cliente Cli = new();
+    public string Titulo { get; set; } = string.Empty;
+    public string Msg { get; set; } = string.Empty;
+    public string Mostra { get; set; } = "none";
+
+    protected override async Task OnInitializedAsync()
+    {
+        clientes = await _http.GetFromJsonAsync<List<Cliente>>(@"/api/v1/clientes");
+    }
+
+    //public async Task ConfirmaDelete()
+    //{
+    //    await Task.Delay(1000);
+    //    Mostr = "none";
+    //}
+
+    //public void Fechar()
+    //{
+    //    Mostr = "none";
+
+    //}
+
+    public void Confirma(Cliente cli)
+    {
+        Indice = cli.ClienteId;
+        Mensag = $"Confirma Exclusão do Cliente com o Id {Indice}?";
+        Titul = "Confirma Exclusão?";
+        Mostr = "block";
+    }
+
+    public async Task Envia()
+    {
+        Cliente cli = new Cliente
+        {
+            NomeCliente = "Angélica Rigon  da Silva",
+            CpfCliente = "0",
+            CnpjCliente = "0",
+            TipoCliente = ETipoCliente.Fisica,
+            NroTelefone = "21967453273",
+            NomeContato = "Yago",
+            LimiteCredito = 25000,
+            Enderecos = new List<Endereco>
+{
                 new Endereco {
                     NomeRua="Rua Goiás",
                     Numero = "216",
@@ -99,7 +158,7 @@
                     Cidade = "São Gonçalo",
                     Estado = EEstado.DF,
                     Cep = "24460170",
-                    TipoEnd = ETipoEndereco.Entrega
+                    TipoEnd = ETipoEndereco.Faturamento
                 }
             }
         };
@@ -107,9 +166,6 @@
         var result = await _http.PostAsJsonAsync<Cliente>("/api/v1/clientes", cli);
 
         Console.WriteLine(result.StatusCode);
-
-
-
     }
 
     public void Apagar(Cliente cliente)
@@ -117,6 +173,16 @@
         Show = true;
         Objcliente = new();
         Objcliente = cliente;
+    }
+
+    public async Task ReturnFuncao()
+    {
+        if (Mensa?.Confirma==true)
+        {
+            await ApagaRegistro();
+        }
+        Mostra = "none";
+        Confirm = false;
     }
 
     public async Task RetornoFuncao()

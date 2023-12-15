@@ -1,0 +1,52 @@
+﻿@rendermode InteractiveServer
+
+<div class="modal shadow-lg" id="CaixaMensagem" tabindex="-1" style="display:@Mostra">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <h4>@Titulo</h4>
+                </div>
+                <div>
+                    <button class="btn-sm btn-close" data-bs-dimiss="modal" @onclick="@(()=>Fechar())"></button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <h5>@Msg</h5>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-sm btn-danger" @onclick="@(()=>Exclui())">Excluir</button>
+                <button class="btn-sm btn-secondary" data-bs-dismiss="modal" @onclick="@(()=>Fechar())">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@code 
+{
+
+    [Parameter] public string Titulo { get; set; } = null!;
+    [Parameter] public string Msg { get; set; } = null!;
+    [Parameter] public string Mostra { get; set; } = null!;
+    [Parameter] public bool Confirma { get; set; } = false;
+    [Parameter] public EventCallback EventoRetorno { get; set; }
+
+    public async Task Fechar()
+    {
+        await FuncaoDeCallBack();
+        Mostra = "none";
+        Confirma = false;
+    }
+
+    public async Task Exclui()
+    {
+        await FuncaoDeCallBack();
+        Mostra = "none";
+        Confirma = true;
+    }
+
+    public async Task FuncaoDeCallBack()
+    {
+        await EventoRetorno.InvokeAsync();
+    }
+}
