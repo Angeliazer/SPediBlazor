@@ -192,14 +192,14 @@
         </div>
         <div class="card-footer">
             <div>
-                <button class="btn-sm btn-success" @onclick="(()=>ConfirmaSalvar(Cliente))"> Salvar </button>
+                <button class="btn-sm btn-success" @onclick="(() => ConfirmaSalvar())"> Salvar </button>
                 <button class="btn-sm btn-primary" @onclick="Voltar"> Voltar </button>
             </div>
         </div>
     </EditForm>
 </div>
 
-<Mensagens @ref="Mensa" BotaoTrue=@MsgBotton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="(() => ReturnFuncao())"> </Mensagens>
+<Mensagens @ref="Mensa" BotaoTrue=@MsgButton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="(() => ReturnFuncao())"> </Mensagens>
 
 @code
  {
@@ -210,17 +210,13 @@
     public string Mensag { get; set; } = string.Empty;
     public string Titul { get; set; } = string.Empty;
     public string Mostr { get; set; } = "none";
-    public string MsgBotton { get; set; } = string.Empty;
+    public string MsgButton { get; set; } = string.Empty;
 
 
     public Cliente Cliente = new();
-    public DateTime DataCadastro = DateTime.Now;
     public bool IdEnt = false;
     public bool IdFat = false;
     public bool IdCob = false;
-
-
-    public Cliente Objcliente = new();
 
     public async Task ReturnFuncao()
     {
@@ -274,19 +270,15 @@
         }
     }
 
-    public void ConfirmaSalvar(Cliente cliente)
+    public void ConfirmaSalvar()
     {
-        MsgBotton = "Confirma";
+        MsgButton = "Confirma";
 
-        Mensag = $"Cliente: {cliente.NomeCliente}";
+        Mensag = $"Cliente: {Cliente.NomeCliente}";
         Titul = "Confirma Inclusão";
         Mostr = "block";
 
-        cliente.Enderecos.RemoveAll(x => x.NomeRua == null);
-
-        Cliente Cliente = new();
-
-        Cliente = cliente;
+        Cliente.Enderecos.RemoveAll(x => x.NomeRua == null);
 
         IdEnt = false;
         IdFat = false;

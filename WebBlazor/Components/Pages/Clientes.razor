@@ -24,6 +24,9 @@
                     <th>Nome Cliente</th>
                     <th>Nro Telefone</th>
                     <th>Contato     </th>
+                    <th>Pedido</th>
+                    <th>Alterar</th>
+                    <th>Apagar</th>
                 </tr>
             </thead>
             <tbody>
@@ -35,7 +38,7 @@
                         <td>@item.NomeContato</td>
                         @*<td><button class="btn-sm btn-danger" data-toggle="modal" @onclick="@(() => Apagar(item))">Deletar </button></td>*@
                         <td><button class="btn-sm btn-primary" @onclick="(() => Seleciona(item))">Pedido</button></td>
-                        <td><button class="btn-sm btn-sucess" @onclick="(() => Seleciona(item))">Alterar</button></td>
+                        <td><button class="btn-sm btn-warning" @onclick="(() => Seleciona(item))">Alterar</button></td>
                         <td><button class="btn-sm btn-danger" @onclick="(() => Confirma(item))">Apaga</button></td>
                     </tr>
                 }
@@ -44,7 +47,7 @@
     }
 </div>
 
-<button class="btn-sm btn-secondary" @onclick="@(() => Envia())">Banco de Dados</button>
+@*<button class="btn-sm btn-secondary" @onclick="@(() => Envia())">Banco de Dados</button>*@
 
 <Mensagens @ref="Mensa" BotaoTrue=@MsgBotton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="@(() => ReturnFuncao())"> </Mensagens>
 
@@ -75,7 +78,7 @@
     {
         IdCliente = cli.ClienteId;
         NomeCliente = cli.NomeCliente;
-        Mensag = $"Confirma Exclusão do Cliente com o Id {IdCliente}-{NomeCliente}?";
+        Mensag = $"Cliente: {NomeCliente}?";
         Titul = "Confirma Exclusão?";
         Mostr = "block";
         MsgBotton = "Exclui";
