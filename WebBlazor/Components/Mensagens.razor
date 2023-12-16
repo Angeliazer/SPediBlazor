@@ -2,9 +2,9 @@
 
 <div class="modal shadow-lg" id="CaixaMensagem" tabindex="-1" style="display:@Mostra">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content" style="background-color:aqua">
             <div class="modal-header">
-                <div class="modal-title">
+                <div class="modal-title" style="color:red">
                     <h4>@Titulo</h4>
                 </div>
                 <div>
@@ -16,7 +16,7 @@
             </div>
 
             <div class="modal-footer">
-                <button class="btn-sm btn-danger" @onclick="@(()=>Exclui())">Excluir</button>
+                <button class="btn-sm btn-danger" @onclick="@(()=>Exclui())">@BotaoTrue</button>
                 <button class="btn-sm btn-secondary" data-bs-dismiss="modal" @onclick="@(()=>Fechar())">Fechar</button>
             </div>
         </div>
@@ -27,25 +27,26 @@
 
     [Parameter] public string Titulo { get; set; } = null!;
     [Parameter] public string Msg { get; set; } = null!;
-    [Parameter] public string Mostra { get; set; } = null!;
+    [Parameter] public string Mostra { get; set; } = "none";
     [Parameter] public bool Confirma { get; set; } = false;
     [Parameter] public EventCallback EventoRetorno { get; set; }
+    [Parameter] public string BotaoTrue { get; set; } = string.Empty;
 
-    public async Task Fechar()
+    public async void Fechar()
     {
-        await FuncaoDeCallBack();
         Mostra = "none";
         Confirma = false;
+        await FuncaoCalback();
     }
 
-    public async Task Exclui()
+    public async void Exclui()
     {
-        await FuncaoDeCallBack();
         Mostra = "none";
         Confirma = true;
+        await FuncaoCalback();
     }
 
-    public async Task FuncaoDeCallBack()
+    public async Task FuncaoCalback()
     {
         await EventoRetorno.InvokeAsync();
     }

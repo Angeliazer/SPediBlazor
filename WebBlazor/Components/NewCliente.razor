@@ -1,6 +1,6 @@
 ﻿@page "/newcliente"
 @inject NavigationManager ToPag
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode (prerender:false))
 @inject HttpClient _http
 
 
@@ -28,7 +28,7 @@
                     <div>
                         <label class="col-2">Tipo Cliente</label>
 
-                        @if ((int)TipoCliente == 0)
+                        @if ((int)Cliente.TipoCliente == 0)
                         {
                             <label class="col-2 mx-2" style="text-align: right; text-align: right">CPF</label>
                         }
@@ -41,14 +41,14 @@
 
                     </div>
                     <div>
-                        <InputSelect class="col-2 form-select-sm" style="border-radius:4px" @bind-Value="@Cliente.TipoCliente">
+                        <InputSelect class="col-2 form-select-sm" style="border-radius:1px" @bind-Value="@Cliente.TipoCliente">
                             @foreach (var opc in Enum.GetValues(typeof(ETipoCliente)))
                             {
                                 <option>@opc</option>
                             }
                         </InputSelect>
 
-                        @if ((int)TipoCliente == 0)
+                        @if ((int)Cliente.TipoCliente == 0)
                         {
                             <InputText class="col-2 mx-2" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.CpfCliente"></InputText>
                             Cliente.CnpjCliente = "0";
@@ -104,14 +104,14 @@
                                 <option>@opc_est</option>
                             }
                         </InputSelect>
-                        <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Cep"></InputText>
+                        <InputText class="col-1 mx-1" style="border-radius:1px" @bind-Value="@Cliente.Enderecos[0].Cep"></InputText>
                     </div>
                 </div>
             }
 
             <p></p>
             @if (!IdFat)
-            {
+                {
                 <button class="col-2 btn-sm btn-outline-primary" @onclick="MudaFat">Faturamento</button>
                 <button class="col-2 btn-sm btn-outline-danger invisible">Exclui    </button>
             }
@@ -192,56 +192,44 @@
         </div>
         <div class="card-footer">
             <div>
+                <button class="btn-sm btn-success" @onclick="(()=>ConfirmaSalvar(Cliente))"> Salvar </button>
                 <button class="btn-sm btn-primary" @onclick="Voltar"> Voltar </button>
-                <button class="btn-sm btn-success" @onclick="@(()=>ConfirmaSalvar(Cliente))"> Salvar </button>
             </div>
         </div>
     </EditForm>
 </div>
 
-@if (Show)
-{
-    <ModalConfirma @ref="ModalConf" Exibir=@Show Title="Confirma Inclusão?" EventodeRetorno="@(()=>RetornoFuncao())">
-        <div>
-            <br />
-            <br />
-            <h6>Cliente: @Objcliente.NomeCliente</h6>
-        </div>
-    </ModalConfirma>
-}
+<Mensagens @ref="Mensa" BotaoTrue=@MsgBotton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="(() => ReturnFuncao())"> </Mensagens>
 
 @code
-{
-    public Cliente Cliente = new() { };
-    public ETipoCliente TipoCliente;
-    public string TipoDocumento = "CPF";
+ {
+
+    Mensagens? Mensa = null;
+
+    public bool Confirm { get; set; } = false;
+    public string Mensag { get; set; } = string.Empty;
+    public string Titul { get; set; } = string.Empty;
+    public string Mostr { get; set; } = "none";
+    public string MsgBotton { get; set; } = string.Empty;
+
+
+    public Cliente Cliente = new();
     public DateTime DataCadastro = DateTime.Now;
     public bool IdEnt = false;
     public bool IdFat = false;
     public bool IdCob = false;
-    public string acao = "N";
 
-    ModalConfirma? ModalConf = null;
 
-    public bool Show = false;
-    public Cliente Objcliente = new() { };
+    public Cliente Objcliente = new();
 
-    public async Task RetornoFuncao()
+    public async Task ReturnFuncao()
     {
-        Show = false;
-        switch (ModalConf?.AcaoResultante)
+        if (Mensa?.Confirma == true)
         {
-            case "S":
-                await Salvar();
-                break;
-
-            case "N":
-                break;
-
-            default:
-
-                break;
+            await Salvar();
         }
+        Confirm = false;
+        Mostr = "none";
     }
 
     protected override void OnInitialized()
@@ -271,8 +259,8 @@
         IdFat = !IdFat;
         if (!IdFat)
         {
-            var x = Cliente.Enderecos.FindIndex(x => x.TipoEnd == ETipoEndereco.Faturamento);
-            Cliente.Enderecos[x].NomeRua = "";
+            var y = Cliente.Enderecos.FindIndex(x => x.TipoEnd == ETipoEndereco.Faturamento);
+            Cliente.Enderecos[y].NomeRua = "";
         }
     }
 
@@ -281,22 +269,28 @@
         IdCob = !IdCob;
         if (!IdCob)
         {
-            var x = Cliente.Enderecos.FindIndex(x => x.TipoEnd == ETipoEndereco.Cobranca);
-            Cliente.Enderecos[x].NomeRua = "";
+            var z = Cliente.Enderecos.FindIndex(x => x.TipoEnd == ETipoEndereco.Cobranca);
+            Cliente.Enderecos[z].NomeRua = "";
         }
     }
 
     public void ConfirmaSalvar(Cliente cliente)
     {
-        Objcliente = new();
-        Objcliente = cliente;
+        MsgBotton = "Confirma";
 
-        Objcliente.Enderecos.RemoveAll(x => x.NomeRua == null);
+        Mensag = $"Cliente: {cliente.NomeCliente}";
+        Titul = "Confirma Inclusão";
+        Mostr = "block";
+
+        cliente.Enderecos.RemoveAll(x => x.NomeRua == null);
 
         Cliente Cliente = new();
 
-        Cliente = Objcliente;
-        Show = true;
+        Cliente = cliente;
+
+        IdEnt = false;
+        IdFat = false;
+        IdCob = false;
     }
 
     public void Voltar()
@@ -306,12 +300,8 @@
 
     public async Task Salvar()
     {
-        Console.WriteLine(Cliente);
-
         HttpResponseMessage cliente = await _http.PostAsJsonAsync<Cliente>("/api/v1/clientes", Cliente);
-        Show = false;
 
-        Console.WriteLine(Cliente);
-
+        ToPag.NavigateTo("/clientes");
     }
 }

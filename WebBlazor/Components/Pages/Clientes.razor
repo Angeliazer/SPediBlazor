@@ -33,10 +33,10 @@
                         <td>@item.NomeCliente</td>
                         <td>@item.NroTelefone</td>
                         <td>@item.NomeContato</td>
-                        <td><button class="btn-sm btn-danger" data-toggle="modal" @onclick="@(() => Apagar(item))">Deletar </button></td>
-                        <td><button class="btn-sm btn-primary" @onclick="@(() => Seleciona(item))">Pedido</button></td>
-                        <td><button class="btn-sm btn-secondary" @onclick="@(() => Seleciona(item))">Alterar</button></td>
-                        <td><button type="button" class="btn-sm btn-dark" @onclick="(() => Confirma(item))">Apaga</button></td>
+                        @*<td><button class="btn-sm btn-danger" data-toggle="modal" @onclick="@(() => Apagar(item))">Deletar </button></td>*@
+                        <td><button class="btn-sm btn-primary" @onclick="(() => Seleciona(item))">Pedido</button></td>
+                        <td><button class="btn-sm btn-sucess" @onclick="(() => Seleciona(item))">Alterar</button></td>
+                        <td><button class="btn-sm btn-danger" @onclick="(() => Confirma(item))">Apaga</button></td>
                     </tr>
                 }
             </tbody>
@@ -44,95 +44,48 @@
     }
 </div>
 
-@*<button class="btn-sm btn-secondary" @onclick="@(() => Envia())">Banco de Dados</button>*@
+<button class="btn-sm btn-secondary" @onclick="@(() => Envia())">Banco de Dados</button>
 
-@*@if (Show)
-    {
-        <ModalConfirma @ref="ModalConf" Exibir=@Show Title="Confirma Exclusão?" EventodeRetorno="@(() => RetornoFuncao())">
-            <div>
-                <br />
-                <br />
-                <h6>Cliente: @Objcliente.NomeCliente</h6>
-            </div>
-        </ModalConfirma>
-    }*@
-
-<Mensagens @ref="Mensa" Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="@(() => ReturnFuncao())"> </Mensagens>
-
-@*<div class="modal shadow-lg" id="CaixaMensagem" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display:@Mostra">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-title">
-                        <h4>@Titulo</h4>
-                    </div>
-                    <div>
-                        <button class="btn-sm btn-close" data-bs-dismiss="close" @onclick="Fechar"></button>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <h5>@Msg</h5>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn-sm btn-danger" @onclick="() => ConfirmaDelete()" data-bs-dismiss="close">Excluir</button>
-                    <button class="btn-sm btn-secondary" data-bs-dismiss="close" @onclick="Fechar">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>*@
+<Mensagens @ref="Mensa" BotaoTrue=@MsgBotton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="@(() => ReturnFuncao())"> </Mensagens>
 
 @code
  {
-    ModalConfirma? ModalConf = null;
 
     Mensagens? Mensa = null;
 
     public bool Confirm { get; set; } = false;
     public string Mensag { get; set; } = string.Empty;
     public string Titul { get; set; } = string.Empty;
-    public string Mostr { get; set; } = string.Empty;
+    public string Mostr { get; set; } = "none";
+    public string MsgBotton { get; set; } = string.Empty;
 
 
     public List<Cliente>? clientes = null!;
-    public bool Show = false;
     public Cliente Objcliente = null!;
-    public int Indice { get; set; } = 0;
+    public int IdCliente { get; set; } = 0;
+    public string? NomeCliente { get; set; } = string.Empty;
     public Cliente Cli = new();
-    public string Titulo { get; set; } = string.Empty;
-    public string Msg { get; set; } = string.Empty;
-    public string Mostra { get; set; } = "none";
 
     protected override async Task OnInitializedAsync()
     {
         clientes = await _http.GetFromJsonAsync<List<Cliente>>(@"/api/v1/clientes");
     }
 
-    //public async Task ConfirmaDelete()
-    //{
-    //    await Task.Delay(1000);
-    //    Mostr = "none";
-    //}
-
-    //public void Fechar()
-    //{
-    //    Mostr = "none";
-
-    //}
-
     public void Confirma(Cliente cli)
     {
-        Indice = cli.ClienteId;
-        Mensag = $"Confirma Exclusão do Cliente com o Id {Indice}?";
+        IdCliente = cli.ClienteId;
+        NomeCliente = cli.NomeCliente;
+        Mensag = $"Confirma Exclusão do Cliente com o Id {IdCliente}-{NomeCliente}?";
         Titul = "Confirma Exclusão?";
         Mostr = "block";
+        MsgBotton = "Exclui";
     }
 
     public async Task Envia()
     {
         Cliente cli = new Cliente
         {
-            NomeCliente = "Angélica Rigon  da Silva",
+            NomeCliente = "Angeliazer Rigon  da Silva",
             CpfCliente = "0",
             CnpjCliente = "0",
             TipoCliente = ETipoCliente.Fisica,
@@ -168,44 +121,19 @@
         Console.WriteLine(result.StatusCode);
     }
 
-    public void Apagar(Cliente cliente)
-    {
-        Show = true;
-        Objcliente = new();
-        Objcliente = cliente;
-    }
-
     public async Task ReturnFuncao()
     {
         if (Mensa?.Confirma==true)
         {
             await ApagaRegistro();
         }
-        Mostra = "none";
         Confirm = false;
-    }
-
-    public async Task RetornoFuncao()
-    {
-        Show = false;
-        switch (ModalConf?.AcaoResultante)
-        {
-            case "S":
-                await ApagaRegistro();
-                break;
-
-            case "N":
-                break;
-
-            default:
-
-                break;
-        }
+        Mostr = "none";
     }
 
     public async Task ApagaRegistro()
     {
-        await _http.DeleteFromJsonAsync<Cliente>($@"/api/v1/clientes/{Objcliente.ClienteId}");
+        await _http.DeleteFromJsonAsync<Cliente>($@"/api/v1/clientes/{IdCliente}");
         await OnInitializedAsync();
     }
 
