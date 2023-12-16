@@ -49,11 +49,9 @@
 @if (Sim)
 {
     <div class="container col-sm-8 justify-content-center">
-        <div class="alert  alert-primary" role="alert">
-            <button type="button" class="btn-close" role="alert" style="background-position-y:top; position:static" @onclick="Sair"></button>
-           
-                Erro no preenchimento dos Campos do Cliente
-            
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+            <button class="btn-close" data-bs-dismiss="alert" @onclick="Sair" style="background-position-y: top; background-position-x:right"></button>
         </div>
     </div>
 }
