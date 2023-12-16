@@ -36,7 +36,6 @@
                         <td>@item.NomeCliente</td>
                         <td>@item.NroTelefone</td>
                         <td>@item.NomeContato</td>
-                        @*<td><button class="btn-sm btn-danger" data-toggle="modal" @onclick="@(() => Apagar(item))">Deletar </button></td>*@
                         <td><button class="btn-sm btn-primary" @onclick="(() => Seleciona(item))">Pedido</button></td>
                         <td><button class="btn-sm btn-warning" @onclick="(() => Seleciona(item))">Alterar</button></td>
                         <td><button class="btn-sm btn-danger" @onclick="(() => Confirma(item))">Apaga</button></td>
