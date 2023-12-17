@@ -1,0 +1,14 @@
+﻿@page "/concliente"
+@inject Cliente _cli
+
+<h3>ConCliente</h3>
+
+@code
+{
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine(_cli.NomeCliente);
+    }
+}
+

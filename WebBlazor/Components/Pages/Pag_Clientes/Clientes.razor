@@ -3,6 +3,7 @@
 @inject HttpClient _http
 @rendermode @(new InteractiveServerRenderMode (prerender:false))
 @inject NavigationManager Topag
+@inject Cliente _cli
 
 <PageTitle>Clientes</PageTitle>
 
@@ -24,9 +25,11 @@
                     <th>Nome Cliente</th>
                     <th>Nro Telefone</th>
                     <th>Contato     </th>
-                    <th>Pedido</th>
-                    <th>Alterar</th>
-                    <th>Apagar</th>
+                    <th>Data Cadastro</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -36,9 +39,11 @@
                         <td>@item.NomeCliente</td>
                         <td>@item.NroTelefone</td>
                         <td>@item.NomeContato</td>
-                        <td><button class="btn-sm btn-primary" @onclick="(() => Seleciona(item))">Pedido</button></td>
-                        <td><button class="btn-sm btn-warning" @onclick="(() => Seleciona(item))">Alterar</button></td>
-                        <td><button class="btn-sm btn-danger" @onclick="(() => Confirma(item))">Apaga</button></td>
+                        <td>@DateOnly.FromDateTime(@item.DataCadastro)</td>
+                        <td><button class="btn-sm btn-warning border-dark" @onclick="(() => Seleciona(item))">Alterar</button></td>
+                        <td><button class="btn-sm btn-danger border-dark" @onclick="(() => Confirma(item))">Apaga</button></td>
+                        <td><button class="btn-sm btn-info border-dark" @onclick="@(() => ConsultaCliente(item))">Consulta</button></td>
+                        <td><button class="btn-sm btn-primary border-dark" @onclick="(() => Seleciona(item))">Pedido</button></td>
                     </tr>
                 }
             </tbody>
@@ -47,20 +52,18 @@
 </div>
 
 @if (Sim)
-{
-    <div class="container col-sm-8 justify-content-center">
-        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+{<div class="container align-content-center">
+        <div class="alert alert-danger alert-dismissible" role="alert">
             <strong>Holy guacamole!</strong> You should check in on some of those fields below.
-            <button class="btn-close" data-bs-dismiss="alert" @onclick="Sair" style="background-position-y: top; background-position-x:right"></button>
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @onclick="Sair"></button>
         </div>
     </div>
 }
 
-
-
 @*<button class="btn-sm btn-secondary" @onclick="@(() => Envia())">Banco de Dados</button>*@
 
-<Mensagens @ref="Mensa" BotaoTrue=@MsgBotton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="@(() => ReturnFuncao())"> </Mensagens>
+<Mensagens @ref="Mensa" BotaoTrue=@MsgBotton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="(() => ReturnFuncao())"> </Mensagens>
 
 @code
  {
@@ -72,7 +75,7 @@
     public string Titul { get; set; } = string.Empty;
     public string Mostr { get; set; } = "none";
     public string MsgBotton { get; set; } = string.Empty;
-    public bool Sim { get; set; } = true;
+    public bool Sim { get; set; } =false;
 
 
     public List<Cliente>? clientes = null!;
@@ -137,8 +140,12 @@
         };
 
         var result = await _http.PostAsJsonAsync<Cliente>("/api/v1/clientes", cli);
+    }
 
-        Console.WriteLine(result.StatusCode);
+    public void ConsultaCliente(Cliente cliente)
+    {
+        _cli = cliente;
+        Topag.NavigateTo("/concliente");
     }
 
     public async Task ReturnFuncao()
