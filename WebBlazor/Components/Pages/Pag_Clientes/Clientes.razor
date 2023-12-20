@@ -3,11 +3,12 @@
 @inject HttpClient _http
 @rendermode @(new InteractiveServerRenderMode (prerender:false))
 @inject NavigationManager Topag
-@inject Cliente _cli
+@inject Cliente CliService
 
 <PageTitle>Clientes</PageTitle>
 
-<h3>Clientes </h3>
+<TopBanner Texto="Clientes"></TopBanner>"
+
 
 <div class="container">
 
@@ -33,7 +34,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in clientes)
+                @foreach (Cliente item in clientes)
                 {
                     <tr>
                         <td>@item.NomeCliente</td>
@@ -42,7 +43,7 @@
                         <td>@DateOnly.FromDateTime(@item.DataCadastro)</td>
                         <td><button class="btn-sm btn-warning border-dark" @onclick="(() => Seleciona(item))">Alterar</button></td>
                         <td><button class="btn-sm btn-danger border-dark" @onclick="(() => Confirma(item))">Apaga</button></td>
-                        <td><button class="btn-sm btn-info border-dark" @onclick="@(() => ConsultaCliente(item))">Consulta</button></td>
+                        <td><button class="btn-sm btn-info border-dark" @onclick="(() => Con_Cliente(item))">Consulta</button></td>
                         <td><button class="btn-sm btn-primary border-dark" @onclick="(() => Seleciona(item))">Pedido</button></td>
                     </tr>
                 }
@@ -61,8 +62,6 @@
     </div>
 }
 
-@*<button class="btn-sm btn-secondary" @onclick="@(() => Envia())">Banco de Dados</button>*@
-
 <Mensagens @ref="Mensa" BotaoTrue=@MsgBotton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="(() => ReturnFuncao())"> </Mensagens>
 
 @code
@@ -75,11 +74,11 @@
     public string Titul { get; set; } = string.Empty;
     public string Mostr { get; set; } = "none";
     public string MsgBotton { get; set; } = string.Empty;
-    public bool Sim { get; set; } =false;
+    public bool Sim { get; set; } = false;
 
 
     public List<Cliente>? clientes = null!;
-    public Cliente Objcliente = null!;
+    //   public Cliente Objcliente = null!;
     public int IdCliente { get; set; } = 0;
     public string? NomeCliente { get; set; } = string.Empty;
     public Cliente Cli = new();
@@ -104,47 +103,26 @@
         MsgBotton = "Exclui";
     }
 
-    public async Task Envia()
+    public void Con_Cliente(Cliente cliente)
     {
-        Cliente cli = new Cliente
+        CliService.ClienteId = cliente.ClienteId;
+        CliService.NomeCliente = cliente.NomeCliente;
+        CliService.CpfCliente = cliente.CpfCliente;
+        CliService.CnpjCliente = cliente.CnpjCliente;
+        CliService.NroTelefone = cliente.NroTelefone;
+        CliService.NomeContato = cliente.NomeContato;
+        CliService.DataCadastro = cliente.DataCadastro;
+        CliService.TipoCliente = cliente.TipoCliente;
+        CliService.LimiteCredito = cliente.LimiteCredito;
+
+        Console.WriteLine(cliente.Enderecos.Count);
+
+        CliService.Enderecos = new();
+        foreach (var endereco in cliente.Enderecos)
         {
-            NomeCliente = "Angeliazer Rigon  da Silva",
-            CpfCliente = "0",
-            CnpjCliente = "0",
-            TipoCliente = ETipoCliente.Fisica,
-            NroTelefone = "21967453273",
-            NomeContato = "Yago",
-            LimiteCredito = 25000,
-            Enderecos = new List<Endereco>
-{
-                new Endereco {
-                    NomeRua="Rua Goiás",
-                    Numero = "216",
-                    Bairro = "Mutuá",
-                    Cidade = "São Gonçalo",
-                    Estado = EEstado.DF,
-                    Cep = "24460170",
-                    TipoEnd = ETipoEndereco.Entrega
-                },
-                new Endereco
-                {
-                    NomeRua = "Rua Santos da Cruz",
-                    Numero = "216",
-                    Bairro = "Mutuá",
-                    Cidade = "São Gonçalo",
-                    Estado = EEstado.DF,
-                    Cep = "24460170",
-                    TipoEnd = ETipoEndereco.Faturamento
-                }
-            }
-        };
+            CliService.Enderecos.Add(endereco);
+        }
 
-        var result = await _http.PostAsJsonAsync<Cliente>("/api/v1/clientes", cli);
-    }
-
-    public void ConsultaCliente(Cliente cliente)
-    {
-        _cli = cliente;
         Topag.NavigateTo("/concliente");
     }
 

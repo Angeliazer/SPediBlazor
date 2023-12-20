@@ -1,4 +1,5 @@
 ﻿using LibraryShared.Models;
+using LibraryShared.Models.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Data

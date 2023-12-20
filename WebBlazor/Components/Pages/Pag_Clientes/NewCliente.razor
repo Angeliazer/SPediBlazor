@@ -3,12 +3,13 @@
 @rendermode @(new InteractiveServerRenderMode (prerender:false))
 @inject HttpClient _http
 
-<h5>Novo Cliente</h5>
+<TopBanner Texto="Novo Cliente"></TopBanner>
 
 <div class="card">
-    <EditForm Model="@Cliente">
+    <EditForm Model="@Cliente" OnInvalidSubmit="ErroPreenchimento" OnValidSubmit="ConfirmaSalvar">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
         <div class="card-header">
-            @*<ValidationSummary></ValidationSummary>*@
             <div class="row">
                 <div class="col">
                     <div>
@@ -21,7 +22,6 @@
                     </div>
                 </div>
             </div>
-            <br />
             <div class="row">
                 <div class="col">
                     <div>
@@ -68,9 +68,8 @@
                     </div>
                 </div>
             </div>
-            <hr />
-            <label>---- Endereços ----</label>
-            <br />
+            <label>------------ Endereços ------------</label>
+            <br/>
             @if (!IdEnt)
             {
                 <button class="col-2 btn-sm btn-outline-primary" @onclick="MudaEnt">Entrega</button>
@@ -195,12 +194,22 @@
         </div>
         <div class="card-footer">
             <div>
-                <button class="btn-sm btn-success" @onclick="(() => ConfirmaSalvar())"> Salvar </button>
+                <button type="submit" class="btn-sm btn-success"> Salvar </button>
                 <button class="btn-sm btn-primary" @onclick="Voltar"> Voltar </button>
             </div>
         </div>
     </EditForm>
 </div>
+
+@if (Sim)
+{<div class="container align-content-center">
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <strong>Atenção!</strong> Existem Campos que não foram preenchidos.
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @onclick="Sair"></button>
+        </div>
+    </div>
+}
 
 <Mensagens @ref="Mensa" BotaoTrue=@MsgButton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="(() => ReturnFuncao())"> </Mensagens>
 
@@ -213,6 +222,7 @@
     public string Titul { get; set; } = string.Empty;
     public string Mostr { get; set; } = "none";
     public string MsgButton { get; set; } = string.Empty;
+    public bool Sim { get; set; } = false;
 
     public Cliente Cliente = new();
     public bool IdEnt = false;
@@ -220,6 +230,16 @@
     public bool IdCob = false;
 
     public string DataCadastro = $"{DateTime.Now:dd/MM/yyy}";
+
+    public void ErroPreenchimento()
+    {
+        Sim = true;
+    }
+
+    public void Sair()
+    {
+        Sim = false;
+    }
 
     public async Task ReturnFuncao()
     {

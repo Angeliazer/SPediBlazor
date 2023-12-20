@@ -2,8 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using LibraryShared.Models.Enumeradores;
 
-
-namespace LibraryShared.Models
+namespace LibraryShared.Models.Services
 {
     public class Cliente
     {
@@ -35,7 +34,7 @@ namespace LibraryShared.Models
         public string? NroTelefone { get; set; }
 
         [Display(Name = "Contato")]
-       [Required(ErrorMessage = "O campo {0} é Obrigatório")]
+        [Required(ErrorMessage = "O campo {0} é Obrigatório")]
         [MaxLength(30)]
         public string? NomeContato { get; set; }
 

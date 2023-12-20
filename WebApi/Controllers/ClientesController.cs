@@ -1,4 +1,4 @@
-﻿using LibraryShared.Models;
+﻿using LibraryShared.Models.Services;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Repository;
 
