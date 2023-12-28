@@ -1,4 +1,4 @@
-﻿<div class="container justify-content-center" style="color:white; background-color:darkblue; text-align:center">
+﻿<div class="container justify-content-center" style="border-radius: 3px; color: white; background-color: darkslateblue; height: 40px; display:flex; align-items: center; justify-content: center;">
     <h5>
         <em>
             @Texto
@@ -6,8 +6,7 @@
     </h5>
 </div>
 
-
 @code {
-    [Parameter] public string Texto { get; set; }
+    [Parameter] public string Texto { get; set; } = string.Empty;
 
 }
