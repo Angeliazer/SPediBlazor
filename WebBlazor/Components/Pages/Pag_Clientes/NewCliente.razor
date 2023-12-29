@@ -7,7 +7,7 @@
 <br />
 
 <div class="card">
-    <EditForm Model="@Cliente" OnInvalidSubmit="ErroPreenchimento" OnValidSubmit="ConfirmaSalvar">
+    <EditForm Model="@Cliente" OnInvalidSubmit="(()=>ErroPreenchimento())">
         <DataAnnotationsValidator />
         <ValidationSummary />
         <div class="card-header">
@@ -22,59 +22,69 @@
                         <InputText class="col-4 mx-1" style="border-radius:4px" @bind-Value="@Cliente.NomeContato">Nome do Cliente</InputText>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <div>
-                        <label class="col-2">Tipo Cliente</label>
-
-                        @if ((int)Cliente.TipoCliente == 0)
-                        {
-                            <label class="col-2 mx-2" style="text-align: right">CPF</label>
-                        }
-                        else
-                        {
-                            <label class="col-3 mx-2" style="text-align: right">CNPJ</label>
-                        }
-                        <label class="col-2 mx-0" style="text-align: right">Nro Telefone</label>
-                        <label class="col-2 mx-1" style="text-align: right">Limite de Crédito</label>
-                        <label class="col-2 mx-1" style="text-align: right">Data de Cadastro</label>
-
-                    </div>
-                    <div>
-                        <InputSelect class="col-2 form-select-sm" style="border-radius:1px" @bind-Value="@Cliente.TipoCliente">
-                            @foreach (var opc in Enum.GetValues(typeof(ETipoCliente)))
+                <div class="row">
+                    <div class="col">
+                        <div>
+                            <label class="col-2">Tipo Cliente</label>
+                            @if ((int)Cliente.TipoCliente == 0)
                             {
-                                <option>@opc</option>
+                            <label class="col-2 mx-2" style="text-align: right">CPF</label>
                             }
-                        </InputSelect>
+                            else
+                            {
+                            <label class="col-3 mx-2" style="text-align: right">CNPJ</label>
+                            }
+                            <label class="col-2 mx-0" style="text-align: right">Nro Telefone</label>
+                            <label class="col-2 mx-1" style="text-align: right">Limite de Crédito</label>
+                            <label class="col-2 mx-1" style="text-align: right">Data de Cadastro</label>
 
-                        @if ((int)Cliente.TipoCliente == 0)
-                        {
+                            <InputSelect class="col-2 form-select-sm" style="border-radius:1px" @bind-Value="@Cliente.TipoCliente">
+                                @foreach (var opc in Enum.GetValues(typeof(ETipoCliente)))
+                                {
+                                <option>@opc</option>
+                                }
+                            </InputSelect>
+                            @if ((int)Cliente.TipoCliente == 0)
+                            {
                             <InputText class="col-2 mx-2" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.CpfCliente"></InputText>
-                            Cliente.CnpjCliente = "0";
-                        }
-                        else
-                        {
+                                Cliente.CnpjCliente = "0";
+                            }
+                            else
+                            {
                             <InputText class="col-3 mx-2" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.CnpjCliente"></InputText>
-                            Cliente.CpfCliente = "0";
-                        }
+                                Cliente.CpfCliente = "0";
+                            }
+                            <InputText class="col-2 mx-0" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.NroTelefone"></InputText>
 
-                        <InputText class="col-2 mx-0" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.NroTelefone"></InputText>
+                            <InputNumber class="col-2 mx-1" style="border-radius:4px; text-align:right" @bind-Value="@Cliente.LimiteCredito"></InputNumber>
 
-                        <InputNumber class="col-2 mx-1" style="border-radius:4px; text-align:right" @bind-Value="@Cliente.LimiteCredito"></InputNumber>
+                            <InputText class="col-2 mx-1" style="border-radius:4px; text-align:right; color:darkred " @bind-Value=@DataCadastro disabled="true"></InputText>
 
-                        <InputText class="col-2 mx-1" style="border-radius:4px; text-align:right; color:darkred " @bind-Value=@DataCadastro disabled="true"></InputText>
-
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <label>------------ Endereços ------------</label>
         <div class="card-body">
-            <label style="color:darkred"><em>Entrega</em></label>
-            <button class="btn-sm btn-danger" @onclick="LimpaEnt"><i img="trash"></i>Limpa</button>
             <div class="row">
+                @if (EdEnt==false)
+                {
+                <div class="row">
+                    <div class="col-2">
+                        <button class="btn-sm btn-primary" @onclick="MudaEnt">Entrega</button>
+                        <button class="btn-sm btn-danger invisible">Exclui</button>
+                    </div>
+                </div>
+                }
+                else
+                {
+                <div class="row">
+                    <div class="col-2">
+                        <button class="btn-sm btn-primary" disabled @onclick="MudaEnt">Entrega</button>
+                        <button class="btn-sm btn-danger visibled" @onclick="LimpaEnt">Exclui</button>
+                    </div>
+                </div>
                 <div class="col">
                     <div>
                         <label class="col-5">Nome da Rua</label>
@@ -85,100 +95,23 @@
                         <label class="col-1 mx-1">Cep</label>
                     </div>
                     <InputText class="col-5 mx-0" style="border-radius: 4px" @bind-Value="@Cliente.Enderecos[0].NomeRua"></InputText>
-
                     <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Numero"></InputText>
-
                     <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Bairro"></InputText>
-
                     <InputText class="col-2 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Cidade"></InputText>
-
                     <InputSelect class="col-1 form-select-sm" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Estado">
                         @foreach (var opc_est in Enum.GetValues(typeof(EEstado)))
-                        {
-                            <option>@opc_est</option>
-                        }
+                            {
+                        <option>@opc_est</option>
+                            }
                     </InputSelect>
-                    <InputText class="col-1 mx-1" style="border-radius:1px" @bind-Value="@Cliente.Enderecos[0].Cep"></InputText>
+                    <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Cep"></InputText>
                 </div>
-            </div>
-            <br />
-            @{
-                if (!EdEnt)
-                {
-                    <button class="btn-sm btn-primary" @onclick="MudaFat">Faturamento</button>
-                    <button class="btn-sm btn-danger" @
                 }
-else
-                {
-
-                }
-            }
-
-            <label style="color:darkred"><em>Faturamento</em></label>
-            <button class="btn-sm btn-danger" @onclick="LimpaFat"><i img="trash"></i>Limpa</button>
-            <div class="row">
-                <div class="col">
-                    <div>
-                        <label class="col-5">Nome da Rua</label>
-                        <label class="col-1 mx-1">Nro</label>
-                        <label class="col-1 mx-1">Bairro</label>
-                        <label class="col-2 mx-1">Cidade</label>
-                        <label class="col-1 mx-1">Estado</label>
-                        <label class="col-1 mx-1">Cep</label>
-
-                    </div>
-                    <InputText class="col-5 mx-0" style="border-radius: 4px" @bind-Value="@Cliente.Enderecos[1].NomeRua"></InputText>
-
-                    <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[1].Numero"></InputText>
-
-                    <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[1].Bairro"></InputText>
-
-                    <InputText class="col-2 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[1].Cidade"></InputText>
-
-                    <InputSelect class="col-1 form-select-sm" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[1].Estado">
-                        @foreach (var opc_est in Enum.GetValues(typeof(EEstado)))
-                        {
-                            <option>@opc_est</option>
-                        }
-                    </InputSelect>
-                    <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[1].Cep"></InputText>
-                </div>
-            </div>
-            <br />
-
-            <label style="color:darkred"><em>Cobranca</em></label>
-            <button class="btn-sm btn-danger" @onclick="LimpaCob"><i img="trash"></i>Limpa</button>
-            <div class="row">
-                <div class="col">
-                    <div>
-                        <label class="col-5">Nome da Rua</label>
-                        <label class="col-1 mx-1">Nro</label>
-                        <label class="col-1 mx-1">Bairro</label>
-                        <label class="col-2 mx-1">Cidade</label>
-                        <label class="col-1 mx-1">Estado</label>
-                        <label class="col-1 mx-1">Cep</label>
-                    </div>
-                    <InputText class="col-5 mx-0" style="border-radius: 4px" @bind-Value="@Cliente.Enderecos[2].NomeRua"></InputText>
-
-                    <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[2].Numero"></InputText>
-
-                    <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[2].Bairro"></InputText>
-
-                    <InputText class="col-2 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[2].Cidade"></InputText>
-
-                    <InputSelect class="col-1 form-select-sm" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[2].Estado">
-                        @foreach (var opc_est in Enum.GetValues(typeof(EEstado)))
-                        {
-                            <option>@opc_est</option>
-                        }
-                    </InputSelect>
-                    <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[2].Cep"></InputText>
-                </div>
             </div>
         </div>
         <div class="card-footer">
             <div>
-                <button type="submit" class="btn-sm btn-success"> Salvar </button>
+                <button type="submit" class="btn-sm btn-success" @onclick="ConfirmaSalvar"> Salvar </button>
                 <button class="btn-sm btn-primary" @onclick="Voltar"> Voltar </button>
             </div>
         </div>
@@ -186,19 +119,20 @@ else
 </div>
 
 @if (Sim)
-{<div class="container align-content-center">
-        <div class="alert alert-danger alert-dismissible" role="alert">
-            <strong>Atenção!</strong> Existem Campos que não foram preenchidos.
+{
+<div class="container align-content-center">
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <strong>Atenção!</strong> Existem Campos que não foram preenchidos.
 
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @onclick="Sair"></button>
-        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @onclick="Sair"></button>
     </div>
+</div>
 }
 
 <Mensagens @ref="Mensa" BotaoTrue=@MsgButton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="(() => ReturnFuncao())"> </Mensagens>
 
 @code
- {
+{
     Mensagens? Mensa = null;
 
     public bool Confirm { get; set; } = false;
@@ -212,7 +146,6 @@ else
     public bool EdEnt = false;
     public bool EdFat = false;
     public bool EdCob = false;
-    private bool renderizar = true;
 
     public string DataCadastro = $"{DateTime.Now:dd/MM/yyy}";
 
@@ -247,20 +180,16 @@ else
         Cliente.Enderecos[2].TipoEnd = ETipoEndereco.Cobranca;
     }
 
-    protected override bool ShouldRender()
-    {
-        return renderizar;
-    }
-
     public void LimpaEnt()
     {
         var x = Cliente.Enderecos.FindIndex(x => x.TipoEnd == ETipoEndereco.Entrega);
         Cliente.Enderecos[x].NomeRua = "";
-        Cliente.Enderecos[x].Numero = "";
-        Cliente.Enderecos[x].Estado = 0;
-        Cliente.Enderecos[x].Cep = "";
-        Cliente.Enderecos[x].Cidade = "";
-        Cliente.Enderecos[x].Bairro = "";
+        EdEnt = false;
+    }
+
+    public void MudaEnt()
+    {
+        EdEnt = !EdEnt;
     }
 
     public void LimpaFat()
@@ -288,15 +217,26 @@ else
 
     public void ConfirmaSalvar()
     {
+        if (EdEnt == false)
+        {
+            Cliente.Enderecos.RemoveAt(0);
+        }
+        if (EdFat == false)
+        {
+            Cliente.Enderecos.RemoveAt(1);
+        }
+        if (EdCob == false)
+        {
+            Cliente.Enderecos.RemoveAt(2);
+        }
+
         MsgButton = "Confirma";
 
         Mensag = $"Cliente: {Cliente.NomeCliente}";
         Titul = "Confirma Inclusão";
         Mostr = "block";
 
-        //renderizar = false;
 
-        Cliente.Enderecos.RemoveAll(x => x.NomeRua == null);
         Cliente.DataCadastro = Convert.ToDateTime(DataCadastro);
 
     }

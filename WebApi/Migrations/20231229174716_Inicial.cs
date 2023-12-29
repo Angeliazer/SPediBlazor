@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace WebApi.Migrations
 {
     /// <inheritdoc />
-    public partial class Rigon1 : Migration
+    public partial class Inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,13 +17,14 @@ namespace WebApi.Migrations
                 {
                     ClienteId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NomeCliente = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    CpfCliente = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: true),
-                    CnpjCliente = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: true),
+                    NomeCliente = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CpfCliente = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    CnpjCliente = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
                     TipoCliente = table.Column<int>(type: "int", nullable: false),
-                    NroTelefone = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: true),
-                    NomeContato = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
-                    LimiteCredito = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    NroTelefone = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    NomeContato = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    LimiteCredito = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    DataCadastro = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
