@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using LibraryShared.Models.Enumeradores;
 
-namespace LibraryShared.Models.Services
+namespace LibraryShared.Models
 {
     public class Cliente
     {
@@ -15,12 +15,11 @@ namespace LibraryShared.Models.Services
         public string? NomeCliente { get; set; }
 
         [Display(Name = "Cpf do Cliente")]
-        [Required(ErrorMessage = "O campo {0} é Obrigatório")]
         [MaxLength(11)]
         public string? CpfCliente { get; set; }
 
         [Display(Name = "Cnpj do Cliente")]
-        [Required(ErrorMessage = "O campo {0} é Obrigatório")]
+        
         [MaxLength(14)]
         public string? CnpjCliente { get; set; }
 
@@ -47,6 +46,7 @@ namespace LibraryShared.Models.Services
         [Required(ErrorMessage = "O campo {0} é Obrigatório")]
         public DateTime DataCadastro { get; set; }
 
-        public List<Endereco> Enderecos { get; set; } = [];
+        [Required(ErrorMessage = "O campo {0} é Obrigatório")]
+        public Endereco? Endereco { get; set; } = new();
     }
 }

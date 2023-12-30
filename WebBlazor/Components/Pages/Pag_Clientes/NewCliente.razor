@@ -7,7 +7,7 @@
 <br />
 
 <div class="card">
-    <EditForm Model="@Cliente" OnInvalidSubmit="(()=>ErroPreenchimento())">
+    <EditForm Model="@Cliente" OnInvalidSubmit="ErroPreenchimento">
         <DataAnnotationsValidator />
         <ValidationSummary />
         <div class="card-header">
@@ -28,11 +28,11 @@
                             <label class="col-2">Tipo Cliente</label>
                             @if ((int)Cliente.TipoCliente == 0)
                             {
-                            <label class="col-2 mx-2" style="text-align: right">CPF</label>
+                                <label class="col-2 mx-2" style="text-align: right">CPF</label>
                             }
                             else
                             {
-                            <label class="col-3 mx-2" style="text-align: right">CNPJ</label>
+                                <label class="col-3 mx-2" style="text-align: right">CNPJ</label>
                             }
                             <label class="col-2 mx-0" style="text-align: right">Nro Telefone</label>
                             <label class="col-2 mx-1" style="text-align: right">Limite de Crédito</label>
@@ -41,18 +41,18 @@
                             <InputSelect class="col-2 form-select-sm" style="border-radius:1px" @bind-Value="@Cliente.TipoCliente">
                                 @foreach (var opc in Enum.GetValues(typeof(ETipoCliente)))
                                 {
-                                <option>@opc</option>
+                                    <option>@opc</option>
                                 }
                             </InputSelect>
                             @if ((int)Cliente.TipoCliente == 0)
                             {
-                            <InputText class="col-2 mx-2" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.CpfCliente"></InputText>
-                                Cliente.CnpjCliente = "0";
+                                <InputText class="col-2 mx-2" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.CpfCliente"></InputText>
+                                Cliente.CnpjCliente = null;
                             }
                             else
                             {
-                            <InputText class="col-3 mx-2" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.CnpjCliente"></InputText>
-                                Cliente.CpfCliente = "0";
+                                <InputText class="col-3 mx-2" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.CnpjCliente"></InputText>
+                                Cliente.CpfCliente = null;
                             }
                             <InputText class="col-2 mx-0" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.NroTelefone"></InputText>
 
@@ -64,27 +64,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <label>------------ Endereços ------------</label>
-        <div class="card-body">
             <div class="row">
-                @if (EdEnt==false)
-                {
-                <div class="row">
-                    <div class="col-2">
-                        <button class="btn-sm btn-primary" @onclick="MudaEnt">Entrega</button>
-                        <button class="btn-sm btn-danger invisible">Exclui</button>
-                    </div>
-                </div>
-                }
-                else
-                {
-                <div class="row">
-                    <div class="col-2">
-                        <button class="btn-sm btn-primary" disabled @onclick="MudaEnt">Entrega</button>
-                        <button class="btn-sm btn-danger visibled" @onclick="LimpaEnt">Exclui</button>
-                    </div>
-                </div>
+                <h5 style="color:darkred"><em>Endereço</em></h5>
                 <div class="col">
                     <div>
                         <label class="col-5">Nome da Rua</label>
@@ -94,39 +75,41 @@
                         <label class="col-1 mx-1">Estado</label>
                         <label class="col-1 mx-1">Cep</label>
                     </div>
-                    <InputText class="col-5 mx-0" style="border-radius: 4px" @bind-Value="@Cliente.Enderecos[0].NomeRua"></InputText>
-                    <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Numero"></InputText>
-                    <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Bairro"></InputText>
-                    <InputText class="col-2 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Cidade"></InputText>
-                    <InputSelect class="col-1 form-select-sm" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Estado">
+                    <InputText class="col-5 mx-0" style="border-radius: 4px" @bind-Value="@Cliente.Endereco.NomeRua"></InputText>
+                    <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Endereco.Numero"></InputText>
+                    <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Endereco.Bairro"></InputText>
+                    <InputText class="col-2 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Endereco.Cidade"></InputText>
+                    <InputSelect class="col-1 form-select-sm" style="border-radius:4px" @bind-Value="@Cliente.Endereco.Estado">
                         @foreach (var opc_est in Enum.GetValues(typeof(EEstado)))
-                            {
-                        <option>@opc_est</option>
-                            }
+                        {
+                            <option>@opc_est</option>
+                        }
                     </InputSelect>
-                    <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Enderecos[0].Cep"></InputText>
+                    <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Endereco.Cep"></InputText>
                 </div>
-                }
             </div>
         </div>
         <div class="card-footer">
-            <div>
-                <button type="submit" class="btn-sm btn-success" @onclick="ConfirmaSalvar"> Salvar </button>
-                <button class="btn-sm btn-primary" @onclick="Voltar"> Voltar </button>
+            <div class="row">
+                <div class="col">
+                    <button class="col-2 btn-sm btn-success" @onclick="HabilitarSalvar"> Salvar </button>
+                    <button class="col-2 btn-sm btn-primary" @onclick="Voltar"> Voltar </button>
+                </div>
             </div>
         </div>
+
     </EditForm>
 </div>
 
 @if (Sim)
 {
-<div class="container align-content-center">
-    <div class="alert alert-danger alert-dismissible" role="alert">
-        <strong>Atenção!</strong> Existem Campos que não foram preenchidos.
+    <div class="container align-content-center">
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <strong>Atenção!</strong> Existem Campos que não foram preenchidos.
 
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @onclick="Sair"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @onclick="Sair"></button>
+        </div>
     </div>
-</div>
 }
 
 <Mensagens @ref="Mensa" BotaoTrue=@MsgButton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="(() => ReturnFuncao())"> </Mensagens>
@@ -143,10 +126,7 @@
     public bool Sim { get; set; } = false;
 
     public Cliente Cliente = new();
-    public bool EdEnt = false;
-    public bool EdFat = false;
-    public bool EdCob = false;
-
+    private bool EnabledSalvar = false;
     public string DataCadastro = $"{DateTime.Now:dd/MM/yyy}";
 
     public void ErroPreenchimento()
@@ -169,66 +149,43 @@
         Mostr = "none";
     }
 
-    protected override void OnInitialized()
+    private void HabilitarSalvar()
     {
-        for (int i = 0; i < 3; i++)
+        EnabledSalvar = (Cliente.NomeCliente != null && Cliente.NomeContato != null && Cliente.NroTelefone != null);
+     
+        if (Cliente.TipoCliente == ETipoCliente.Fisica && Cliente.CpfCliente == null)
         {
-            Cliente.Enderecos.Add(new Endereco());
+            EnabledSalvar = false;
         }
-        Cliente.Enderecos[0].TipoEnd = ETipoEndereco.Entrega;
-        Cliente.Enderecos[1].TipoEnd = ETipoEndereco.Faturamento;
-        Cliente.Enderecos[2].TipoEnd = ETipoEndereco.Cobranca;
-    }
+        else
+        {
+            if (Cliente.TipoCliente == ETipoCliente.Fisica && Cliente.CpfCliente != null)
+            {
+                EnabledSalvar = true;
+            }
+        }
 
-    public void LimpaEnt()
-    {
-        var x = Cliente.Enderecos.FindIndex(x => x.TipoEnd == ETipoEndereco.Entrega);
-        Cliente.Enderecos[x].NomeRua = "";
-        EdEnt = false;
-    }
+        if (Cliente.TipoCliente == ETipoCliente.Juridica && Cliente.CnpjCliente == null)
+        {
+            EnabledSalvar = false;
+        }
+        else
+        {
+            if (Cliente.TipoCliente == ETipoCliente.Juridica && Cliente.CnpjCliente != null)
+            {
+                EnabledSalvar = true;
+            }
+        }
 
-    public void MudaEnt()
-    {
-        EdEnt = !EdEnt;
-    }
+        EnabledSalvar = (Cliente.Endereco.NomeRua != null && Cliente.Endereco.Numero != null && Cliente.Endereco.Bairro != null &&
+            Cliente.Endereco.Cidade != null && Cliente.Endereco.Cep != null);
 
-    public void LimpaFat()
-    {
-        var y = Cliente.Enderecos.FindIndex(y => y.TipoEnd == ETipoEndereco.Faturamento);
-        Cliente.Enderecos[y].NomeRua = "";
-        Cliente.Enderecos[y].Numero = "";
-        Cliente.Enderecos[y].Estado = 0;
-        Cliente.Enderecos[y].Cep = "";
-        Cliente.Enderecos[y].Cidade = "";
-        Cliente.Enderecos[y].Bairro = "";
-
-    }
-
-    public void LimpaCob()
-    {
-        var z = Cliente.Enderecos.FindIndex(z => z.TipoEnd == ETipoEndereco.Cobranca);
-        Cliente.Enderecos[z].NomeRua = "";
-        Cliente.Enderecos[z].Numero = "";
-        Cliente.Enderecos[z].Estado = 0;
-        Cliente.Enderecos[z].Cep = "";
-        Cliente.Enderecos[z].Cidade = "";
-        Cliente.Enderecos[z].Bairro = "";
+        if (EnabledSalvar) ConfirmaSalvar();
     }
 
     public void ConfirmaSalvar()
     {
-        if (EdEnt == false)
-        {
-            Cliente.Enderecos.RemoveAt(0);
-        }
-        if (EdFat == false)
-        {
-            Cliente.Enderecos.RemoveAt(1);
-        }
-        if (EdCob == false)
-        {
-            Cliente.Enderecos.RemoveAt(2);
-        }
+        Console.WriteLine(Cliente);
 
         MsgButton = "Confirma";
 
@@ -236,9 +193,7 @@
         Titul = "Confirma Inclusão";
         Mostr = "block";
 
-
         Cliente.DataCadastro = Convert.ToDateTime(DataCadastro);
-
     }
 
     public void Voltar()
@@ -248,7 +203,8 @@
 
     public async Task Salvar()
     {
-        HttpResponseMessage cliente = await _http.PostAsJsonAsync<Cliente>("/api/v1/clientes", Cliente);
+        HttpResponseMessage cliente = await _http.PostAsJsonAsync<Cliente>
+    ("/api/v1/clientes", Cliente);
 
         ToPag.NavigateTo("/clientes");
     }

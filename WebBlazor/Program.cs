@@ -1,5 +1,5 @@
 using WebBlazor.Components;
-using LibraryShared.Models.Services;
+using LibraryShared.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +9,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped<Cliente>();
 
-builder.Services.AddScoped<HttpClient>(x => 
+builder.Services.AddScoped<HttpClient>(x =>
    {
        return new HttpClient
        { BaseAddress = new Uri(@"https://localhost:7198") };

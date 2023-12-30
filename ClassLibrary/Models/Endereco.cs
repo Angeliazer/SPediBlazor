@@ -8,8 +8,6 @@ namespace LibraryShared.Models
         [Key]
         public int EnderecoId { get; set; }
 
-        public ETipoEndereco TipoEnd { get; set; }
-
         [MaxLength(100)]
         [Required(ErrorMessage = "O campo {0} é Obrigatório")]
         [Display(Name = "Nome da Rua")]

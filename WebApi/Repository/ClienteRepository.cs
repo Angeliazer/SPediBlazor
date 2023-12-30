@@ -1,4 +1,4 @@
-﻿using LibraryShared.Models.Services;
+﻿using LibraryShared.Models;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
 
@@ -38,7 +38,7 @@ namespace WebApi.Repository
         public async Task<Cliente?> GetCliente(int id)
         {
             var cliente = await _context.Clientes
-                .Include("Enderecos")
+                .Include("Endereco")
                 .FirstOrDefaultAsync(x => x.ClienteId == id);
             if (cliente != null)
             {
@@ -53,7 +53,7 @@ namespace WebApi.Repository
         public async Task<List<Cliente>?> GetClientes()
         {
             var clientes = await _context.Clientes
-             .Include(p => p.Enderecos)
+             .Include(p => p.Endereco)
              .OrderBy(x => x.NomeCliente)
              .AsNoTracking()
              .ToListAsync();

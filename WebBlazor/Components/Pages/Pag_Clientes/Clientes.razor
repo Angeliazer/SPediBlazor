@@ -78,7 +78,6 @@
 
 
     public List<Cliente>? clientes = null!;
-    //   public Cliente Objcliente = null!;
     public int IdCliente { get; set; } = 0;
     public string? NomeCliente { get; set; } = string.Empty;
     public Cliente Cli = new();
@@ -115,13 +114,8 @@
         CliService.TipoCliente = cliente.TipoCliente;
         CliService.LimiteCredito = cliente.LimiteCredito;
 
-        Console.WriteLine(cliente.Enderecos.Count);
 
-        CliService.Enderecos = new();
-        foreach (var endereco in cliente.Enderecos)
-        {
-            CliService.Enderecos.Add(endereco);
-        }
+        CliService.Endereco = new();
 
         Topag.NavigateTo("/concliente");
     }
