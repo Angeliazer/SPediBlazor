@@ -26,7 +26,7 @@
                     <div>
                         <label class="col-2">Tipo Cliente</label>
 
-                        @if ((int)CliService.TipoCliente == 0)
+                        @if ((int)CliService.TipoCliente == 1)
                         {
                             <label class="col-2 mx-2" style="text-align: right">CPF</label>
                         }
@@ -44,26 +44,44 @@
 
                         @if ((int)CliService.TipoCliente == 0)
                         {
-                            <InputText class="col-2 mx-2" style="border-radius: 4px; text-align: right" @bind-Value="@CliService.CpfCliente" disabled="true"></InputText>
+                            <InputText class="col-2 mx-2" style="border-radius: 3px; text-align: right" @bind-Value="@CliService.CpfCliente" disabled="true"></InputText>
                         }
                         else
                         {
-                            <InputText class="col-3 mx-2" style="border-radius: 4px; text-align: right" @bind-Value="@CliService.CnpjCliente" disabled="true"></InputText>
+                            <InputText class="col-3 mx-2" style="border-radius: 3px; text-align: right" @bind-Value="@CliService.CnpjCliente" disabled="true"></InputText>
                         }
 
-                        <InputText class="col-2 mx-0" style="border-radius: 4px; text-align: right" @bind-Value="@CliService.NroTelefone" disabled="true"></InputText>
+                        <InputText class="col-2 mx-0" style="border-radius: 3px; text-align: right" @bind-Value="@CliService.NroTelefone" disabled="true"></InputText>
 
-                        <InputNumber class="col-2 mx-1" style="border-radius:4px; text-align:right" @bind-Value="@CliService.LimiteCredito" disabled="true"></InputNumber>
+                        <InputNumber class="col-2 mx-1" style="border-radius:3px; text-align:right" @bind-Value="@CliService.LimiteCredito" disabled="true"></InputNumber>
 
-                        <InputText class="col-2 mx-1" style="border-radius:4px; text-align:right; color:darkred" @bind-Value="@DataCadastro" disabled="true"></InputText>
+                        <InputText class="col-2 mx-1" style="border-radius:3px; text-align:right; color:darkred" @bind-Value="@DataCadastro" disabled="true"></InputText>
 
                     </div>
                 </div>
             </div>
             <hr />
-            <label>--------- Endereços ---------</label>
+            <div class="row">
+                <h6 style="color:darkred"><em>Endereço</em></h6>
+                <div class="col">
+                    <div>
+                        <label class="col-5">Nome da Rua</label>
+                        <label class="col-1 mx-1">Nro</label>
+                        <label class="col-1 mx-1">Bairro</label>
+                        <label class="col-2 mx-1">Cidade</label>
+                        <label class="col-1 mx-1">Estado</label>
+                        <label class="col-1 mx-1">Cep</label>
+                    </div>
+                    <InputText class="col-5 mx-0" style="border-radius:3px" @bind-Value="@CliService.Endereco.NomeRua" disabled="true"></InputText>
+                    <InputText class="col-1 mx-1" style="border-radius:3px" @bind-Value="@CliService.Endereco.Numero" disabled="true"></InputText>
+                    <InputText class="col-1 mx-1" style="border-radius:3px" @bind-Value="@CliService.Endereco.Bairro" disabled="true"></InputText>
+                    <InputText class="col-2 mx-1" style="border-radius:3px" @bind-Value="@CliService.Endereco.Cidade" disabled="true"></InputText>
+                    <InputText class="col-1 mx-1" style="border-radius:3px" @bind-Value="@EstadoCliente" disabled="true"></InputText>
+                    <InputText class="col-1 mx-1" style="border-radius:3px" @bind-Value="@CliService.Endereco.Cep" disabled="true"></InputText>
+                </div>
+            </div>
 
-            @*<ListaEnderecos></ListaEnderecos>*@
+
 
         </div>
     </EditForm>
@@ -73,11 +91,13 @@
 {
     private string DataCadastro = null!;
     private string TipoCliente = null!;
+    private string EstadoCliente = null!;
 
     protected override void OnInitialized()
     {
         DataCadastro = DateOnly.FromDateTime(CliService.DataCadastro).ToString();
         TipoCliente = CliService.TipoCliente.ToString();
+        EstadoCliente = CliService.Endereco.Estado.ToString();
     }
 }
 

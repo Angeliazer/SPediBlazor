@@ -24,7 +24,8 @@ namespace LibraryShared.Models
         public string? CnpjCliente { get; set; }
 
         [Display(Name = "Tipo de Cliente")]
-        [Required(ErrorMessage = "O campo {0} é Obrigatório")]
+
+        [Range(0,2, ErrorMessage = "O Campo é Obrigatório e vale Física")] 
         public ETipoCliente TipoCliente { get; set; }
 
         [Display(Name = "Telefone")]

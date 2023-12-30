@@ -9,63 +9,55 @@
 <div class="card">
     <EditForm Model="@Cliente" OnInvalidSubmit="ErroPreenchimento">
         <DataAnnotationsValidator />
-        <ValidationSummary />
         <div class="card-header">
             <div class="row">
                 <div class="col">
                     <div>
-                        <label class="col-7">Nome do Cliente</label>
-                        <label class="col-4 mx-1">Nome do Contato</label>
-                    </div>
-                    <div>
-                        <InputText class="col-7" style="border-radius:4px" @bind-Value="@Cliente.NomeCliente">Nome do Cliente</InputText>
-                        <InputText class="col-4 mx-1" style="border-radius:4px" @bind-Value="@Cliente.NomeContato">Nome do Cliente</InputText>
+                        <InputText class="col-7" style="font-style:italic;border-radius:3px" @bind-Value="@Cliente.NomeCliente" placeholder="Nome do Cliente">Nome do Cliente</InputText>
+                        <InputText class="col-4 mx-1" style="font-style:italic;border-radius:3px" @bind-Value="@Cliente.NomeContato" placeholder="Nome do Contato">Nome do Cliente</InputText>
                     </div>
                 </div>
+                <p></p>
                 <div class="row">
                     <div class="col">
                         <div>
-                            <label class="col-2">Tipo Cliente</label>
-                            @if ((int)Cliente.TipoCliente == 0)
-                            {
-                                <label class="col-2 mx-2" style="text-align: right">CPF</label>
-                            }
-                            else
-                            {
-                                <label class="col-3 mx-2" style="text-align: right">CNPJ</label>
-                            }
-                            <label class="col-2 mx-0" style="text-align: right">Nro Telefone</label>
-                            <label class="col-2 mx-1" style="text-align: right">Limite de Crédito</label>
-                            <label class="col-2 mx-1" style="text-align: right">Data de Cadastro</label>
-
-                            <InputSelect class="col-2 form-select-sm" style="border-radius:1px" @bind-Value="@Cliente.TipoCliente">
+                            <InputSelect class="col-2 form-select-sm" style="font-style: italic; border-radius: 1px" @bind-Value="@Cliente.TipoCliente">
                                 @foreach (var opc in Enum.GetValues(typeof(ETipoCliente)))
                                 {
                                     <option>@opc</option>
                                 }
                             </InputSelect>
                             @if ((int)Cliente.TipoCliente == 0)
+                            {<InputText class="col-2 mx-2" style="font-style: italic; border-radius: 3px; text-align: right"
+                                        @bind-Value="@Cliente.CpfCliente" placeholder="Digite o nro CPF/CNPJ"></InputText>
+                            }
+                            else
+                          if ((int)Cliente.TipoCliente == 1)
                             {
-                                <InputText class="col-2 mx-2" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.CpfCliente"></InputText>
+                                <InputText class="col-2 mx-2" style="font-style: italic; border-radius: 3px; text-align: right"
+                                           @bind-Value="@Cliente.CpfCliente" placeholder="Digite o nro CPF"></InputText>
                                 Cliente.CnpjCliente = null;
                             }
                             else
+                          if ((int)Cliente.TipoCliente == 2)
                             {
-                                <InputText class="col-3 mx-2" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.CnpjCliente"></InputText>
+                                <InputText class="col-3 mx-2" style="font-style: italic; border-radius: 3px; text-align: right"
+                                           @bind-Value="@Cliente.CnpjCliente" placeholder="Digite o nro CNPJ"></InputText>
                                 Cliente.CpfCliente = null;
                             }
-                            <InputText class="col-2 mx-0" style="border-radius: 4px; text-align: right" @bind-Value="@Cliente.NroTelefone"></InputText>
-
-                            <InputNumber class="col-2 mx-1" style="border-radius:4px; text-align:right" @bind-Value="@Cliente.LimiteCredito"></InputNumber>
-
-                            <InputText class="col-2 mx-1" style="border-radius:4px; text-align:right; color:darkred " @bind-Value=@DataCadastro disabled="true"></InputText>
-
+                            <InputText class="col-2 mx-0" style="font-style:italic; border-radius: 3px; text-align: right"
+                                       @bind-Value="@Cliente.NroTelefone" placeholder="Digite o nro Telefone"></InputText>
+                            <InputNumber class="col-2 mx-1" style="font-style:italic; border-radius: 3px; text-align: right"
+                                         @bind-Value="@Cliente.LimiteCredito" placeholder="Digite o Limite de Crédito"></InputNumber>
+                            <InputText class="col-2 mx-0" style="font-style:italic; border-radius: 3px; text-align: right; color: darkred "
+                                       @bind-Value=@DataCadastro disabled="true"></InputText>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <h5 style="color:darkred"><em>Endereço</em></h5>
+                <p></p>
+                <h6 style="color:darkred"><em>Endereço</em></h6>
                 <div class="col">
                     <div>
                         <label class="col-5">Nome da Rua</label>
@@ -75,25 +67,25 @@
                         <label class="col-1 mx-1">Estado</label>
                         <label class="col-1 mx-1">Cep</label>
                     </div>
-                    <InputText class="col-5 mx-0" style="border-radius: 4px" @bind-Value="@Cliente.Endereco.NomeRua"></InputText>
-                    <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Endereco.Numero"></InputText>
-                    <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Endereco.Bairro"></InputText>
-                    <InputText class="col-2 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Endereco.Cidade"></InputText>
-                    <InputSelect class="col-1 form-select-sm" style="border-radius:4px" @bind-Value="@Cliente.Endereco.Estado">
+                    <InputText class="col-5 mx-0" style="border-radius:3px" @bind-Value="@Cliente.Endereco.NomeRua"></InputText>
+                    <InputText class="col-1 mx-1" style="border-radius:3px" @bind-Value="@Cliente.Endereco.Numero"></InputText>
+                    <InputText class="col-1 mx-1" style="border-radius:3px" @bind-Value="@Cliente.Endereco.Bairro"></InputText>
+                    <InputText class="col-2 mx-1" style="border-radius:3px" @bind-Value="@Cliente.Endereco.Cidade"></InputText>
+                    <InputSelect class="col-1 form-select-sm" style="border-radius:3px" @bind-Value="@Cliente.Endereco.Estado">
                         @foreach (var opc_est in Enum.GetValues(typeof(EEstado)))
                         {
                             <option>@opc_est</option>
                         }
                     </InputSelect>
-                    <InputText class="col-1 mx-1" style="border-radius:4px" @bind-Value="@Cliente.Endereco.Cep"></InputText>
+                    <InputText class="col-1 mx-1" style="border-radius:3px" @bind-Value="@Cliente.Endereco.Cep"></InputText>
                 </div>
             </div>
         </div>
         <div class="card-footer">
             <div class="row">
                 <div class="col">
-                    <button class="col-2 btn-sm btn-success" @onclick="HabilitarSalvar"> Salvar </button>
-                    <button class="col-2 btn-sm btn-primary" @onclick="Voltar"> Voltar </button>
+                    <button class="col-1 btn-sm btn-success" @onclick="HabilitarSalvar"> Salvar </button>
+                    <button class="col-1 btn-sm btn-primary" @onclick="Voltar"> Voltar </button>
                 </div>
             </div>
         </div>
@@ -103,7 +95,8 @@
 
 @if (Sim)
 {
-    <div class="container align-content-center">
+    <p></p>
+    <div class="container">
         <div class="alert alert-danger alert-dismissible" role="alert">
             <strong>Atenção!</strong> Existem Campos que não foram preenchidos.
 
@@ -152,7 +145,7 @@
     private void HabilitarSalvar()
     {
         EnabledSalvar = (Cliente.NomeCliente != null && Cliente.NomeContato != null && Cliente.NroTelefone != null);
-     
+
         if (Cliente.TipoCliente == ETipoCliente.Fisica && Cliente.CpfCliente == null)
         {
             EnabledSalvar = false;
@@ -180,6 +173,8 @@
         EnabledSalvar = (Cliente.Endereco.NomeRua != null && Cliente.Endereco.Numero != null && Cliente.Endereco.Bairro != null &&
             Cliente.Endereco.Cidade != null && Cliente.Endereco.Cep != null);
 
+        Sim = !EnabledSalvar;
+
         if (EnabledSalvar) ConfirmaSalvar();
     }
 
@@ -203,8 +198,7 @@
 
     public async Task Salvar()
     {
-        HttpResponseMessage cliente = await _http.PostAsJsonAsync<Cliente>
-    ("/api/v1/clientes", Cliente);
+        HttpResponseMessage cliente = await _http.PostAsJsonAsync<Cliente>("/api/v1/clientes", Cliente);
 
         ToPag.NavigateTo("/clientes");
     }
