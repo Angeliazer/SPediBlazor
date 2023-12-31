@@ -28,18 +28,19 @@
                                 }
                             </InputSelect>
                             @if ((int)Cliente.TipoCliente == 0)
-                            {<InputText class="col-2 mx-2" style="font-style: italic; border-radius: 3px; text-align: right"
-                                        @bind-Value="@Cliente.CpfCliente" placeholder="Digite o nro CPF/CNPJ"></InputText>
+                            {
+                                <InputText class="col-2 mx-2" style="font-style: italic; border-radius: 3px; text-align: right"
+                                           @bind-Value="@Cliente.CpfCliente" placeholder="Digite o nro CPF/CNPJ"></InputText>
                             }
                             else
-                          if ((int)Cliente.TipoCliente == 1)
+                             if ((int)Cliente.TipoCliente == 1)
                             {
                                 <InputText class="col-2 mx-2" style="font-style: italic; border-radius: 3px; text-align: right"
                                            @bind-Value="@Cliente.CpfCliente" placeholder="Digite o nro CPF"></InputText>
                                 Cliente.CnpjCliente = null;
                             }
                             else
-                          if ((int)Cliente.TipoCliente == 2)
+                               if ((int)Cliente.TipoCliente == 2)
                             {
                                 <InputText class="col-3 mx-2" style="font-style: italic; border-radius: 3px; text-align: right"
                                            @bind-Value="@Cliente.CnpjCliente" placeholder="Digite o nro CNPJ"></InputText>
@@ -100,7 +101,11 @@
         <div class="alert alert-danger alert-dismissible" role="alert">
             <strong>Atenção!</strong> Existem Campos que não foram preenchidos.
 
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @onclick="Sair"></button>
+            <button class="btn-sm btn-close" data-bs-dismiss="alert" aria-label="Close" @onclick="Sair"></button>
+
+            @*class="btn-sm btn-close" data-bs-dimiss="modal"*@
+
+
         </div>
     </div>
 }
@@ -146,32 +151,45 @@
     {
         EnabledSalvar = (Cliente.NomeCliente != null && Cliente.NomeContato != null && Cliente.NroTelefone != null);
 
-        if (Cliente.TipoCliente == ETipoCliente.Fisica && Cliente.CpfCliente == null)
+        if (Cliente.TipoCliente != ETipoCliente.TipoCliente)
         {
-            EnabledSalvar = false;
-        }
-        else
-        {
-            if (Cliente.TipoCliente == ETipoCliente.Fisica && Cliente.CpfCliente != null)
+            if (Cliente.TipoCliente == ETipoCliente.Fisica && Cliente.CpfCliente == null)
+            {
+                EnabledSalvar = false;
+            }
+            else
+                if (Cliente.TipoCliente == ETipoCliente.Fisica && Cliente.CpfCliente != null)
             {
                 EnabledSalvar = true;
             }
-        }
-
-        if (Cliente.TipoCliente == ETipoCliente.Juridica && Cliente.CnpjCliente == null)
-        {
-            EnabledSalvar = false;
+            else
+            {
+                if (Cliente.TipoCliente == ETipoCliente.Juridica && Cliente.CnpjCliente == null)
+                {
+                    EnabledSalvar = false;
+                }
+                else
+                if (Cliente.TipoCliente == ETipoCliente.Juridica && Cliente.CnpjCliente != null)
+                {
+                    EnabledSalvar = true;
+                }
+            }
         }
         else
         {
-            if (Cliente.TipoCliente == ETipoCliente.Juridica && Cliente.CnpjCliente != null)
+            if (Cliente.TipoCliente == ETipoCliente.TipoCliente)
             {
-                EnabledSalvar = true;
+                EnabledSalvar = false;
+            }
+            else
+            {
+                if (Cliente.Endereco.NomeRua != null && Cliente.Endereco.Numero != null && Cliente.Endereco.Bairro != null &&
+                    Cliente.Endereco.Cidade != null && Cliente.Endereco.Cep != null)
+                {
+                    EnabledSalvar = true;
+                }
             }
         }
-
-        EnabledSalvar = (Cliente.Endereco.NomeRua != null && Cliente.Endereco.Numero != null && Cliente.Endereco.Bairro != null &&
-            Cliente.Endereco.Cidade != null && Cliente.Endereco.Cep != null);
 
         Sim = !EnabledSalvar;
 
@@ -198,7 +216,8 @@
 
     public async Task Salvar()
     {
-        HttpResponseMessage cliente = await _http.PostAsJsonAsync<Cliente>("/api/v1/clientes", Cliente);
+        HttpResponseMessage cliente = await _http.PostAsJsonAsync<Cliente>
+    ("/api/v1/clientes", Cliente);
 
         ToPag.NavigateTo("/clientes");
     }

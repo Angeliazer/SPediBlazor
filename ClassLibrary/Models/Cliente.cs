@@ -48,6 +48,6 @@ namespace LibraryShared.Models
         public DateTime DataCadastro { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é Obrigatório")]
-        public Endereco? Endereco { get; set; } = new();
+        public Endereco Endereco { get; set; } = new();
     }
 }

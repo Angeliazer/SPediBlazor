@@ -31,18 +31,18 @@
                             <label class="col-2 mx-2" style="text-align: right">CPF</label>
                         }
                         else
+                       if ((int)CliService.TipoCliente == 2)
                         {
                             <label class="col-3 mx-2" style="text-align: right">CNPJ</label>
                         }
                         <label class="col-2 mx-0" style="text-align: right">Nro Telefone</label>
                         <label class="col-2 mx-1" style="text-align: right">Limite de Crédito</label>
                         <label class="col-2 mx-1" style="text-align: right">Data de Cadastro</label>
-
                     </div>
                     <div>
                         <InputText class="col-2" style="border-radius:3px" @bind-Value="@TipoCliente" disabled="true"></InputText>
 
-                        @if ((int)CliService.TipoCliente == 0)
+                        @if ((int)CliService.TipoCliente == 1)
                         {
                             <InputText class="col-2 mx-2" style="border-radius: 3px; text-align: right" @bind-Value="@CliService.CpfCliente" disabled="true"></InputText>
                         }
