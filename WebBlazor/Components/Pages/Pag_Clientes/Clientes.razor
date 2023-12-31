@@ -114,8 +114,12 @@
         CliService.TipoCliente = cliente.TipoCliente;
         CliService.LimiteCredito = cliente.LimiteCredito;
 
-
-        CliService.Endereco = new();
+        CliService.Endereco.NomeRua = cliente.Endereco.NomeRua;
+        CliService.Endereco.Numero = cliente.Endereco.Numero;
+        CliService.Endereco.Bairro = cliente.Endereco.Bairro;
+        CliService.Endereco.Cidade = cliente.Endereco.Cidade;
+        CliService.Endereco.Estado = cliente.Endereco.Estado;
+        CliService.Endereco.Cep = cliente.Endereco.Cep;
 
         Topag.NavigateTo("/concliente");
     }
