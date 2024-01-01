@@ -33,14 +33,14 @@
                                            @bind-Value="@Cliente.CpfCliente" placeholder="Digite o nro CPF/CNPJ"></InputText>
                             }
                             else
-                             if ((int)Cliente.TipoCliente == 1)
+                          if ((int)Cliente.TipoCliente == 1)
                             {
                                 <InputText class="col-2 mx-2" style="font-style: italic; border-radius: 3px; text-align: right"
                                            @bind-Value="@Cliente.CpfCliente" placeholder="Digite o nro CPF"></InputText>
                                 Cliente.CnpjCliente = null;
                             }
                             else
-                               if ((int)Cliente.TipoCliente == 2)
+                          if ((int)Cliente.TipoCliente == 2)
                             {
                                 <InputText class="col-3 mx-2" style="font-style: italic; border-radius: 3px; text-align: right"
                                            @bind-Value="@Cliente.CnpjCliente" placeholder="Digite o nro CNPJ"></InputText>
@@ -60,25 +60,29 @@
                 <p></p>
                 <h6 style="color:darkred"><em>Endereço</em></h6>
                 <div class="col">
+                    @*<div>
+                            <label class="col-5">Nome da Rua</label>
+                            <label class="col-1 mx-1">Nro</label>
+                            <label class="col-1 mx-1">Bairro</label>
+                            <label class="col-2 mx-1">Cidade</label>
+                            <label class="col-1 mx-1">Estado</label>
+                            <label class="col-1 mx-1">Cep</label>
+                        </div>*@
+                    <InputText class="col-1 mx-0" style="border-radius:3px" @bind-Value="@Cliente.Endereco.Cep" placeholder="Cep"></InputText>
+                    <button class="btn-sm btn-primary" @onclick="ConsultaCep">Consulta Cep</button>
+                    <p></p>
                     <div>
-                        <label class="col-5">Nome da Rua</label>
-                        <label class="col-1 mx-1">Nro</label>
-                        <label class="col-1 mx-1">Bairro</label>
-                        <label class="col-2 mx-1">Cidade</label>
-                        <label class="col-1 mx-1">Estado</label>
-                        <label class="col-1 mx-1">Cep</label>
+                        <InputText class="col-5 mx-0" style="font-style:italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.NomeRua" placeholder="Logradouro"></InputText>
+                        <InputText class="col-1 mx-1" style="font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.Numero" placeholder="Nro"></InputText>
+                        <InputText class="col-1 mx-1" style="font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.Bairro" placeholder="Bairro"></InputText>
+                        <InputText class="col-2 mx-1" style="font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.Cidade" placeholder="Cidade"></InputText>
+                        <InputSelect class="col-1 form-select-sm" style="font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.Estado">
+                            @foreach (var opc_est in Enum.GetValues(typeof(EEstado)))
+                            {
+                                <option>@opc_est</option>
+                            }
+                        </InputSelect>
                     </div>
-                    <InputText class="col-5 mx-0" style="border-radius:3px" @bind-Value="@Cliente.Endereco.NomeRua"></InputText>
-                    <InputText class="col-1 mx-1" style="border-radius:3px" @bind-Value="@Cliente.Endereco.Numero"></InputText>
-                    <InputText class="col-1 mx-1" style="border-radius:3px" @bind-Value="@Cliente.Endereco.Bairro"></InputText>
-                    <InputText class="col-2 mx-1" style="border-radius:3px" @bind-Value="@Cliente.Endereco.Cidade"></InputText>
-                    <InputSelect class="col-1 form-select-sm" style="border-radius:3px" @bind-Value="@Cliente.Endereco.Estado">
-                        @foreach (var opc_est in Enum.GetValues(typeof(EEstado)))
-                        {
-                            <option>@opc_est</option>
-                        }
-                    </InputSelect>
-                    <InputText class="col-1 mx-1" style="border-radius:3px" @bind-Value="@Cliente.Endereco.Cep"></InputText>
                 </div>
             </div>
         </div>
@@ -86,11 +90,10 @@
             <div class="row">
                 <div class="col">
                     <button class="col-1 btn-sm btn-success" @onclick="HabilitarSalvar"> Salvar </button>
-                    <button class="col-1 btn-sm btn-primary" @onclick="Voltar"> Voltar </button>
+                    <button class="col-1 btn-sm btn-primary" @onclick="Voltar">Voltar </button>
                 </div>
             </div>
         </div>
-
     </EditForm>
 </div>
 
@@ -100,12 +103,7 @@
     <div class="container">
         <div class="alert alert-danger alert-dismissible" role="alert">
             <strong>Atenção!</strong> Existem Campos que não foram preenchidos.
-
             <button class="btn-sm btn-close" data-bs-dismiss="alert" aria-label="Close" @onclick="Sair"></button>
-
-            @*class="btn-sm btn-close" data-bs-dimiss="modal"*@
-
-
         </div>
     </div>
 }
@@ -127,6 +125,44 @@
     private bool EnabledSalvar = false;
     public string DataCadastro = $"{DateTime.Now:dd/MM/yyy}";
 
+    private async Task ConsultaCep()
+    {
+        if (Cliente.Endereco.Cep != null)
+        {
+
+            string? value;
+
+            Dictionary<string, string>? Dados = new();
+
+            Dados = await _http.GetFromJsonAsync<Dictionary<string, string>>($"https://viacep.com.br/ws/{Cliente.Endereco.Cep}/json");
+
+            bool hasValue = Dados.TryGetValue("logradouro", out value);
+
+            if (hasValue)
+            {
+                Cliente.Endereco.NomeRua = value;
+
+                Dados.TryGetValue("bairro", out value);
+                Cliente.Endereco.Bairro = value;
+
+                Dados.TryGetValue("localidade", out value);
+                Cliente.Endereco.Cidade = value;
+
+                Dados.TryGetValue("uf", out value);
+
+                var lista = Enum.GetValues(typeof(EEstado)).Cast<int>().ToList();
+
+                foreach (var item in lista)
+                {
+                    if ((item.ToString()).Equals(value))
+                    {
+                        Console.WriteLine(item);
+                    }
+                }
+
+            }
+        }
+    }
     public void ErroPreenchimento()
     {
         Sim = true;
@@ -216,8 +252,7 @@
 
     public async Task Salvar()
     {
-        HttpResponseMessage cliente = await _http.PostAsJsonAsync<Cliente>
-    ("/api/v1/clientes", Cliente);
+        HttpResponseMessage cliente = await _http.PostAsJsonAsync<Cliente>("/api/v1/clientes", Cliente);
 
         ToPag.NavigateTo("/clientes");
     }
