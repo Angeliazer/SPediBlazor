@@ -80,7 +80,9 @@
         <div>
             <InputText style="width: 10%; border-radius: 3px; text-align:right" @bind-Value="@Cliente.Endereco.Cep" @onfocus="LimpaEnder" placeholder="Cep"></InputText>
             <button class="btn-sm btn-primary shadow-none" @onclick="ConsultaCep">Consulta Cep</button>
+            <span><em>@mensagemTexto</em></span>
         </div>
+        <br />
         <div class="row d-flex flex-row">
             <div class="col-5">
                 <InputText style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.NomeRua" placeholder="Logradouro"></InputText>
@@ -115,8 +117,11 @@
     <div class="card-footer mt-2 border-2 justify-content-xl-center border-success border" style="border-radius:3px">
         <div class="row">
             <div class="col">
-                <button class="col-1 btn-sm btn-success shadow-none" @onclick="HandledSalvar"><i Name="IconName.Alarm" />Salvar</button>
-                <button class="col-1 btn-sm btn-primary shadow-none" @onclick="Voltar">Voltar </button>
+                <button class="col-1 btn btn-success shadow-none" @onclick="HandledSalvar">
+                   <i class="bi-save"</i> Salvar
+                </button>
+                <button class="col-1 btn btn-primary shadow-none" @onclick="Voltar">
+                   <i class="bi-arrow-left-circle"></i> Voltar</button>
             </div>
         </div>
     </div>
@@ -150,6 +155,7 @@
     public bool isValid { get; set; } = false;
     public bool EnabledSalvar = true;
     public string DataCadastro = $"{DateTime.Now:dd/MM/yyy}";
+    private string mensagemTexto { get; set; } = string.Empty;
 
     public EEstado estado = new();
 
@@ -173,6 +179,9 @@
         if ((Cliente.Endereco.Cep != null) && (Cliente.Endereco.Cep != ""))
         {
             string? value;
+
+
+            mensagemTexto = "Aguarde...";
 
             Dictionary<string, string>? Dados = new();
 
@@ -206,6 +215,8 @@
             {
                 LimpaEnder();
             }
+            mensagemTexto = string.Empty;
+
         }
     }
 
