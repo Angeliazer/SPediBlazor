@@ -1,0 +1,59 @@
+﻿@page "/teste"
+@rendermode InteractiveServer
+@using System.ComponentModel.DataAnnotations;
+
+<h3>Teste Validação</h3>
+<div class="container">
+    <EditForm Model="@tliente" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <label>Nome</label>
+        <InputText @bind-Value="tliente.Nome" />
+        <ValidationMessage For="@(()=>tliente.Nome)" />
+        <!-- Outros campos do Cliente -->
+
+        <label>Rua</label>
+        <InputText @bind-Value="tliente.Ender.Rua" />
+        <ValidationMessage For="@(()=>tliente.Ender.Rua)" />
+
+        <label>Cidade</label>
+        <InputText @bind-Value="tliente.Ender.Cidade" />
+        <ValidationMessage For="@(()=>tliente.Ender.Cidade)" />
+        <button type="submit" @onclick="HandleValidSubmit">Salvar</button>
+    </EditForm>
+</div>
+@code {
+    public Tliente tliente = new();
+    private EditContext? editContext;
+
+    protected override void OnInitialized()
+    {
+        editContext = new(tliente);
+    }
+
+
+    private void HandleValidSubmit()
+    {
+        var editContext = new EditContext(tliente);
+        var isValid = editContext.Validate();
+
+
+        if (tliente.Nome == null
+            || tliente.Ender.Rua == null || tliente.Ender.Cidade == null)
+        {
+            Console.WriteLine("Erro");
+        }
+
+        if (isValid)
+        {
+            // Lógica para salvar aqui
+            Console.WriteLine("Validação passou!");
+        }
+        else
+        {
+            // Se a validação falhar, pode lidar com as mensagens de erro
+            Console.WriteLine("Validação falhou!");
+        }
+    }
+}

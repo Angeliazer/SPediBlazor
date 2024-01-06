@@ -6,96 +6,121 @@
 <TopBanner Texto="Novo Cliente"></TopBanner>
 <br />
 
-<div class="card">
-    <EditForm Model="@Cliente" OnInvalidSubmit="ErroPreenchimento">
-        <DataAnnotationsValidator />
-        <div class="card-header">
-            <div class="row">
-                <div class="col">
-                    <div>
-                        <InputText class="col-7" style="font-style:italic;border-radius:3px" @bind-Value="@Cliente.NomeCliente" placeholder="Nome do Cliente">Nome do Cliente</InputText>
-                        <InputText class="col-4 mx-1" style="font-style:italic;border-radius:3px" @bind-Value="@Cliente.NomeContato" placeholder="Nome do Contato">Nome do Cliente</InputText>
-                    </div>
-                </div>
-                <p></p>
-                <div class="row">
-                    <div class="col">
-                        <div>
-                            <InputSelect class="col-2 form-select-sm" style="font-style: italic; border-radius: 1px" @bind-Value="@Cliente.TipoCliente">
-                                @foreach (var opc in Enum.GetValues(typeof(ETipoCliente)))
-                                {
-                                    <option>@opc</option>
-                                }
-                            </InputSelect>
-                            @if ((int)Cliente.TipoCliente == 0)
-                            {
-                                <InputText class="col-2 mx-2" style="font-style: italic; border-radius: 3px; text-align: right"
-                                           @bind-Value="@Cliente.CpfCliente" placeholder="Digite o nro CPF/CNPJ"></InputText>
-                            }
-                            else
-                          if ((int)Cliente.TipoCliente == 1)
-                            {
-                                <InputText class="col-2 mx-2" style="font-style: italic; border-radius: 3px; text-align: right"
-                                           @bind-Value="@Cliente.CpfCliente" placeholder="Digite o nro CPF"></InputText>
-                                Cliente.CnpjCliente = null;
-                            }
-                            else
-                          if ((int)Cliente.TipoCliente == 2)
-                            {
-                                <InputText class="col-3 mx-2" style="font-style: italic; border-radius: 3px; text-align: right"
-                                           @bind-Value="@Cliente.CnpjCliente" placeholder="Digite o nro CNPJ"></InputText>
-                                Cliente.CpfCliente = null;
-                            }
-                            <InputText class="col-2 mx-0" style="font-style:italic; border-radius: 3px; text-align: right"
-                                       @bind-Value="@Cliente.NroTelefone" placeholder="Digite o nro Telefone"></InputText>
-                            <InputNumber class="col-2 mx-1" style="font-style:italic; border-radius: 3px; text-align: right"
-                                         @bind-Value="@Cliente.LimiteCredito" placeholder="Digite o Limite de Crédito"></InputNumber>
-                            <InputText class="col-2 mx-0" style="font-style:italic; border-radius: 3px; text-align: right; color: darkred "
-                                       @bind-Value=@DataCadastro disabled="true"></InputText>
-                        </div>
-                    </div>
-                </div>
+<EditForm Model="Cliente" OnValidSubmit="HandledSalvar">
+    <DataAnnotationsValidator />
+    @*<ValidationSummary></ValidationSummary>*@
+    <div class="card-header border-2 justify-content-center border-success border" style="border-radius:3px">
+        <div class="col row d-flex flex-row">
+            <div class="col-8">
+                <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@Cliente.NomeCliente" placeholder="Razão Cliente">Nome do Cliente</InputText>
+                <ValidationMessage For="@(()=> Cliente.NomeCliente)"></ValidationMessage>
             </div>
-            <div class="row">
-                <p></p>
-                <h6 style="color:darkred"><em>Endereço</em></h6>
-                <div class="col">
-                    @*<div>
-                            <label class="col-5">Nome da Rua</label>
-                            <label class="col-1 mx-1">Nro</label>
-                            <label class="col-1 mx-1">Bairro</label>
-                            <label class="col-2 mx-1">Cidade</label>
-                            <label class="col-1 mx-1">Estado</label>
-                            <label class="col-1 mx-1">Cep</label>
-                        </div>*@
-                    <InputText class="col-1 mx-0" style="border-radius:3px" @bind-Value="@Cliente.Endereco.Cep" placeholder="Cep"></InputText>
-                    <button class="btn-sm btn-primary" @onclick="ConsultaCep">Consulta Cep</button>
-                    <p></p>
-                    <div>
-                        <InputText class="col-5 mx-0" style="font-style:italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.NomeRua" placeholder="Logradouro"></InputText>
-                        <InputText class="col-1 mx-1" style="font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.Numero" placeholder="Nro"></InputText>
-                        <InputText class="col-1 mx-1" style="font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.Bairro" placeholder="Bairro"></InputText>
-                        <InputText class="col-2 mx-1" style="font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.Cidade" placeholder="Cidade"></InputText>
-                        <InputSelect class="col-1 form-select-sm" style="font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.Estado">
-                            @foreach (var opc_est in Enum.GetValues(typeof(EEstado)))
-                            {
-                                <option>@opc_est</option>
-                            }
-                        </InputSelect>
-                    </div>
-                </div>
+            <div class="col-4">
+                <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@Cliente.NomeContato" placeholder="Contato">Nome do Cliente</InputText>
+                <ValidationMessage For="@(()=> Cliente.NomeContato)"></ValidationMessage>
             </div>
         </div>
-        <div class="card-footer">
-            <div class="row">
-                <div class="col">
-                    <button class="col-1 btn-sm btn-success" @onclick="HabilitarSalvar"> Salvar </button>
-                    <button class="col-1 btn-sm btn-primary" @onclick="Voltar">Voltar </button>
-                </div>
+        <p></p>
+        <div class="row d-flex flex-row">
+            <div class="col-1">
+                <InputSelect class="form-select-sm" style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@Cliente.TipoCliente">
+                    @foreach (var opc in Enum.GetValues(typeof(ETipoCliente)))
+                    {
+                        <option>@opc</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="col-3">
+                @switch ((int)Cliente.TipoCliente)
+                {
+                    case 0:
+                        <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
+                                   @bind-Value="@Cliente.CpfCliente" placeholder="Nro CPF/CNPJ"></InputText>
+                        break;
+                    case 1:
+                        <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
+                                   @bind-Value="@Cliente.CpfCliente" placeholder="Nro CPF"></InputText>
+                        <ValidationMessage For="@(()=> Cliente.CpfCliente)"></ValidationMessage>
+                        Cliente.CnpjCliente = null;
+
+                        break;
+                    case 2:
+                        <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
+                                   @bind-Value="@Cliente.CnpjCliente" placeholder="Nro CNPJ"></InputText>
+                        <ValidationMessage For="@(()=> Cliente.CnpjCliente)"></ValidationMessage>
+                        Cliente.CpfCliente = null;
+
+                        break;
+                }
+            </div>
+            <div class="col-2">
+                <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
+                           @bind-Value="@Cliente.NroTelefone" placeholder="Nro Telefone"></InputText>
+                <ValidationMessage For="@(()=> Cliente.NroTelefone)"></ValidationMessage>
+
+
+            </div>
+            <div class="col-2">
+                <InputNumber style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
+                             @bind-Value="@Cliente.LimiteCredito" placeholder="Digite o Limite de Crédito"></InputNumber>
+            </div>
+            <div class="col-2">
+                <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
+                           @bind-Value="@Cliente.Email" placeholder="Digite o e-mail"></InputText>
+                <ValidationMessage For="@(()=> Cliente.Email)"></ValidationMessage>
+            </div>
+            <div class="col-2">
+                <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right; color: darkred "
+                           @bind-Value=@DataCadastro disabled="true"></InputText>
             </div>
         </div>
-    </EditForm>
-</div>
+        <p></p>
+        <h6 style="color:darkred"><em>Endereço</em></h6>
+        <div>
+            <InputText style="width: 10%; border-radius: 3px; text-align:right" @bind-Value="@Cliente.Endereco.Cep" @onfocus="LimpaEnder" placeholder="Cep"></InputText>
+            <button class="btn-sm btn-primary shadow-none" @onclick="ConsultaCep">Consulta Cep</button>
+        </div>
+        <div class="row d-flex flex-row">
+            <div class="col-5">
+                <InputText style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.NomeRua" placeholder="Logradouro"></InputText>
+                <ValidationMessage For="@(()=> Cliente.Endereco.NomeRua)"></ValidationMessage>
+            </div>
+
+            <div class="col-1">
+                <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align:right" @bind-Value="@Cliente.Endereco.Numero" placeholder="Nro"></InputText>
+                <ValidationMessage For="@(()=> Cliente.Endereco.Numero)"></ValidationMessage>
+            </div>
+            <div class="col-2">
+                <InputText style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.Bairro" placeholder="Bairro"></InputText>
+                <ValidationMessage For="@(()=> Cliente.Endereco.Bairro)"></ValidationMessage>
+            </div>
+
+            <div class="col-3">
+                <InputText style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.Cidade" placeholder="Cidade"></InputText>
+                <ValidationMessage For="@(()=> Cliente.Endereco.Cidade)"></ValidationMessage>
+            </div>
+
+            <div class="col-1">
+                <InputSelect class="form-select-sm" style="width:100%; font-style: italic; border-radius:3px" @bind-Value="@Cliente.Endereco.Estado">
+                    @foreach (var opc_est in Enum.GetValues(typeof(EEstado)))
+                    {
+                        <option>@opc_est</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(()=> Cliente.Endereco.Estado)"></ValidationMessage>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer mt-2 border-2 justify-content-xl-center border-success border" style="border-radius:3px">
+        <div class="row">
+            <div class="col">
+                <button class="col-1 btn-sm btn-success shadow-none" @onclick="HandledSalvar"><i Name="IconName.Alarm" />Salvar</button>
+                <button class="col-1 btn-sm btn-primary shadow-none" @onclick="Voltar">Voltar </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
 
 @if (Sim)
 {
@@ -122,56 +147,68 @@
     public bool Sim { get; set; } = false;
 
     public Cliente Cliente = new();
-    private bool EnabledSalvar = false;
+    public bool isValid { get; set; } = false;
+    public bool EnabledSalvar = true;
     public string DataCadastro = $"{DateTime.Now:dd/MM/yyy}";
+
+    public EEstado estado = new();
+
+    private void Sair()
+    {
+        Sim = false;
+    }
+
+    private void LimpaEnder()
+    {
+        Cliente.Endereco.Cep = null;
+        Cliente.Endereco.NomeRua = null;
+        Cliente.Endereco.Bairro = null;
+        Cliente.Endereco.Cidade = null;
+        Cliente.Endereco.Estado = EEstado.AC;
+        Cliente.Endereco.Numero = null;
+    }
 
     private async Task ConsultaCep()
     {
-        if (Cliente.Endereco.Cep != null)
+        if ((Cliente.Endereco.Cep != null) && (Cliente.Endereco.Cep != ""))
         {
-
             string? value;
 
             Dictionary<string, string>? Dados = new();
 
-            Dados = await _http.GetFromJsonAsync<Dictionary<string, string>>($"https://viacep.com.br/ws/{Cliente.Endereco.Cep}/json");
-
-            bool hasValue = Dados.TryGetValue("logradouro", out value);
-
-            if (hasValue)
+            try
             {
-                Cliente.Endereco.NomeRua = value;
+                Dados = await _http.GetFromJsonAsync<Dictionary<string, string>>($"https://viacep.com.br/ws/{Cliente.Endereco.Cep}/json");
+                bool hasValue = Dados.TryGetValue("logradouro", out value);
 
-                Dados.TryGetValue("bairro", out value);
-                Cliente.Endereco.Bairro = value;
-
-                Dados.TryGetValue("localidade", out value);
-                Cliente.Endereco.Cidade = value;
-
-                Dados.TryGetValue("uf", out value);
-
-                var lista = Enum.GetValues(typeof(EEstado)).Cast<int>().ToList();
-
-                foreach (var item in lista)
+                if (hasValue)
                 {
-                    if ((item.ToString()).Equals(value))
-                    {
-                        Console.WriteLine(item);
-                    }
-                }
+                    Cliente.Endereco.NomeRua = value;
 
+                    Dados.TryGetValue("bairro", out value);
+                    Cliente.Endereco.Bairro = value;
+
+                    Dados.TryGetValue("localidade", out value);
+                    Cliente.Endereco.Cidade = value;
+
+                    Dados.TryGetValue("uf", out value);
+
+                    Enum.TryParse(value, out estado);
+
+                    Cliente.Endereco.Estado = estado;
+                }
+                else
+                {
+                    LimpaEnder();
+                }
+            }
+            catch
+            {
+                LimpaEnder();
             }
         }
     }
-    public void ErroPreenchimento()
-    {
-        Sim = true;
-    }
 
-    public void Sair()
-    {
-        Sim = false;
-    }
 
     public async Task ReturnFuncao()
     {
@@ -183,58 +220,34 @@
         Mostr = "none";
     }
 
-    private void HabilitarSalvar()
+    private void HandledSalvar()
     {
-        EnabledSalvar = (Cliente.NomeCliente != null && Cliente.NomeContato != null && Cliente.NroTelefone != null);
 
-        if (Cliente.TipoCliente != ETipoCliente.TipoCliente)
+        if (Cliente.NomeCliente == null || Cliente.NomeContato == null || Cliente.NomeCliente == "" || Cliente.NomeContato == "" ||
+            (Cliente.CpfCliente == null && Cliente.CnpjCliente == null) || (Cliente.CpfCliente == "" && Cliente.CnpjCliente == "") ||
+            Cliente.TipoCliente == ETipoCliente.Tipo || Cliente.Email == null || Cliente.Email == "" ||
+            Cliente.Endereco.NomeRua == null || Cliente.Endereco.Numero == null || Cliente.Endereco.Bairro == null ||
+            Cliente.Endereco.NomeRua == "" || Cliente.Endereco.Numero == "" || Cliente.Endereco.Bairro == "" ||
+            Cliente.Endereco.Cidade == null || Cliente.Endereco.Cep == null || Cliente.Endereco.Cidade == "" || Cliente.Endereco.Cep == "")
         {
-            if (Cliente.TipoCliente == ETipoCliente.Fisica && Cliente.CpfCliente == null)
-            {
-                EnabledSalvar = false;
-            }
-            else
-                if (Cliente.TipoCliente == ETipoCliente.Fisica && Cliente.CpfCliente != null)
-            {
-                EnabledSalvar = true;
-            }
-            else
-            {
-                if (Cliente.TipoCliente == ETipoCliente.Juridica && Cliente.CnpjCliente == null)
-                {
-                    EnabledSalvar = false;
-                }
-                else
-                if (Cliente.TipoCliente == ETipoCliente.Juridica && Cliente.CnpjCliente != null)
-                {
-                    EnabledSalvar = true;
-                }
-            }
+            isValid = false;
         }
         else
         {
-            if (Cliente.TipoCliente == ETipoCliente.TipoCliente)
-            {
-                EnabledSalvar = false;
-            }
-            else
-            {
-                if (Cliente.Endereco.NomeRua != null && Cliente.Endereco.Numero != null && Cliente.Endereco.Bairro != null &&
-                    Cliente.Endereco.Cidade != null && Cliente.Endereco.Cep != null)
-                {
-                    EnabledSalvar = true;
-                }
-            }
+            isValid = true;
         }
 
-        Sim = !EnabledSalvar;
-
-        if (EnabledSalvar) ConfirmaSalvar();
+        if (isValid)
+        {
+            ConfirmaSalvar();
+        }
+        else
+        {
+        }
     }
 
     public void ConfirmaSalvar()
     {
-        Console.WriteLine(Cliente);
 
         MsgButton = "Confirma";
 
@@ -252,7 +265,8 @@
 
     public async Task Salvar()
     {
-        HttpResponseMessage cliente = await _http.PostAsJsonAsync<Cliente>("/api/v1/clientes", Cliente);
+        HttpResponseMessage cliente = await _http.PostAsJsonAsync<Cliente>
+    ("/api/v1/clientes", Cliente);
 
         ToPag.NavigateTo("/clientes");
     }

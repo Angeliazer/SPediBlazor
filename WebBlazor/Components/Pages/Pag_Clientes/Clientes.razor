@@ -10,16 +10,15 @@
 <TopBanner Texto="Clientes"></TopBanner>
 <br />
 
-<div class="container">
-
+@if (ExistReg == true)
+{
     @if (clientes == null)
     {
         <p><em>Aguarde...</em></p>
     }
     else
     {
-        <button class="btn-sm btn-primary" style="font-style:italic" @onclick="NewCliente">+ Novo Cliente</button>
-
+        <button class="btn-sm btn-primary shadow-none" style="font-style:italic" @onclick="NewCliente">+ Novo Cliente</button>
         <table class="table col-md-12">
             <thead>
                 <tr>
@@ -41,25 +40,19 @@
                         <td>@item.NroTelefone</td>
                         <td>@item.NomeContato</td>
                         <td>@DateOnly.FromDateTime(@item.DataCadastro)</td>
-                        <td><button class="btn-sm btn-warning border-dark" @onclick="(() => Seleciona(item))">Alterar</button></td>
-                        <td><button class="btn-sm btn-danger border-dark" @onclick="(() => Confirma(item))">Apaga</button></td>
-                        <td><button class="btn-sm btn-info border-dark" @onclick="(() => Con_Cliente(item))">Consulta</button></td>
-                        <td><button class="btn-sm btn-primary border-dark" @onclick="(() => Seleciona(item))">Pedido</button></td>
+                        <td><button class="btn-sm btn-warning border-dark shadow-none" @onclick="(() => Seleciona(item))">Alterar</button></td>
+                        <td><button class="btn-sm btn-danger border-dark shadow-none" @onclick="(() => Confirma(item))">Apaga</button></td>
+                        <td><button class="btn-sm btn-info border-dark shadow-none" @onclick="(() => Con_Cliente(item))">Consulta</button></td>
+                        <td><button class="btn-sm btn-primary border-dark shadow-none" @onclick="(() => Seleciona(item))">Pedido</button></td>
                     </tr>
                 }
             </tbody>
         </table>
     }
-</div>
-
-@if (Sim)
-{<div class="container align-content-center">
-        <div class="alert alert-danger alert-dismissible" role="alert">
-            <strong>Holy guacamole!</strong> You should check in on some of those fields below.
-
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @onclick="Sair"></button>
-        </div>
-    </div>
+}
+else
+{
+    <p style="color:darkred"><em>Banco de Dados Vazio...</em></p>
 }
 
 <Mensagens @ref="Mensa" BotaoTrue=@MsgBotton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="(() => ReturnFuncao())"> </Mensagens>
@@ -75,6 +68,7 @@
     public string Mostr { get; set; } = "none";
     public string MsgBotton { get; set; } = string.Empty;
     public bool Sim { get; set; } = false;
+    private bool ExistReg { get; set; } = false;
 
 
     public List<Cliente>? clientes = null!;
@@ -89,7 +83,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        clientes = await _http.GetFromJsonAsync<List<Cliente>>(@"/api/v1/clientes");
+        try
+        {
+            clientes = await _http.GetFromJsonAsync<List<Cliente>>(@"/api/v1/clientes");
+            ExistReg = true;
+        }
+        catch
+        {
+            ExistReg = false;
+        }
     }
 
     public void Confirma(Cliente cli)
@@ -113,6 +115,7 @@
         CliService.DataCadastro = cliente.DataCadastro;
         CliService.TipoCliente = cliente.TipoCliente;
         CliService.LimiteCredito = cliente.LimiteCredito;
+        //CliService.Email = cliente.Email;
 
         CliService.Endereco.NomeRua = cliente.Endereco.NomeRua;
         CliService.Endereco.Numero = cliente.Endereco.Numero;

@@ -9,8 +9,8 @@ namespace LibraryShared.Models
         [Display(Name = "Código")]
         [Key] public int ClienteId { get; set; }
 
-        [Display(Name = "Nome / Razão Social do Cliente")]
-        [Required(ErrorMessage = "O campo {0} é Obrigatório")]
+        [Display(Name = "Razão Cliente")]
+        [Required(ErrorMessage = "Razão Cliente")]
         [MaxLength(100)]
         public string? NomeCliente { get; set; }
 
@@ -25,29 +25,52 @@ namespace LibraryShared.Models
 
         [Display(Name = "Tipo de Cliente")]
 
-        [Range(0,2, ErrorMessage = "O Campo é Obrigatório e vale Física")] 
+        [Range(1,2)]
+        [Required]
         public ETipoCliente TipoCliente { get; set; }
 
         [Display(Name = "Telefone")]
-        [Required(ErrorMessage = "O campo {0} é Obrigatório")]
+        [Required(ErrorMessage = "Telefone")]
         [MaxLength(11)]
         public string? NroTelefone { get; set; }
 
         [Display(Name = "Contato")]
-        [Required(ErrorMessage = "O campo {0} é Obrigatório")]
+        [Required(ErrorMessage = "Contato")]
         [MaxLength(30)]
+        [CustomValidation]
         public string? NomeContato { get; set; }
 
         [Display(Name = "Limite Crédito")]
-        [Required(ErrorMessage = "O campo {0} é Obrigatório")]
+        [Required]
         [Column(TypeName = "decimal(18,2)")]
         public decimal LimiteCredito { get; set; }
 
         [Display(Name = "Data de Cadastro")]
-        [Required(ErrorMessage = "O campo {0} é Obrigatório")]
+        [Required]
         public DateTime DataCadastro { get; set; }
 
-        [Required(ErrorMessage = "O campo {0} é Obrigatório")]
+        [Display(Name = "E-mail")]
+        [Required(ErrorMessage = "Email")]
+        public string? Email { get; set; }
+
+        [Required]
         public Endereco Endereco { get; set; } = new();
     }
+
+    public class CustomValidationAttribute : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            string? nome = value as string;
+
+            if (nome != null && nome.Contains("Sexo"))
+            {
+                return new ValidationResult("O nome não pode conter a palavra proibida.");
+            }
+
+            return ValidationResult.Success;
+        }
+    }
+
+
 }

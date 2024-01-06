@@ -35,7 +35,7 @@ namespace LibraryShared.Models
         [MaxLength(8)]
         [Required(ErrorMessage = "O campo {0} é Obrigatório")]
         [Display(Name = "Cep")]
-        public string? Cep { get; set; }
+        public string Cep { get; set; }
 
         public int ClienteId { get; set; }
     }

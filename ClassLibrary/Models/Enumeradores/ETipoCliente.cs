@@ -2,6 +2,6 @@
 {
     public enum ETipoCliente : int
     {
-        TipoCliente, Fisica, Juridica
+        Tipo, Fisica, Juridica
     }
 }
