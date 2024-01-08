@@ -7,5 +7,7 @@ namespace WebApi.Data
     {
         public DbSet<Cliente> Clientes { get; set; } = default!;
         public DbSet<Endereco> Enderecos { get; set; } = default!;
+        public DbSet<Produto> Produtos { get; set; } = default!;
+        public DbSet<Categoria> Categorias { get; set; } = default!;
     }
 }

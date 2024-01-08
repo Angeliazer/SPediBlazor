@@ -1,0 +1,163 @@
+﻿@page "/newproduto"
+@inject NavigationManager ToPag
+@rendermode @(new InteractiveServerRenderMode (prerender:false))
+@inject HttpClient _http
+
+<TopBanner Texto="Novo Produto"></TopBanner>
+<br />
+
+<EditForm Model="Produto" OnValidSubmit="HandledSalvar">
+    <DataAnnotationsValidator />
+    <div class="card-header border-2 justify-content-center border-primary border" style="border-radius:3px">
+        <div class="row d-flex flex-row">
+
+            <div class="col-8">
+                <label>Nome do Produto</label>
+            </div>
+            <div class="col-4">
+                <label>Descrição do Produto</label>
+            </div>
+            <div class="col-8 mb-2">
+                <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@Produto.NomeProduto" placeholder="Nome do Produto"></InputText>
+                <ValidationMessage For="@(() => Produto.NomeProduto)" />
+            </div>
+            <div class="col-4 mb-2">
+                <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@Produto.Descricao" placeholder="Descrição Produto"></InputText>
+                <ValidationMessage For="@(() => Produto.Descricao)" />
+            </div>
+        </div>
+        <div class="row d-flex flex-row">
+            <div class="col-3">
+                <label style="text-align:right">Preço Unidade</label>
+            </div>
+            <div class="col-2">
+                <label>Quant Estoque</label>
+            </div>
+            <div class="col-2">
+                <label>Unidade</label>
+            </div>
+            <div class="col-2">
+                <label>Data Cadastro</label>
+            </div>
+            <div class="col-3">
+                <label>Categorias</label>
+            </div>
+        </div>
+        <div class="row d-flex flex-row">
+            <div class="col-3">
+                <InputNumber style="text-align:right; width:100%; font-style:italic; border-radius:3px" @bind-Value="@Produto.Preco" placeholder="Preço Unidade"></InputNumber>
+                <ValidationMessage For="@(() => Produto.Preco)" />
+            </div>
+            <div class="col-2">
+                <InputNumber style="text-align:right; width:100%; font-style:italic; border-radius:3px" @bind-Value="@Produto.QuantEstoque" placeholder="Quantidade Estoque">Quantidade Estoque</InputNumber>
+                <ValidationMessage For="@(() => Produto.QuantEstoque)" />
+            </div>
+            <div class="col-2">
+                <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@Produto.Und" placeholder="Und"></InputText>
+                <ValidationMessage For="@(() => Produto.Und)" />
+            </div>
+            <div class="col-2">
+                <InputText class="disabled" style="width:100%; font-style:italic; border-radius:3px; text-align:right" @bind-Value="@DataCadastro">Data Cadastro</InputText>
+            </div>
+            <div class="col-3">
+                <InputSelect class="form-select-sm" style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@Cliente.TipoCliente">
+                    @foreach (var opc in Enum.GetValues(typeof(ETipoCliente)))
+                    {
+                        <option>@opc</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+    </div>
+    <div class="mt-2 card-footer mt-2 border-2 justify-content-xl-center border-primary border" style="border-radius:3px">
+        <div class="row">
+            <div class="col">
+                <button class="col-1 btn btn-sm btn-success shadow-none" style="color:white" @onclick="HandledSalvar">
+                    <i class="bi-save"</i> Salvar
+                </button>
+                <button class="col-1 btn btn-sm btn-primary shadow-none" style="color:white" @onclick="Voltar">
+                    <i class="bi-arrow-left-circle"></i> Voltar
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+<Mensagens @ref="Mensa" BotaoTrue=@MsgButton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="(() => ReturnFuncao())"> </Mensagens>
+
+@code
+{
+    Mensagens? Mensa = null;
+
+    public bool Confirm { get; set; } = false;
+    public string Mensag { get; set; } = string.Empty;
+    public string Titul { get; set; } = string.Empty;
+    public string Mostr { get; set; } = "none";
+    public string MsgButton { get; set; } = string.Empty;
+    public bool Sim { get; set; } = false;
+
+    public Produto Produto = new();
+
+    private List<Categoria>? Categorias = new();
+    public bool isValid { get; set; } = false;
+    public bool EnabledSalvar = true;
+    public string DataCadastro = $"{DateTime.Now:dd/MM/yyy}";
+    private string mensagemTexto { get; set; } = string.Empty;
+
+    public async Task ReturnFuncao()
+    {
+        if (Mensa?.Confirma == true)
+        {
+            await Salvar();
+        }
+        Confirm = false;
+        Mostr = "none";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Categorias = await _http.GetFromJsonAsync<List<Categoria>>("/api/v1/categorias");
+    }
+
+    private void HandledSalvar()
+    {
+        if (Produto.NomeProduto == null || Produto.NomeProduto == "" || Produto.Descricao == null)
+        {
+            isValid = false;
+        }
+        else
+        {
+            isValid = true;
+        }
+
+        if (isValid)
+        {
+            ConfirmaSalvar();
+        }
+        else
+        {
+
+        }
+    }
+
+    public void ConfirmaSalvar()
+    {
+        MsgButton = "Confirma";
+        Mensag = $"Produto: {Produto.NomeProduto}";
+        Titul = "Confirma Inclusão";
+        Mostr = "block";
+        Produto.DataCadastro = Convert.ToDateTime(DataCadastro);
+    }
+
+    public void Voltar()
+    {
+        ToPag.NavigateTo("/listprodutos");
+    }
+
+    public async Task Salvar()
+    {
+        HttpResponseMessage produto = await _http.PostAsJsonAsync<Produto>("/api/v1/produtos", Produto);
+
+        ToPag.NavigateTo("/listprodutos");
+    }
+}

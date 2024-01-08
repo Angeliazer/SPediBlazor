@@ -1,0 +1,353 @@
+﻿@page "/altcliente"
+@inject NavigationManager ToPag
+@rendermode @(new InteractiveServerRenderMode (prerender:false))
+@inject HttpClient _http
+@inject Cliente CliService
+
+<TopBanner Texto="Altera Cliente"></TopBanner>
+<p></p>
+<EditForm Model="@CliService" OnValidSubmit="HandledSalvar">
+    <DataAnnotationsValidator />
+    @*<ValidationSummary/>*@
+    <div class="card-header border-2 justify-content-center border-primary border" style="border-radius:3px">
+        <div class="row d-flex flex-row">
+            <div class="col-8">
+                <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@CliService.NomeCliente" placeholder="Razão Cliente">Nome do Cliente</InputText>
+                <ValidationMessage For="@(() => CliService.NomeCliente)" />
+            </div>
+            <div class="col-4">
+                <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@CliService.NomeContato" placeholder="Contato">Nome do Cliente</InputText>
+                <ValidationMessage For="@(() => CliService.NomeContato)" />
+            </div>
+        </div>
+        <p></p>
+        <div class="row d-flex flex-row">
+            <div class="col-1">
+                <InputSelect class="form-select-sm" style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@CliService.TipoCliente">
+                    @foreach (var opc in Enum.GetValues(typeof(ETipoCliente)))
+                    {
+                        <option>@opc</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="col-3">
+                @switch ((int)CliService.TipoCliente)
+                {
+                    case 0:
+                        <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
+                                   @bind-Value="@CliService.CpfCliente" placeholder="Nro CPF/CNPJ"></InputText>
+                        break;
+                    case 1:
+                        <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
+                                   @bind-Value="@CliService.CpfCliente" @onemptied="Verifica" placeholder="Nro CPF"></InputText>
+                        <ValidationMessage For="@(() => CliService.CpfCliente)" />
+                        CliService.CnpjCliente = null;
+
+                        break;
+                    case 2:
+                        <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
+                                   @bind-Value="@CliService.CnpjCliente" placeholder="Nro CNPJ"></InputText>
+                        <ValidationMessage For="@(() => CliService.CnpjCliente)" @onfocusout="Verifica" />
+                        CliService.CpfCliente = null;
+
+                        break;
+                }
+            </div>
+            <div class="col-2">
+                <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
+                           @bind-Value="@CliService.NroTelefone" placeholder="Nro Telefone"></InputText>
+                <ValidationMessage For="@(() => CliService.NroTelefone)"></ValidationMessage>
+            </div>
+            <div class="col-2">
+                <InputNumber style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
+                             @bind-Value="@CliService.LimiteCredito" placeholder="Digite o Limite de Crédito"></InputNumber>
+            </div>
+            <div class="col-2">
+                <InputText style="width:100%; font-style: italic; border-radius: 3px"
+                           @bind-Value="@CliService.Email" placeholder="Digite o e-mail"></InputText>
+                <ValidationMessage For="@(() => CliService.Email)"></ValidationMessage>
+            </div>
+            <div class="col-2">
+                <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right; color: darkred "
+                           @bind-Value=@DataCadastro disabled="true"></InputText>
+            </div>
+        </div>
+        <p></p>
+        <h6 style="color:darkred"><em>Endereço</em></h6>
+        <div>
+            <InputText style="width: 10%; border-radius: 3px; text-align:right" @bind-Value="@CliService.Endereco.Cep" @onfocus="LimpaEnder" placeholder="Cep"></InputText>
+            <button class="btn btn-sm btn-primary shadow-none" @onclick="ConsultaCep">Consulta Cep</button>
+            <span><em>@mensagemTexto</em></span>
+        </div>
+        <div class="row d-flex flex-row">
+            <div class="mt-1 col-5">
+                <InputText style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@CliService.Endereco.NomeRua" placeholder="Logradouro"></InputText>
+                <ValidationMessage For="@(() => CliService.Endereco.NomeRua)"></ValidationMessage>
+            </div>
+
+            <div class="mt-1 col-1">
+                <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align:right" @bind-Value="@CliService.Endereco.Numero" placeholder="Nro"></InputText>
+                <ValidationMessage For="@(() => CliService.Endereco.Numero)"></ValidationMessage>
+            </div>
+            <div class="mt-1 col-2">
+                <InputText style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@CliService.Endereco.Bairro" placeholder="Bairro"></InputText>
+                <ValidationMessage For="@(() => CliService.Endereco.Bairro)"></ValidationMessage>
+            </div>
+
+            <div class="mt-1 col-3">
+                <InputText style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@CliService.Endereco.Cidade" placeholder="Cidade"></InputText>
+                <ValidationMessage For="@(() => CliService.Endereco.Cidade)"></ValidationMessage>
+            </div>
+
+            <div class="mt-1 col-1">
+                <InputSelect class="form-select-sm" style="width:100%; font-style: italic; border-radius:3px" @bind-Value="@CliService.Endereco.Estado">
+                    @foreach (var opc_est in Enum.GetValues(typeof(EEstado)))
+                    {
+                        <option>@opc_est</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => CliService.Endereco.Estado)"></ValidationMessage>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer mt-2 border-2 justify-content-xl-center border-primary border" style="border-radius:3px">
+        <div class="row">
+            <div class="col">
+                <button class="col-1 btn btn-sm btn-success shadow-none" style="color:white" @onclick="HandledSalvar">
+                    <i class="bi-save"</i> Salvar
+                </button>
+                <button class="col-1 btn btn-sm btn-primary shadow-none" style="color:white" @onclick="Voltar">
+                    <i class="bi-arrow-left-circle"></i> Voltar
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@if (Sim)
+{
+    <p></p>
+    <div class="container">
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <strong>Atenção!</strong> Existem Campos que não foram preenchidos.
+            <button class="btn-sm btn-close" data-bs-dismiss="alert" aria-label="Close" @onclick="Sair"></button>
+        </div>
+    </div>
+}
+
+<Mensagens @ref="Mensa" BotaoTrue=@MsgButton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="(() => ReturnFuncao())"> </Mensagens>
+
+@code
+{
+    Mensagens? Mensa = null;
+
+    public bool Confirm { get; set; } = false;
+    public string Mensag { get; set; } = string.Empty;
+    public string Titul { get; set; } = string.Empty;
+    public string Mostr { get; set; } = "none";
+    public string MsgButton { get; set; } = string.Empty;
+    public bool Sim { get; set; } = false;
+
+    public Cliente Cliente = new();
+    public bool isValid { get; set; } = false;
+    public bool EnabledSalvar = true;
+    public string DataCadastro = $"{DateTime.Now:dd/MM/yyy}";
+    private string mensagemTexto { get; set; } = string.Empty;
+
+    public EEstado estado = new();
+
+    private void Sair()
+    {
+        Sim = false;
+    }
+
+    private void LimpaEnder()
+    {
+        CliService.Endereco.Cep = null;
+        CliService.Endereco.NomeRua = null;
+        CliService.Endereco.Bairro = null;
+        CliService.Endereco.Cidade = null;
+        CliService.Endereco.Estado = EEstado.AC;
+        CliService.Endereco.Numero = null;
+    }
+
+    private void Verifica()
+    {
+        if ((int)CliService.TipoCliente == 1)
+        {
+            VerificaCpf();
+        }
+        else
+        {
+            VerificaCnpj();
+        }
+    }
+
+    private void VerificaCpf()
+    {
+        string? nro = CliService.CpfCliente.Substring(0, 9);
+        var cont = 10;
+        var total = 0;
+
+        for (var i=0; i < nro.Length; i++)
+        {
+            total += int.Parse(nro[i].ToString()) * cont;
+
+            cont--;
+        }
+
+        int dig1 = total % 11;
+
+        dig1 = 11 - dig1;
+
+        if (dig1 >= 10)
+        {
+            dig1 = 0;
+        }
+
+        nro = CliService.CpfCliente.Substring(0, 9) + Convert.ToString(dig1);
+        cont = 11;
+        total = 0;
+
+        for (var i = 0; i < nro.Length; i++)
+        {
+            total += int.Parse(nro[i].ToString()) * cont;
+
+            cont--;
+        }
+
+        int dig2 = total % 11;
+
+        dig2 = 11 - dig2;
+
+        if (dig2 >= 10)
+        {
+            dig2 = 0;
+        }
+
+        nro = CliService.CpfCliente.Substring(0, 10) + Convert.ToString(dig2);
+        Console.WriteLine(nro);
+    }
+
+    private void VerificaCnpj()
+    {
+
+    }
+
+    private async Task ConsultaCep()
+    {
+        if ((CliService.Endereco.Cep != null) && (CliService.Endereco.Cep != ""))
+        {
+            string? value;
+
+
+            mensagemTexto = "Aguarde...";
+
+            Dictionary<string, string>? Dados = new();
+
+            try
+            {
+                Dados = await _http.GetFromJsonAsync<Dictionary<string, string>>($"https://viacep.com.br/ws/{CliService.Endereco.Cep}/json");
+                bool hasValue = Dados.TryGetValue("logradouro", out value);
+
+                if (hasValue)
+                {
+                    CliService.Endereco.NomeRua = value;
+
+                    Dados.TryGetValue("bairro", out value);
+                    CliService.Endereco.Bairro = value;
+
+                    Dados.TryGetValue("localidade", out value);
+                    CliService.Endereco.Cidade = value;
+
+                    Dados.TryGetValue("uf", out value);
+
+                    Enum.TryParse(value, out estado);
+
+                    CliService.Endereco.Estado = estado;
+                }
+                else
+                {
+                    LimpaEnder();
+                }
+            }
+            catch
+            {
+                LimpaEnder();
+            }
+            mensagemTexto = string.Empty;
+
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        DataCadastro = DateOnly.FromDateTime(CliService.DataCadastro).ToString();
+    }
+
+
+    public async Task ReturnFuncao()
+    {
+        if (Mensa?.Confirma == true)
+        {
+            await Salvar();
+        }
+        Confirm = false;
+        Mostr = "none";
+    }
+
+    private void HandledSalvar()
+    {
+
+        //isValid = VerificaClasse(Cliente);
+
+        if (CliService.NomeCliente == null || CliService.NomeContato == null || CliService.NomeCliente == "" || CliService.NomeContato == "" ||
+            (CliService.CpfCliente == null && CliService.CnpjCliente == null) || (CliService.CpfCliente == "" && CliService.CnpjCliente == "") ||
+            CliService.TipoCliente == ETipoCliente.Tipo || CliService.Email == null || CliService.Email == "" ||
+            CliService.Endereco.NomeRua == null || CliService.Endereco.Numero == null || CliService.Endereco.Bairro == null ||
+            CliService.Endereco.NomeRua == "" || CliService.Endereco.Numero == "" || CliService.Endereco.Bairro == "" ||
+            CliService.Endereco.Cidade == null || CliService.Endereco.Cep == null || CliService.Endereco.Cidade == "" || CliService.Endereco.Cep == "")
+        {
+            isValid = false;
+        }
+        else
+        {
+            isValid = true;
+        }
+
+        if (isValid)
+        {
+            ConfirmaSalvar();
+        }
+        else
+        {
+
+        }
+    }
+
+    public void ConfirmaSalvar()
+    {
+
+        MsgButton = "Confirma";
+
+        Mensag = $"Cliente: {CliService.NomeCliente}";
+        Titul = "Confirma Alteração";
+        Mostr = "block";
+
+        CliService.DataCadastro = Convert.ToDateTime(DataCadastro);
+    }
+
+    public void Voltar()
+    {
+        ToPag.NavigateTo("/listclientes");
+    }
+
+    public async Task Salvar()
+    {
+        HttpResponseMessage cliente = await _http.PutAsJsonAsync<Cliente>("/api/v1/clientes", CliService);
+
+        ToPag.NavigateTo("/listclientes");
+    }
+}
+

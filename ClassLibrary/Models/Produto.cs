@@ -25,11 +25,19 @@ namespace LibraryShared.Models
 
         [Display(Name = "Preço do Produto")]
         [Column(TypeName = "decimal(18,2)")]
-        [Required(ErrorMessage = "O campo {0} é Obrigatório")]
+        [Required(ErrorMessage = "Preço")]
         public decimal Preco { get; set; }
 
         [Display(Name = "Estoque")]
-        [Required(ErrorMessage = "O campo {0} é Obrigatório")]
+        [Required(ErrorMessage = "Estoque")]
         public int QuantEstoque { get; set; }
+
+        [Display(Name = "Und")]
+        [Required(ErrorMessage = "Unidade")]
+        public string? Und { get; set; }
+
+        [Display(Name = "Data de Cadastro")]
+        [Required]
+        public DateTime DataCadastro { get; set; }
     }
 }

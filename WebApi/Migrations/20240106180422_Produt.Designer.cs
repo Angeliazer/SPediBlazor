@@ -12,8 +12,8 @@ using WebApi.Data;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DBPedDataContext))]
-    [Migration("20231229174716_Inicial")]
-    partial class Inicial
+    [Migration("20240106180422_Produt")]
+    partial class Produt
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,55 @@ namespace WebApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("LibraryShared.Models.Cliente", b =>
+                {
+                    b.Property<int>("ClienteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClienteId"));
+
+                    b.Property<string>("CnpjCliente")
+                        .HasMaxLength(14)
+                        .HasColumnType("nvarchar(14)");
+
+                    b.Property<string>("CpfCliente")
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("LimiteCredito")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("NomeCliente")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("NomeContato")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("NroTelefone")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<int>("TipoCliente")
+                        .HasColumnType("int");
+
+                    b.HasKey("ClienteId");
+
+                    b.ToTable("Clientes");
+                });
 
             modelBuilder.Entity("LibraryShared.Models.Endereco", b =>
                 {
@@ -64,75 +113,59 @@ namespace WebApi.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.Property<int>("TipoEnd")
-                        .HasColumnType("int");
-
                     b.HasKey("EnderecoId");
 
-                    b.HasIndex("ClienteId");
+                    b.HasIndex("ClienteId")
+                        .IsUnique();
 
                     b.ToTable("Enderecos");
                 });
 
-            modelBuilder.Entity("LibraryShared.Models.Services.Cliente", b =>
+            modelBuilder.Entity("LibraryShared.Models.Produto", b =>
                 {
-                    b.Property<int>("ClienteId")
+                    b.Property<int>("IdProduto")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClienteId"));
-
-                    b.Property<string>("CnpjCliente")
-                        .IsRequired()
-                        .HasMaxLength(14)
-                        .HasColumnType("nvarchar(14)");
-
-                    b.Property<string>("CpfCliente")
-                        .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("nvarchar(11)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProduto"));
 
                     b.Property<DateTime>("DataCadastro")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("LimiteCredito")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
-                    b.Property<string>("NomeCliente")
+                    b.Property<string>("NomeProduto")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("NomeContato")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                    b.Property<decimal>("Preco")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("NroTelefone")
-                        .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("nvarchar(11)");
-
-                    b.Property<int>("TipoCliente")
+                    b.Property<int>("QuantEstoque")
                         .HasColumnType("int");
 
-                    b.HasKey("ClienteId");
+                    b.HasKey("IdProduto");
 
-                    b.ToTable("Clientes");
+                    b.ToTable("Produtos");
                 });
 
             modelBuilder.Entity("LibraryShared.Models.Endereco", b =>
                 {
-                    b.HasOne("LibraryShared.Models.Services.Cliente", null)
-                        .WithMany("Enderecos")
-                        .HasForeignKey("ClienteId")
+                    b.HasOne("LibraryShared.Models.Cliente", null)
+                        .WithOne("Endereco")
+                        .HasForeignKey("LibraryShared.Models.Endereco", "ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("LibraryShared.Models.Services.Cliente", b =>
+            modelBuilder.Entity("LibraryShared.Models.Cliente", b =>
                 {
-                    b.Navigation("Enderecos");
+                    b.Navigation("Endereco")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

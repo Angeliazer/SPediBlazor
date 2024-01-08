@@ -3,21 +3,22 @@
 @rendermode @(new InteractiveServerRenderMode (prerender:false))
 @inject HttpClient _http
 
+
 <TopBanner Texto="Novo Cliente"></TopBanner>
 <br />
 
 <EditForm Model="Cliente" OnValidSubmit="HandledSalvar">
     <DataAnnotationsValidator />
     @*<ValidationSummary></ValidationSummary>*@
-    <div class="card-header border-2 justify-content-center border-success border" style="border-radius:3px">
-        <div class="col row d-flex flex-row">
+    <div class="card-header border-2 justify-content-center border-primary border" style="border-radius:3px">
+        <div class="row d-flex flex-row">
             <div class="col-8">
                 <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@Cliente.NomeCliente" placeholder="Razão Cliente">Nome do Cliente</InputText>
-                <ValidationMessage For="@(()=> Cliente.NomeCliente)"></ValidationMessage>
+                <ValidationMessage For="@(() => Cliente.NomeCliente)"/>
             </div>
             <div class="col-4">
                 <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@Cliente.NomeContato" placeholder="Contato">Nome do Cliente</InputText>
-                <ValidationMessage For="@(()=> Cliente.NomeContato)"></ValidationMessage>
+                <ValidationMessage For="@(() => Cliente.NomeContato)" />
             </div>
         </div>
         <p></p>
@@ -41,14 +42,14 @@
                     case 1:
                         <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
                                    @bind-Value="@Cliente.CpfCliente" placeholder="Nro CPF"></InputText>
-                        <ValidationMessage For="@(()=> Cliente.CpfCliente)"></ValidationMessage>
+                        <ValidationMessage For="@(() => Cliente.CpfCliente)"/>
                         Cliente.CnpjCliente = null;
 
                         break;
                     case 2:
                         <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
                                    @bind-Value="@Cliente.CnpjCliente" placeholder="Nro CNPJ"></InputText>
-                        <ValidationMessage For="@(()=> Cliente.CnpjCliente)"></ValidationMessage>
+                        <ValidationMessage For="@(() => Cliente.CnpjCliente)"/>
                         Cliente.CpfCliente = null;
 
                         break;
@@ -57,18 +58,16 @@
             <div class="col-2">
                 <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
                            @bind-Value="@Cliente.NroTelefone" placeholder="Nro Telefone"></InputText>
-                <ValidationMessage For="@(()=> Cliente.NroTelefone)"></ValidationMessage>
-
-
+                <ValidationMessage For="@(() => Cliente.NroTelefone)"></ValidationMessage>
             </div>
             <div class="col-2">
                 <InputNumber style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
                              @bind-Value="@Cliente.LimiteCredito" placeholder="Digite o Limite de Crédito"></InputNumber>
             </div>
             <div class="col-2">
-                <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
+                <InputText style="width:100%; font-style: italic; border-radius: 3px"
                            @bind-Value="@Cliente.Email" placeholder="Digite o e-mail"></InputText>
-                <ValidationMessage For="@(()=> Cliente.Email)"></ValidationMessage>
+                <ValidationMessage For="@(() => Cliente.Email)"></ValidationMessage>
             </div>
             <div class="col-2">
                 <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right; color: darkred "
@@ -78,29 +77,28 @@
         <p></p>
         <h6 style="color:darkred"><em>Endereço</em></h6>
         <div>
-            <InputText style="width: 10%; border-radius: 3px; text-align:right" @bind-Value="@Cliente.Endereco.Cep" @onfocus="LimpaEnder" placeholder="Cep"></InputText>
-            <button class="btn-sm btn-primary shadow-none" @onclick="ConsultaCep">Consulta Cep</button>
+            <InputText class="mb-2" style="width: 10%; border-radius: 3px; text-align:right" @bind-Value="@Cliente.Endereco.Cep" @onfocus="LimpaEnder" placeholder="Cep"></InputText>
+            <button class="mb-1 btn btn-sm btn-primary shadow-none" @onclick="ConsultaCep">Consulta Cep</button>
             <span><em>@mensagemTexto</em></span>
         </div>
-        <br />
         <div class="row d-flex flex-row">
             <div class="col-5">
                 <InputText style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.NomeRua" placeholder="Logradouro"></InputText>
-                <ValidationMessage For="@(()=> Cliente.Endereco.NomeRua)"></ValidationMessage>
+                <ValidationMessage For="@(() => Cliente.Endereco.NomeRua)"></ValidationMessage>
             </div>
 
             <div class="col-1">
                 <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align:right" @bind-Value="@Cliente.Endereco.Numero" placeholder="Nro"></InputText>
-                <ValidationMessage For="@(()=> Cliente.Endereco.Numero)"></ValidationMessage>
+                <ValidationMessage For="@(() => Cliente.Endereco.Numero)"></ValidationMessage>
             </div>
             <div class="col-2">
                 <InputText style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.Bairro" placeholder="Bairro"></InputText>
-                <ValidationMessage For="@(()=> Cliente.Endereco.Bairro)"></ValidationMessage>
+                <ValidationMessage For="@(() => Cliente.Endereco.Bairro)"></ValidationMessage>
             </div>
 
             <div class="col-3">
                 <InputText style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.Cidade" placeholder="Cidade"></InputText>
-                <ValidationMessage For="@(()=> Cliente.Endereco.Cidade)"></ValidationMessage>
+                <ValidationMessage For="@(() => Cliente.Endereco.Cidade)"></ValidationMessage>
             </div>
 
             <div class="col-1">
@@ -110,18 +108,19 @@
                         <option>@opc_est</option>
                     }
                 </InputSelect>
-                <ValidationMessage For="@(()=> Cliente.Endereco.Estado)"></ValidationMessage>
+                <ValidationMessage For="@(() => Cliente.Endereco.Estado)"></ValidationMessage>
             </div>
         </div>
     </div>
-    <div class="card-footer mt-2 border-2 justify-content-xl-center border-success border" style="border-radius:3px">
+    <div class="card-footer mt-2 border-2 justify-content-xl-center border-primary border" style="border-radius:3px">
         <div class="row">
             <div class="col">
-                <button class="col-1 btn btn-success shadow-none" @onclick="HandledSalvar">
-                   <i class="bi-save"</i> Salvar
+                <button class="col-1 btn btn-sm btn-success shadow-none" style="color:white" @onclick="HandledSalvar">
+                    <i class="bi-save"</i> Salvar
                 </button>
-                <button class="col-1 btn btn-primary shadow-none" @onclick="Voltar">
-                   <i class="bi-arrow-left-circle"></i> Voltar</button>
+                <button class="col-1 btn btn-sm btn-primary shadow-none" style="color:white" @onclick="Voltar">
+                    <i class="bi-arrow-left-circle"></i> Voltar
+                </button>
             </div>
         </div>
     </div>
@@ -220,7 +219,6 @@
         }
     }
 
-
     public async Task ReturnFuncao()
     {
         if (Mensa?.Confirma == true)
@@ -233,6 +231,10 @@
 
     private void HandledSalvar()
     {
+
+        //isValid = VerificaClasse(Cliente);
+
+        //isValid = true;
 
         if (Cliente.NomeCliente == null || Cliente.NomeContato == null || Cliente.NomeCliente == "" || Cliente.NomeContato == "" ||
             (Cliente.CpfCliente == null && Cliente.CnpjCliente == null) || (Cliente.CpfCliente == "" && Cliente.CnpjCliente == "") ||
@@ -248,12 +250,14 @@
             isValid = true;
         }
 
+
         if (isValid)
         {
             ConfirmaSalvar();
         }
         else
         {
+
         }
     }
 
@@ -271,14 +275,13 @@
 
     public void Voltar()
     {
-        ToPag.NavigateTo("/clientes");
+        ToPag.NavigateTo("/listclientes");
     }
 
     public async Task Salvar()
     {
-        HttpResponseMessage cliente = await _http.PostAsJsonAsync<Cliente>
-    ("/api/v1/clientes", Cliente);
+        HttpResponseMessage cliente = await _http.PostAsJsonAsync<Cliente>("/api/v1/clientes", Cliente);
 
-        ToPag.NavigateTo("/clientes");
+        ToPag.NavigateTo("/listclientes");
     }
 }

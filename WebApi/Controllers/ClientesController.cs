@@ -1,5 +1,6 @@
 ﻿using LibraryShared.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebApi.Repository;
 
 namespace WebApi.Controllers
@@ -19,6 +20,11 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Cliente>?> AddCliente(Cliente cliente)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 var result = await _repository.AddCliente(cliente);
@@ -71,6 +77,26 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro no Banco de Dados...!");
             }
         }
+
+        [HttpPut]
+        public async Task<ActionResult<Cliente>> UpdateCliente(Cliente cliente)
+        {
+            try
+            {
+                var cliente_b = await _repository.UpdateCliente(cliente);
+
+                if (cliente_b == null)
+                {
+                    return NotFound($"Cliente com o Id = {cliente.ClienteId} não foi Encontrado....!");
+                }
+                return Ok(cliente);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro no Banco de Dados...!");
+            }
+        }
+
 
         [HttpGet]
         public async Task<ActionResult<List<Cliente>>> GetClientes()

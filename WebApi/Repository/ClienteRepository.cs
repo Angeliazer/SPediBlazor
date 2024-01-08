@@ -1,4 +1,5 @@
 ﻿using LibraryShared.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
 
@@ -101,6 +102,38 @@ namespace WebApi.Repository
             }
         }
 
+        public async Task<Cliente?> UpdateCliente(Cliente cliente)
+        {
+            var cliente_banco = await _context.Clientes
+                .Include("Endereco")
+                .FirstOrDefaultAsync(x => x.ClienteId == cliente.ClienteId);
+           
+            if (cliente_banco?.ClienteId != cliente.ClienteId)
+            {
+                return new Cliente();
+            }
+            else
+            {
+                cliente_banco.CpfCliente = cliente.CpfCliente;
+                cliente_banco.CnpjCliente = cliente.CnpjCliente;
+                cliente_banco.NomeCliente = cliente.NomeCliente;
+                cliente_banco.NomeContato = cliente.NomeContato;
+                cliente_banco.TipoCliente = cliente.TipoCliente;
+                cliente_banco.Email = cliente.Email;
+                cliente_banco.LimiteCredito = cliente.LimiteCredito;
+                cliente_banco.NroTelefone = cliente.NroTelefone;
+                cliente_banco.DataCadastro = cliente.DataCadastro;
+
+                cliente_banco.Endereco.NomeRua = cliente.Endereco.NomeRua;
+                cliente_banco.Endereco.Numero = cliente.Endereco.Numero;
+                cliente_banco.Endereco.Bairro = cliente.Endereco.Bairro;
+                cliente_banco.Endereco.Cidade = cliente.Endereco.Cidade;
+                cliente_banco.Endereco.Estado = cliente.Endereco.Estado;
+                cliente_banco.Endereco.Cep = cliente.Endereco.Cep;
+                await _context.SaveChangesAsync();
+                return cliente;
+            }
+        }
     }
 }
 

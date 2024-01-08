@@ -1,0 +1,146 @@
+﻿@page "/ListProdutos"
+@attribute [StreamRendering]
+@inject HttpClient _http
+@rendermode @(new InteractiveServerRenderMode (prerender:false))
+@inject NavigationManager Topag
+@inject Produto ProService
+@using System.Reflection
+
+<PageTitle>Produtos</PageTitle>
+
+<TopBanner Texto="Produtos"></TopBanner>
+
+<p>@BancoVazio</p>
+
+@if (produtos == null)
+{
+    <p><em>Aguarde...</em></p>
+}
+else
+{
+    <button class="btn-sm btn-primary shadow-none" style="font-style:italic" @onclick="NewProduto">
+        <i class="bi-cpu-fill"></i> Novo Produto
+    </button>
+    <table class="table col-md-12">
+        <thead>
+            <tr>
+                <th>Nome Produto</th>
+                <th style="text-align:right">Estoque</th>
+                <th style="text-align:right">Preço   </th>
+                <th style="text-align:right">Data Cadastro</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Produto item in produtos)
+            {
+                <tr>
+                    <td>@item.NomeProduto</td>
+                    <td style="text-align:right">@item.QuantEstoque</td>
+                    <td style="text-align:right">@item.Preco</td>
+                    <td style="text-align:right">@DateOnly.FromDateTime(@item.DataCadastro)</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning border-dark shadow-none" style="color:white" @onclick="(() => Seleciona(item))">
+                            <i class="bi-pencil-square"></i> Alterar
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-danger border-dark shadow-none" style="color:white" @onclick="(() => Confirma(item))">
+                            <i class="bi-trash3"></i>  Apaga
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-info border-dark shadow-none" style="color:white" @onclick="(() => ConProduto(item))">
+                            <i class="bi-search"></i> Consulta
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<Mensagens @ref="Mensa" BotaoTrue=@MsgBotton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="(() => ReturnFuncao())"> </Mensagens>
+
+@code
+ {
+
+    Mensagens? Mensa = null;
+
+    public bool Confirm { get; set; } = false;
+    public string Mensag { get; set; } = string.Empty;
+    public string Titul { get; set; } = string.Empty;
+    public string Mostr { get; set; } = "none";
+    public string MsgBotton { get; set; } = string.Empty;
+    private string BancoVazio { get; set; } = string.Empty;
+
+
+    public List<Produto>? produtos = null!;
+    public int IdProduto { get; set; } = 0;
+    public string? NomeProduto { get; set; } = string.Empty;
+    public Produto Pro = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            produtos = await _http.GetFromJsonAsync<List<Produto>>(@"/api/v1/produtos");
+        }
+        catch
+        {
+            BancoVazio = "Banco de Dados Vazio";
+        }
+    }
+
+    public void Confirma(Produto pro)
+    {
+        IdProduto = pro.IdProduto;
+        NomeProduto = pro.NomeProduto;
+        Mensag = $"Cliente: {NomeProduto}";
+        Titul = "Confirma Exclusão?";
+        Mostr = "block";
+        MsgBotton = "Confirma";
+    }
+
+    public void ConProduto(Produto produto)
+    {
+        ProService.IdProduto = produto.IdProduto;
+        ProService.NomeProduto = produto.NomeProduto;
+        ProService.Descricao = produto.Descricao;
+        ProService.Preco = produto.Preco;
+        ProService.QuantEstoque = produto.QuantEstoque;
+        ProService.DataCadastro = produto.DataCadastro;
+
+        Topag.NavigateTo("/conProduto");
+    }
+
+    public async Task ReturnFuncao()
+    {
+        if (Mensa?.Confirma == true)
+        {
+            await ApagaRegistro();
+        }
+        Confirm = false;
+        Mostr = "none";
+    }
+
+    public async Task ApagaRegistro()
+    {
+        await _http.DeleteFromJsonAsync<Produto>($@"/api/v1/produtos/{IdProduto}");
+        await OnInitializedAsync();
+        Topag.NavigateTo("/listprodutos");
+    }
+
+    public void Seleciona(Produto produto)
+    {
+
+    }
+
+    public void NewProduto()
+    {
+        Topag.NavigateTo("/newProduto");
+    }
+}

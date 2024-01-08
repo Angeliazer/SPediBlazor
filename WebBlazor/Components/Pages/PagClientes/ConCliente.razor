@@ -1,0 +1,155 @@
+﻿@page "/concliente"
+@rendermode @(new InteractiveServerRenderMode (prerender:false))
+@inject Cliente CliService
+@inject NavigationManager ToPag
+
+<TopBanner Texto="Consulta Cliente"></TopBanner>
+<br />
+
+<EditForm Model="@CliService">
+    <div class="card-header border-2 justify-content-center border-primary border" style="border-radius:3px">
+        <div class="row d-flex flex-row">
+            <div class="col-8">
+                <label style="width:100%">Nome do Cliente</label>
+            </div>
+            <div class="col-4">
+                <label style="width:100%">Nome do Contato</label>
+            </div>
+        </div>
+        <div class="row d-flex flex-row">
+            <div class="col-8">
+                <InputText style="width:100%; border-radius:4px" @bind-Value="@CliService.NomeCliente" disabled="true">Nome do Cliente</InputText>
+            </div>
+            <div class="col-4">
+                <InputText style="width:100%; border-radius:4px" @bind-Value="@CliService.NomeContato" disabled="true">Nome do Cliente</InputText>
+            </div>
+        </div>
+        <div class="row d-flex flex-row">
+            <div class="col-1">
+                <label style="width:100%">Tipo</label>
+            </div>
+            @if ((int)CliService.TipoCliente == 1)
+            {
+                <div class="col-3">
+                    <label style="width: 100%; text-align: right">CPF</label>
+                </div>
+            }
+            @if ((int)CliService.TipoCliente == 2)
+            {
+                <div class="col-3">
+                    <label style="width: 100%; text-align: right">CNPJ</label>
+                </div>
+            }
+            <div class="col-2">
+                <label style="width: 100%; text-align: right">Nro Telefone</label>
+            </div>
+            <div class="col-2">
+                <label style="width: 100%; text-align: right">Limite de Crédito</label>
+            </div>
+            <div class="col-2">
+                <label style="width: 100%">E-mail</label>
+            </div>
+            <div class="col-2">
+                <label style="width: 100%; text-align: right">Data de Cadastro</label>
+            </div>
+        </div>
+
+        <div class="row d-flex flex-row">
+            <div class="col-1">
+                <InputText style="width:100%; border-radius:3px" @bind-Value="@TipoCliente" disabled="true"></InputText>
+            </div>
+            <div class="col-3">
+                @if ((int)CliService.TipoCliente == 1)
+                {
+                    <InputText style="width: 100%; border-radius: 3px; text-align: right" @bind-Value="@CliService.CpfCliente" disabled="true"></InputText>
+                }
+                else
+                {
+                    <InputText style="width:100%; border-radius: 3px; text-align: right" @bind-Value="@CliService.CnpjCliente" disabled="true"></InputText>
+                }
+            </div>
+            <div class="col-2">
+                <InputText style="width: 100%; border-radius: 3px; text-align: right" @bind-Value="@CliService.NroTelefone" disabled="true"></InputText>
+
+            </div>
+            <div class="col-2">
+                <InputNumber style="width: 100%; border-radius:3px; text-align:right" @bind-Value="@CliService.LimiteCredito" disabled="true"></InputNumber>
+            </div>
+            <div class="col-2">
+                <InputText style="width: 100%; border-radius:3px" @bind-Value="@CliService.Email" disabled="true"></InputText>
+            </div>
+
+            <div class="col-2">
+                <InputText style="width: 100%; border-radius:3px; text-align:right; color:darkred" @bind-Value="@DataCadastro" disabled="true"></InputText>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer mt-2 border-2 justify-content-center border-primary border" style="border-radius:3px">
+        <div class="row">
+            <h6 style="color:darkred"><em>Endereço</em></h6>
+            <div class="col-5">
+                <label style="width:100%">Nome da Rua</label>
+            </div>
+            <div class="col-1">
+                <label style="width:100%">Nro</label>
+            </div>
+            <div class="col-2">
+                <label style="width:100%">Bairro</label>
+            </div>
+            <div class="col-2">
+                <label style="width:100%">Cidade</label>
+            </div>
+            <div class="col-1">
+                <label style="width:100%">Estado</label>
+            </div>
+            <div class="col-1">
+                <label style="width:100%">Cep</label>
+            </div>
+
+            <div class="col-5">
+                <InputText style="width:100%; border-radius:3px" @bind-Value="@CliService.Endereco.NomeRua" disabled="true"></InputText>
+            </div>
+            <div class="col-1">
+                <InputText style="width:100%; border-radius:3px" @bind-Value="@CliService.Endereco.Numero" disabled="true"></InputText>
+            </div>
+            <div class="col-2">
+                <InputText style="width:100%; border-radius:3px" @bind-Value="@CliService.Endereco.Bairro" disabled="true"></InputText>
+            </div>
+            <div class="col-2">
+                <InputText style="width:100%; border-radius:3px" @bind-Value="@CliService.Endereco.Cidade" disabled="true"></InputText>
+            </div>
+            <div class="col-1">
+                <InputText style="width:100%; border-radius:3px" @bind-Value="@EstadoCliente" disabled="true"></InputText>
+            </div>
+            <div class="col-1">
+                <InputText style="width:100%; border-radius:3px" @bind-Value="@CliService.Endereco.Cep" disabled="true"></InputText>
+            </div>
+        </div>
+    </div>
+</EditForm>
+<p></p>
+<button class="col-1 btn btn-sm btn-primary shadow-none" style="color:white" @onclick="Voltar">
+    <i class="bi-arrow-left-circle"></i> Voltar
+</button>
+
+
+@code
+{
+    private string DataCadastro = null!;
+    private string TipoCliente = null!;
+    private string EstadoCliente = null!;
+
+    protected override void OnInitialized()
+    {
+        DataCadastro = DateOnly.FromDateTime(CliService.DataCadastro).ToString();
+        TipoCliente = CliService.TipoCliente.ToString();
+        EstadoCliente = CliService.Endereco.Estado.ToString();
+    }
+
+    private void Voltar()
+    {
+        ToPag.NavigateTo("/listclientes");
+    }
+}
+
+

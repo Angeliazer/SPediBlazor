@@ -13,5 +13,7 @@ namespace WebApi.Repository
         Task<List<Cliente>?> GetClientesNome(string nome);
 
         Task<Cliente?> RemoveCliente(int id);
+
+        Task<Cliente?> UpdateCliente(Cliente cliente);  
     }
 }

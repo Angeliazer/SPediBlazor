@@ -1,0 +1,188 @@
+﻿@page "/ListClientes"
+@attribute [StreamRendering]
+@inject HttpClient _http
+@rendermode @(new InteractiveServerRenderMode (prerender:false))
+@inject NavigationManager Topag
+@inject Cliente CliService
+
+<PageTitle>Clientes</PageTitle>
+
+<TopBanner Texto="Clientes"></TopBanner>
+
+<p>@BancoVazio</p>
+
+@if (clientes == null)
+{
+    <p><em>Aguarde...</em></p>
+}
+else
+{
+    <button class="btn-sm btn-primary shadow-none" style="font-style:italic" @onclick="NewCliente">
+        <i class="bi-person-plus"></i> Novo Cliente
+    </button>
+    <table class="table col-md-12">
+        <thead>
+            <tr>
+                <th>Nome Cliente</th>
+                <th>Nro Telefone</th>
+                <th>Contato     </th>
+                <th>Data Cadastro</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Cliente item in clientes)
+            {
+                <tr>
+                    <td>@item.NomeCliente</td>
+                    <td>@item.NroTelefone</td>
+                    <td>@item.NomeContato</td>
+                    <td>@DateOnly.FromDateTime(@item.DataCadastro)</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning border-dark shadow-none" style="color:white" @onclick="(() => AltCliente(item))">
+                            <i class="bi-pencil-square"></i> Alterar
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-danger border-dark shadow-none" style="color:white" @onclick="(() => Confirma(item))">
+                            <i class="bi-trash"></i>  Apaga
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-info border-dark shadow-none" style="color:white" @onclick="(() => ConCliente(item))">
+                            <i class="bi-search"></i> Consulta
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-primary border-dark shadow-none" style="color:white" @onclick="(() => Seleciona(item))">
+                            <i class="bi-cart"></i> Pedido
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<Mensagens @ref="Mensa" BotaoTrue=@MsgBotton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="(() => ReturnFuncao())"> </Mensagens>
+
+@code
+ {
+
+    Mensagens? Mensa = null;
+
+    public bool Confirm { get; set; } = false;
+    public string Mensag { get; set; } = string.Empty;
+    public string Titul { get; set; } = string.Empty;
+    public string Mostr { get; set; } = "none";
+    public string MsgBotton { get; set; } = string.Empty;
+    public bool Sim { get; set; } = false;
+    private string? BancoVazio  { get; set; } = string.Empty;
+
+
+    public List<Cliente>? clientes = null!;
+    public int IdCliente { get; set; } = 0;
+    public string? NomeCliente { get; set; } = string.Empty;
+    public Cliente Cli = new();
+
+    public void Sair()
+    {
+        Sim = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            clientes = await _http.GetFromJsonAsync<List<Cliente>>(@"/api/v1/clientes");
+        }
+        catch
+        {
+            BancoVazio = "Banco de Dados Vazio";
+        }
+    }
+
+    public void Confirma(Cliente cli)
+    {
+        IdCliente = cli.ClienteId;
+        NomeCliente = cli.NomeCliente;
+        Mensag = $"Cliente: {NomeCliente}";
+        Titul = "Confirma Exclusão?";
+        Mostr = "block";
+        MsgBotton = "Confirma";
+    }
+
+    private void ConCliente(Cliente cliente)
+    {
+        CliService.ClienteId = cliente.ClienteId;
+        CliService.NomeCliente = cliente.NomeCliente;
+        CliService.CpfCliente = cliente.CpfCliente;
+        CliService.CnpjCliente = cliente.CnpjCliente;
+        CliService.NroTelefone = cliente.NroTelefone;
+        CliService.NomeContato = cliente.NomeContato;
+        CliService.DataCadastro = cliente.DataCadastro;
+        CliService.TipoCliente = cliente.TipoCliente;
+        CliService.LimiteCredito = cliente.LimiteCredito;
+        CliService.Email = cliente.Email;
+
+        CliService.Endereco.NomeRua = cliente.Endereco.NomeRua;
+        CliService.Endereco.Numero = cliente.Endereco.Numero;
+        CliService.Endereco.Bairro = cliente.Endereco.Bairro;
+        CliService.Endereco.Cidade = cliente.Endereco.Cidade;
+        CliService.Endereco.Estado = cliente.Endereco.Estado;
+        CliService.Endereco.Cep = cliente.Endereco.Cep;
+
+        Topag.NavigateTo("/concliente");
+    }
+    private void AltCliente(Cliente cliente)
+    {
+        CliService.ClienteId = cliente.ClienteId;
+        CliService.NomeCliente = cliente.NomeCliente;
+        CliService.CpfCliente = cliente.CpfCliente;
+        CliService.CnpjCliente = cliente.CnpjCliente;
+        CliService.NroTelefone = cliente.NroTelefone;
+        CliService.NomeContato = cliente.NomeContato;
+        CliService.DataCadastro = cliente.DataCadastro;
+        CliService.TipoCliente = cliente.TipoCliente;
+        CliService.LimiteCredito = cliente.LimiteCredito;
+        CliService.Email = cliente.Email;
+
+        CliService.Endereco.NomeRua = cliente.Endereco.NomeRua;
+        CliService.Endereco.Numero = cliente.Endereco.Numero;
+        CliService.Endereco.Bairro = cliente.Endereco.Bairro;
+        CliService.Endereco.Cidade = cliente.Endereco.Cidade;
+        CliService.Endereco.Estado = cliente.Endereco.Estado;
+        CliService.Endereco.Cep = cliente.Endereco.Cep;
+
+        Topag.NavigateTo("/altcliente");
+    }
+
+    public async Task ReturnFuncao()
+    {
+        if (Mensa?.Confirma == true)
+        {
+            await ApagaRegistro();
+        }
+        Confirm = false;
+        Mostr = "none";
+    }
+
+    public async Task ApagaRegistro()
+    {
+        await _http.DeleteFromJsonAsync<Cliente>($@"/api/v1/clientes/{IdCliente}");
+        await OnInitializedAsync();
+    }
+
+    public void Seleciona(Cliente cliente)
+    {
+
+    }
+
+    public void NewCliente()
+    {
+        Topag.NavigateTo("/newcliente");
+    }
+}

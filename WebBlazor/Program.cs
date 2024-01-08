@@ -8,6 +8,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddScoped<Cliente>();
+builder.Services.AddScoped<Produto>();
 
 builder.Services.AddScoped<HttpClient>(x =>
    {

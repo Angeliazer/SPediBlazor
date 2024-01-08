@@ -19,12 +19,10 @@ namespace LibraryShared.Models
         public string? CpfCliente { get; set; }
 
         [Display(Name = "Cnpj do Cliente")]
-        
         [MaxLength(14)]
         public string? CnpjCliente { get; set; }
 
         [Display(Name = "Tipo de Cliente")]
-
         [Range(1,2)]
         [Required]
         public ETipoCliente TipoCliente { get; set; }
@@ -50,16 +48,17 @@ namespace LibraryShared.Models
         public DateTime DataCadastro { get; set; }
 
         [Display(Name = "E-mail")]
-        [Required(ErrorMessage = "Email")]
+        [Required(ErrorMessage = "Digitar e-mail...!")]
+        [EmailAddress(ErrorMessage = "E-mail Inválido...!")]
         public string? Email { get; set; }
 
         [Required]
         public Endereco Endereco { get; set; } = new();
     }
 
-    public class CustomValidationAttribute : ValidationAttribute
+    public class CustomValidationAttribute: ValidationAttribute
     {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             string? nome = value as string;
 

@@ -16,9 +16,12 @@
             </div>
 
             <div class="modal-footer">
-                <button class="btn-sm btn-danger" @onclick="(()=>Exclui())">@BotaoTrue</button>
-                <button class="btn-sm btn-secondary" data-bs-dismiss="modal" @onclick="(()=>Fechar())">
-                    <i class="bi-x-circle"></i> Cancelar
+                <button class="btn-sm btn-danger" style="color:white" @onclick="(()=>Exclui())">
+                    <i class="bi-save"></i>  @BotaoTrue
+                </button>
+
+                <button class="btn-sm btn-secondary" data-bs-dismiss="modal" style="color:white" @onclick="(()=>Fechar())">
+                    <i class="bi-x-circle"></i>  Cancelar
                 </button>
             </div>
         </div>
