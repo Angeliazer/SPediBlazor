@@ -4,7 +4,14 @@
 @inject HttpClient _http
 
 <TopBanner Texto="Novo Produto"></TopBanner>
-<br />
+
+<p></p>
+
+<button class="btn-sm btn-primary shadow-none" style="font-style:italic" @onclick="Categoria">
+    <i class="bi-collection"></i> Categorias
+</button>
+
+<p></p>
 
 <EditForm Model="Produto" OnValidSubmit="HandledSalvar">
     <DataAnnotationsValidator />
@@ -60,10 +67,10 @@
                 <InputText class="disabled" style="width:100%; font-style:italic; border-radius:3px; text-align:right" @bind-Value="@DataCadastro">Data Cadastro</InputText>
             </div>
             <div class="col-3">
-                <InputSelect class="form-select-sm" style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@Cliente.TipoCliente">
-                    @foreach (var opc in Enum.GetValues(typeof(ETipoCliente)))
+                <InputSelect class="form-select-sm" style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@NomeCategoria">
+                    @foreach (var opc in Categorias)
                     {
-                        <option>@opc</option>
+                        <option>@opc.NomeCategoria</option>
                     }
                 </InputSelect>
             </div>
@@ -93,6 +100,8 @@
     public string Mensag { get; set; } = string.Empty;
     public string Titul { get; set; } = string.Empty;
     public string Mostr { get; set; } = "none";
+    private string ViewPainel { get; set; } = "none";
+
     public string MsgButton { get; set; } = string.Empty;
     public bool Sim { get; set; } = false;
 
@@ -103,6 +112,9 @@
     public bool EnabledSalvar = true;
     public string DataCadastro = $"{DateTime.Now:dd/MM/yyy}";
     private string mensagemTexto { get; set; } = string.Empty;
+    private string? NomeCategoria;
+
+    private Dictionary<int, string> Dic_lista = new();
 
     public async Task ReturnFuncao()
     {
@@ -117,11 +129,19 @@
     protected override async Task OnInitializedAsync()
     {
         Categorias = await _http.GetFromJsonAsync<List<Categoria>>("/api/v1/categorias");
+        NomeCategoria = Categorias[0].NomeCategoria;
+
+        foreach (var item in Categorias)
+        {
+            Dic_lista.Add(item.IdCategoria, item.NomeCategoria);
+        }
     }
 
     private void HandledSalvar()
     {
-        if (Produto.NomeProduto == null || Produto.NomeProduto == "" || Produto.Descricao == null)
+        if (Produto.NomeProduto == null || Produto.NomeProduto == "" || Produto.Descricao == null
+            || Produto.Descricao == "" || Produto.Und == null || Produto.Und == "" || Produto.Preco == null
+            || Produto.QuantEstoque == null)
         {
             isValid = false;
         }
@@ -140,6 +160,11 @@
         }
     }
 
+    private void Categoria()
+    {
+        ToPag.NavigateTo("/mancategorias");
+    }
+
     public void ConfirmaSalvar()
     {
         MsgButton = "Confirma";
@@ -156,6 +181,17 @@
 
     public async Task Salvar()
     {
+        //Produto.IdCategoria = Convert.ToInt32(NomeCategoria.Substring(0, 1));
+
+        foreach (KeyValuePair<int, string> kvp in Dic_lista)
+        {
+            if (kvp.Value == NomeCategoria)
+            {
+                Produto.IdCategoria = kvp.Key;
+                break;
+            };
+        }
+
         HttpResponseMessage produto = await _http.PostAsJsonAsync<Produto>("/api/v1/produtos", Produto);
 
         ToPag.NavigateTo("/listprodutos");

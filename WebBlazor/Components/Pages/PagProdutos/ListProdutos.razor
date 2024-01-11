@@ -43,7 +43,7 @@ else
                     <td style="text-align:right">@item.Preco</td>
                     <td style="text-align:right">@DateOnly.FromDateTime(@item.DataCadastro)</td>
                     <td>
-                        <button class="btn btn-sm btn-warning border-dark shadow-none" style="color:white" @onclick="(() => Seleciona(item))">
+                        <button class="btn btn-sm btn-warning border-dark shadow-none" style="color:white" @onclick="(() => AltProduto(item))">
                             <i class="bi-pencil-square"></i> Alterar
                         </button>
                     </td>
@@ -113,8 +113,24 @@ else
         ProService.Preco = produto.Preco;
         ProService.QuantEstoque = produto.QuantEstoque;
         ProService.DataCadastro = produto.DataCadastro;
+        ProService.IdCategoria = produto.IdCategoria;
+        ProService.Und = produto.Und;
 
-        Topag.NavigateTo("/conProduto");
+        Topag.NavigateTo("/conproduto");
+    }
+
+    private void AltProduto(Produto produto)
+    {
+        ProService.IdProduto = produto.IdProduto;
+        ProService.NomeProduto = produto.NomeProduto;
+        ProService.Descricao = produto.Descricao;
+        ProService.Preco = produto.Preco;
+        ProService.QuantEstoque = produto.QuantEstoque;
+        ProService.DataCadastro = produto.DataCadastro;
+        ProService.IdCategoria = produto.IdCategoria;
+        ProService.Und = produto.Und;
+
+        Topag.NavigateTo("/altproduto");
     }
 
     public async Task ReturnFuncao()

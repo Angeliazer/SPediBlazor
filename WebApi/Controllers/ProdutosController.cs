@@ -108,6 +108,25 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro no Banco de Dados...!");
             }
         }
+
+        [HttpPut]
+        public async Task<ActionResult<Produto>> UpdateCliente(Produto produto)
+        {
+            try
+            {
+                var pro_ban = await _repository.UpdateProduto(produto);
+
+                if (pro_ban == null)
+                {
+                    return NotFound($"Cliente com o Id = {produto.IdProduto} não foi Encontrado....!");
+                }
+                return Ok(produto);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro no Banco de Dados...!");
+            }
+        }
     }
 }
 

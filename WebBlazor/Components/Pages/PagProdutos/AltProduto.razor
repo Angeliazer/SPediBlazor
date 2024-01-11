@@ -1,0 +1,188 @@
+﻿@page "/altproduto"
+@rendermode @(new InteractiveServerRenderMode (prerender:false))
+@inject Produto ProService
+@inject NavigationManager ToPag
+@inject HttpClient _http
+
+<TopBanner Texto="Altera Produto"></TopBanner>
+<br />
+
+<EditForm Model="@ProService">
+    <DataAnnotationsValidator />
+    <div class="card-header border-2 justify-content-center border-primary border" style="border-radius:3px">
+        <div class="row d-flex flex-row">
+            <div class="col-8">
+                <label>Nome do Produto</label>
+            </div>
+            <div class="col-4">
+                <label>Descrição do Produto</label>
+            </div>
+            <div class="col-8 mb-2">
+                <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@ProService.NomeProduto" placeholder="Nome do Produto"></InputText>
+                <ValidationMessage For="@(() => ProService.NomeProduto)" />
+            </div>
+            <div class="col-4 mb-2">
+                <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@ProService.Descricao" placeholder="Descrição Produto"></InputText>
+                <ValidationMessage For="@(() => ProService.Descricao)" />
+            </div>
+        </div>
+        <div class="row d-flex flex-row">
+            <div class="col-3">
+                <label>Preço Unidade</label>
+            </div>
+            <div class="col-2">
+                <label>Quant Estoque</label>
+            </div>
+            <div class="col-2">
+                <label>Unidade</label>
+            </div>
+            <div class="col-2">
+                <label>Data Cadastro</label>
+            </div>
+            <div class="col-3">
+                <label>Categorias</label>
+            </div>
+        </div>
+        <div class="row d-flex flex-row">
+            <div class="col-3">
+                <InputNumber style="text-align:right; width:100%; font-style:italic; border-radius:3px" @bind-Value="@ProService.Preco" placeholder="Preço Unidade"></InputNumber>
+                <ValidationMessage For="@(() => ProService.Preco)" />
+            </div>
+            <div class="col-2">
+                <InputNumber style="text-align:right; width:100%; font-style:italic; border-radius:3px" @bind-Value="@ProService.QuantEstoque" placeholder="Quantidade Estoque"></InputNumber>
+                <ValidationMessage For="@(() => ProService.QuantEstoque)" />
+            </div>
+            <div class="col-2">
+                <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@ProService.Und" placeholder="Und"></InputText>
+                <ValidationMessage For="@(() => ProService.Und)" />
+            </div>
+            <div class="col-2">
+                <InputText style="width:100%; font-style:italic; border-radius:3px; text-align:right" disabled="true" @bind-Value="@DataCadastro"></InputText>
+            </div>
+            <div class="col-3">
+                <InputSelect class="form-select-sm" style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@NomeCategoria">
+                    @foreach (var opc in Categorias)
+                    {
+                        <option>@opc.NomeCategoria</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+    </div>
+    <p></p>
+    <div class="card-footer mt-2 border-2 justify-content-xl-center border-primary border" style="border-radius:3px">
+        <div class="row">
+            <div class="col">
+                <button class="col-1 btn btn-sm btn-success shadow-none" style="color:white" @onclick="HandledSalvar">
+                    <i class="bi-save"</i> Salvar
+                </button>
+                <button class="col-1 btn btn-sm btn-primary shadow-none" style="color:white" @onclick="Voltar">
+                    <i class="bi-arrow-left-circle"></i> Voltar
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+<Mensagens @ref="Mensa" BotaoTrue=@MsgButton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="(() => ReturnFuncao())"> </Mensagens>
+
+@code{
+    public string DataCadastro = null!;
+    public List<Categoria>? Categorias = new();
+    public string? NomeCategoria;
+
+    Mensagens? Mensa = null;
+    public bool Confirm { get; set; } = false;
+    public string Mensag { get; set; } = string.Empty;
+    public string Titul { get; set; } = string.Empty;
+    public string Mostr { get; set; } = "none";
+    public string MsgButton { get; set; } = string.Empty;
+    private bool isValid = false;
+
+    private Dictionary<int, string> Dic_lista = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Categorias = await _http.GetFromJsonAsync<List<Categoria>>("/api/v1/categorias");
+        DataCadastro = DateOnly.FromDateTime(ProService.DataCadastro).ToString();
+
+        foreach (var item in Categorias)
+        {
+            Dic_lista.Add(item.IdCategoria, item.NomeCategoria);
+        }
+
+        Categoria? cate = await _http.GetFromJsonAsync<Categoria>($"/api/v1/categorias/{ProService.IdCategoria}");
+        NomeCategoria = cate.NomeCategoria;
+    }
+
+    public async Task ReturnFuncao()
+    {
+        if (Mensa?.Confirma == true)
+        {
+            await Salvar();
+        }
+        Confirm = false;
+        Mostr = "none";
+    }
+
+    private void HandledSalvar()
+    {
+
+        //isValid = VerificaClasse(Cliente);
+
+        if (ProService.NomeProduto == null || ProService.Descricao == null ||
+            ProService.NomeProduto == "" || ProService.Descricao == "" ||
+            ProService.QuantEstoque == null || ProService.Preco == null ||
+            ProService.Und == "" || ProService.Und == null)
+        {
+            isValid = false;
+        }
+        else
+        {
+            isValid = true;
+        }
+
+        if (isValid)
+        {
+            ConfirmaSalvar();
+        }
+        else
+        {
+
+        }
+    }
+
+    public void ConfirmaSalvar()
+    {
+
+        MsgButton = "Confirma";
+
+        Mensag = $"Produto: {ProService.NomeProduto}";
+        Titul = "Confirma Alteração";
+        Mostr = "block";
+
+        ProService.DataCadastro = Convert.ToDateTime(DataCadastro);
+    }
+
+    private void Voltar()
+    {
+        ToPag.NavigateTo("/listProdutos");
+    }
+
+    public async Task Salvar()
+    {
+        foreach (KeyValuePair<int, string> kvp in Dic_lista)
+        {
+            if (kvp.Value == NomeCategoria)
+            {
+                ProService.IdCategoria = kvp.Key;
+                break;
+            }
+        }
+
+        HttpResponseMessage produto = await _http.PutAsJsonAsync<Produto>("/api/v1/produtos", ProService);
+
+        ToPag.NavigateTo("/listprodutos");
+    }
+}
+

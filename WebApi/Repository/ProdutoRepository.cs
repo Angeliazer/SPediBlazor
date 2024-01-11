@@ -98,5 +98,28 @@ namespace WebApi.Repository
                 return produto;
             }
         }
+
+        public async Task<Produto?> UpdateProduto(Produto produto)
+        {
+            var pro_banco = await _context.Produtos
+                .FirstOrDefaultAsync(x => x.IdProduto == produto.IdProduto);
+
+            if (pro_banco?.IdProduto != produto.IdProduto)
+            {
+                return new Produto();
+            }
+            else
+            {
+                pro_banco.NomeProduto = produto.NomeProduto;
+                pro_banco.Descricao = produto.Descricao;
+                pro_banco.QuantEstoque = produto.QuantEstoque;
+                pro_banco.Und = produto.Und;
+                pro_banco.Preco = produto.Preco;
+                pro_banco.DataCadastro = produto.DataCadastro;
+                pro_banco.IdCategoria = produto.IdCategoria;
+                await _context.SaveChangesAsync();
+                return produto;
+            }
+        }
     }
 }

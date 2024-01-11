@@ -16,7 +16,6 @@ namespace WebApi.Controllers
             _repository = repository;
         }
 
-
         [HttpPost]
         public async Task<ActionResult<Cliente>?> AddCliente(Cliente cliente)
         {

@@ -1,7 +1,7 @@
 ﻿@page "/concliente"
-@rendermode @(new InteractiveServerRenderMode (prerender:false))
 @inject Cliente CliService
 @inject NavigationManager ToPag
+@rendermode @(new InteractiveServerRenderMode (prerender:false))
 
 <TopBanner Texto="Consulta Cliente"></TopBanner>
 <br />
@@ -18,10 +18,10 @@
         </div>
         <div class="row d-flex flex-row">
             <div class="col-8">
-                <InputText style="width:100%; border-radius:4px" @bind-Value="@CliService.NomeCliente" disabled="true">Nome do Cliente</InputText>
+                <InputText style="width:100%; border-radius:4px" @bind-Value="@CliService.NomeCliente" disabled="true"></InputText>
             </div>
             <div class="col-4">
-                <InputText style="width:100%; border-radius:4px" @bind-Value="@CliService.NomeContato" disabled="true">Nome do Cliente</InputText>
+                <InputText style="width:100%; border-radius:4px" @bind-Value="@CliService.NomeContato" disabled="true"></InputText>
             </div>
         </div>
         <div class="row d-flex flex-row">
@@ -135,21 +135,21 @@
 
 @code
 {
-    private string DataCadastro = null!;
+private string DataCadastro = null!;
     private string TipoCliente = null!;
     private string EstadoCliente = null!;
 
     protected override void OnInitialized()
     {
         DataCadastro = DateOnly.FromDateTime(CliService.DataCadastro).ToString();
-        TipoCliente = CliService.TipoCliente.ToString();
         EstadoCliente = CliService.Endereco.Estado.ToString();
+        TipoCliente = CliService.TipoCliente.ToString();
     }
 
     private void Voltar()
     {
         ToPag.NavigateTo("/listclientes");
     }
-}
 
+}
 

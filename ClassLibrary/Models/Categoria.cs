@@ -4,8 +4,10 @@ namespace LibraryShared.Models
 {
     public class Categoria
     {
-        public int IdCategoria { get; set; }
+        [Key] public int IdCategoria { get; set; }
+
         [Required]
-        public string? NomeCategoria { get; }
+        [MaxLength(50)]
+        public string? NomeCategoria { get; set; }
     }
 }

@@ -7,24 +7,24 @@
 <TopBanner Texto="Novo Cliente"></TopBanner>
 <br />
 
-<EditForm Model="Cliente" OnValidSubmit="HandledSalvar">
+<EditForm Model="@Cliente" OnValidSubmit="HandledSalvar">
     <DataAnnotationsValidator />
-    @*<ValidationSummary></ValidationSummary>*@
+    <ValidationSummary></ValidationSummary>
     <div class="card-header border-2 justify-content-center border-primary border" style="border-radius:3px">
         <div class="row d-flex flex-row">
             <div class="col-8">
-                <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@Cliente.NomeCliente" placeholder="Razão Cliente">Nome do Cliente</InputText>
+                <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="Cliente.NomeCliente" placeholder="Razão Cliente"></InputText>
                 <ValidationMessage For="@(() => Cliente.NomeCliente)"/>
             </div>
             <div class="col-4">
-                <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@Cliente.NomeContato" placeholder="Contato">Nome do Cliente</InputText>
+                <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="Cliente.NomeContato" placeholder="Contato"></InputText>
                 <ValidationMessage For="@(() => Cliente.NomeContato)" />
             </div>
         </div>
         <p></p>
         <div class="row d-flex flex-row">
             <div class="col-1">
-                <InputSelect class="form-select-sm" style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@Cliente.TipoCliente">
+                <InputSelect class="form-select-sm" style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="Cliente.TipoCliente">
                     @foreach (var opc in Enum.GetValues(typeof(ETipoCliente)))
                     {
                         <option>@opc</option>
@@ -37,18 +37,18 @@
                 {
                     case 0:
                         <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
-                                   @bind-Value="@Cliente.CpfCliente" placeholder="Nro CPF/CNPJ"></InputText>
+                                   @bind-Value="Cliente.CpfCliente" placeholder="Nro CPF/CNPJ"></InputText>
                         break;
                     case 1:
                         <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
-                                   @bind-Value="@Cliente.CpfCliente" placeholder="Nro CPF"></InputText>
+                                   @bind-Value="Cliente.CpfCliente" placeholder="Nro CPF"></InputText>
                         <ValidationMessage For="@(() => Cliente.CpfCliente)"/>
                         Cliente.CnpjCliente = null;
 
                         break;
                     case 2:
                         <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
-                                   @bind-Value="@Cliente.CnpjCliente" placeholder="Nro CNPJ"></InputText>
+                                   @bind-Value="Cliente.CnpjCliente" placeholder="Nro CNPJ"></InputText>
                         <ValidationMessage For="@(() => Cliente.CnpjCliente)"/>
                         Cliente.CpfCliente = null;
 
@@ -57,16 +57,16 @@
             </div>
             <div class="col-2">
                 <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
-                           @bind-Value="@Cliente.NroTelefone" placeholder="Nro Telefone"></InputText>
+                           @bind-Value="Cliente.NroTelefone" placeholder="Nro Telefone"></InputText>
                 <ValidationMessage For="@(() => Cliente.NroTelefone)"></ValidationMessage>
             </div>
             <div class="col-2">
                 <InputNumber style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
-                             @bind-Value="@Cliente.LimiteCredito" placeholder="Digite o Limite de Crédito"></InputNumber>
+                             @bind-Value="Cliente.LimiteCredito" placeholder="Digite o Limite de Crédito"></InputNumber>
             </div>
             <div class="col-2">
                 <InputText style="width:100%; font-style: italic; border-radius: 3px"
-                           @bind-Value="@Cliente.Email" placeholder="Digite o e-mail"></InputText>
+                           @bind-Value="Cliente.Email" placeholder="Digite o e-mail"></InputText>
                 <ValidationMessage For="@(() => Cliente.Email)"></ValidationMessage>
             </div>
             <div class="col-2">
@@ -77,45 +77,45 @@
         <p></p>
         <h6 style="color:darkred"><em>Endereço</em></h6>
         <div>
-            <InputText class="mb-2" style="width: 10%; border-radius: 3px; text-align:right" @bind-Value="@Cliente.Endereco.Cep" @onfocus="LimpaEnder" placeholder="Cep"></InputText>
+            <InputText class="mb-2" style="width: 10%; border-radius: 3px; text-align:right" @bind-Value="Cliente.Endereco.Cep" @onfocus="LimpaEnder" placeholder="Cep"></InputText>
             <button class="mb-1 btn btn-sm btn-primary shadow-none" @onclick="ConsultaCep">Consulta Cep</button>
             <span><em>@mensagemTexto</em></span>
         </div>
         <div class="row d-flex flex-row">
             <div class="col-5">
-                <InputText style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.NomeRua" placeholder="Logradouro"></InputText>
+                <InputText style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="Cliente.Endereco.NomeRua" placeholder="Logradouro"></InputText>
                 <ValidationMessage For="@(() => Cliente.Endereco.NomeRua)"></ValidationMessage>
             </div>
 
             <div class="col-1">
-                <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align:right" @bind-Value="@Cliente.Endereco.Numero" placeholder="Nro"></InputText>
+                <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align:right" @bind-Value="Cliente.Endereco.Numero" placeholder="Nro"></InputText>
                 <ValidationMessage For="@(() => Cliente.Endereco.Numero)"></ValidationMessage>
             </div>
             <div class="col-2">
-                <InputText style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.Bairro" placeholder="Bairro"></InputText>
+                <InputText style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="Cliente.Endereco.Bairro" placeholder="Bairro"></InputText>
                 <ValidationMessage For="@(() => Cliente.Endereco.Bairro)"></ValidationMessage>
             </div>
 
             <div class="col-3">
-                <InputText style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="@Cliente.Endereco.Cidade" placeholder="Cidade"></InputText>
+                <InputText style="width:100%; font-style: italic; border-radius: 3px" @bind-Value="Cliente.Endereco.Cidade" placeholder="Cidade"></InputText>
                 <ValidationMessage For="@(() => Cliente.Endereco.Cidade)"></ValidationMessage>
             </div>
 
             <div class="col-1">
-                <InputSelect class="form-select-sm" style="width:100%; font-style: italic; border-radius:3px" @bind-Value="@Cliente.Endereco.Estado">
+                <InputSelect class="form-select-sm" style="width:100%; font-style: italic; border-radius:3px" @bind-Value="Cliente.Endereco.Estado">
                     @foreach (var opc_est in Enum.GetValues(typeof(EEstado)))
                     {
                         <option>@opc_est</option>
                     }
                 </InputSelect>
-                <ValidationMessage For="@(() => Cliente.Endereco.Estado)"></ValidationMessage>
+                <ValidationMessage For="@(() =>Cliente.Endereco.Estado)"></ValidationMessage>
             </div>
         </div>
     </div>
     <div class="card-footer mt-2 border-2 justify-content-xl-center border-primary border" style="border-radius:3px">
         <div class="row">
             <div class="col">
-                <button class="col-1 btn btn-sm btn-success shadow-none" style="color:white" @onclick="HandledSalvar">
+                <button type="submit" class="col-1 btn btn-sm btn-success shadow-none" style="color:white" @onclick="HandledSalvar">
                     <i class="bi-save"</i> Salvar
                 </button>
                 <button class="col-1 btn btn-sm btn-primary shadow-none" style="color:white" @onclick="Voltar">

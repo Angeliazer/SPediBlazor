@@ -1,0 +1,149 @@
+﻿@page "/mancategorias"
+@inject NavigationManager ToPag
+@rendermode @(new InteractiveServerRenderMode (prerender:false))
+@inject HttpClient _http
+@using System.Net
+
+<TopBanner Texto="Manutenção Categorias"></TopBanner>
+
+<p></p>
+<div class="card-header mx-auto border-2 border-primary border align-items-center justify-content-center d-flex col-lg-8" style="width:80%; border-radius:3px">
+    <EditForm Model="Categoria">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col-6">
+                <label for="select">Lista de Categorias</label>
+                <InputSelect class="form-select-sm" style="width:100%; font-style: italic; border-radius: 3px" id="select" @bind-Value="@NomeCategoria">
+                    @foreach (var opc in ListaCategorias)
+                    {
+                        <option>@opc.NomeCategoria</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="col-3">
+                <label for="button"> </label>
+                <button type="submit" class="btn btn-sm btn-danger shadow-none" style="width:100%; color:white" id="button" @onclick="() => Excluir()">
+                    <i class="bi-x-circle m-3"></i> Exclui
+                </button>
+            </div>
+            <p></p>
+            <div class="col-6">
+                <label for="nome">Nova Categoria</label>
+                <InputText style="width:100%; font-style:italic; border-radius:3px" id="nome" @bind-Value="@Nome"></InputText>
+            </div>
+            <div class="col-3">
+                <label for="gravar"> </label>
+                <button type="submit" class="btn btn-sm btn-primary shadow-none" style="width:100%; color:white" for="gravar" @onclick="() => Gravar()">
+                    <i class="bi-floppy m-3"></i> Add
+                </button>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@if (SimExc)
+{
+    <p></p>
+    <div class="container d-flex align-items-center justify-content-center col-lg-10 mx-auto" style="width:100%">
+        <div class="alert alert-danger alert-dismissible border-2" role="alert">
+            <strong>Atenção!</strong> Categoria não pode ser <span><em> Excluída </em></span>, categoria cadastrada em algum Produto.
+            <button type="button" style="padding:4px 7px 2px 4px; font-size:10px" class="btn btn-sm btn-close" data-bs-dismiss="alert" aria-label="Close"
+                    @onclick="Sair"></button>
+        </div>
+    </div>
+}
+
+@if (SimInc)
+{
+    <p></p>
+    <div class="container d-flex align-items-center justify-content-center col-lg-10 mx-auto" style="width:100%">
+        <div class="alert alert-danger alert-dismissible border-2" role="alert" >
+            <strong>Atenção!</strong> Categoria não pode ser <span><em> Incluída </em></span>, categoria já cadastradaa.
+            <button type="button" style="padding:4px 7px 2px 4px; font-size:10px" class="btn btn-sm btn-close" data-bs-dismiss="alert" aria-label="Close"
+                    @onclick="Sair"></button>
+        </div>
+    </div>
+}
+
+
+@code{
+    private List<Categoria>? ListaCategorias = new();
+    private string? NomeCategoria { get; set; }
+    private Categoria Categoria = new();
+    private string? Nome { get; set; } = string.Empty;
+    private Dictionary<int, string> Dic_lista = new();
+    private bool SimExc { get; set; } = false;
+    private bool SimInc { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaCategorias = await _http.GetFromJsonAsync<List<Categoria>>("/api/v1/categorias");
+
+        foreach (var item in ListaCategorias)
+        {
+            Dic_lista.Add(item.IdCategoria, item.NomeCategoria);
+        }
+
+        NomeCategoria = ListaCategorias[0].NomeCategoria;
+    }
+
+    private async Task Gravar()
+    {
+        if (Nome != null && Nome != "")
+        {
+            var category = await _http.GetFromJsonAsync<Categoria>($@"/api/v1/categorias/nomecategoria?nome={Nome}");
+
+            if (category.NomeCategoria == null)
+            {
+                Categoria.NomeCategoria = Nome;
+
+                var categoria = await _http.PostAsJsonAsync<Categoria>("/api/v1/categorias", Categoria);
+            }
+            else
+            {
+                SimInc = true;
+            }
+
+            Nome = "";
+
+            ListaCategorias = new();
+            Dic_lista.Clear();
+            await OnInitializedAsync();
+        }
+    }
+
+    private void Sair()
+    {
+        SimInc = false;
+        SimExc = false;
+    }
+
+    private async Task Excluir()
+    {
+
+        int IdCategoria = 0;
+
+        foreach (KeyValuePair<int, string> kvp in Dic_lista)
+        {
+            if (kvp.Value == NomeCategoria)
+            {
+                IdCategoria = kvp.Key;
+                break;
+            };
+        }
+
+        var categoria = await _http.GetFromJsonAsync<Categoria>($"/api/v1/categorias/PesqCategorias/{IdCategoria}");
+
+        if (categoria.IdCategoria == 0)
+        {
+            var category = await _http.DeleteFromJsonAsync<Categoria>($"/api/v1/categorias/{IdCategoria.ToString()}");
+
+            ListaCategorias = new();
+            Dic_lista.Clear();
+            await OnInitializedAsync();
+        }
+        else
+        {
+            SimExc = true;
+        }
+    }
+}
