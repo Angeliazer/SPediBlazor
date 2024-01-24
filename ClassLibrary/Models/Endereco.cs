@@ -1,5 +1,6 @@
 ﻿using LibraryShared.Models.Enumeradores;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace LibraryShared.Models
 {

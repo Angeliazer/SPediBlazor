@@ -1,16 +1,11 @@
 ﻿@page "/ListProdutos"
 @attribute [StreamRendering]
-@inject HttpClient _http
 @rendermode @(new InteractiveServerRenderMode (prerender:false))
-@inject NavigationManager Topag
-@inject Produto ProService
 @using System.Reflection
 
 <PageTitle>Produtos</PageTitle>
 
 <TopBanner Texto="Produtos"></TopBanner>
-
-<p>@BancoVazio</p>
 
 @if (produtos == null)
 {
@@ -18,9 +13,12 @@
 }
 else
 {
-    <button class="btn-sm btn-primary shadow-none" style="font-style:italic" @onclick="NewProduto">
+    <button class="mt-1 btn-sm btn-primary shadow-none" style="font-style:italic" @onclick="NewProduto">
         <i class="bi-cpu-fill"></i> Novo Produto
     </button>
+
+    <MudaPagina @ref="Muda" PageNumb=@PageNumber TotPa=@TotPag BtnInicial=@BtnInicial EventoRet="(()=>ReturnFunc())"></MudaPagina>
+
     <table class="table col-md-12">
         <thead>
             <tr>
@@ -48,8 +46,8 @@ else
                         </button>
                     </td>
                     <td>
-                        <button class="btn btn-sm btn-danger border-dark shadow-none" style="color:white" @onclick="(() => Confirma(item))">
-                            <i class="bi-trash3"></i>  Apaga
+                        <button class="btn btn-sm btn-danger border-dark shadow-none" style="color:white" @onclick="(() => ExcProduto(item))">
+                            <i class="bi-trash3"></i>  Excluir
                         </button>
                     </td>
                     <td>
@@ -70,6 +68,8 @@ else
 
     Mensagens? Mensa = null;
 
+    MudaPagina? Muda = null;
+
     public bool Confirm { get; set; } = false;
     public string Mensag { get; set; } = string.Empty;
     public string Titul { get; set; } = string.Empty;
@@ -77,17 +77,26 @@ else
     public string MsgBotton { get; set; } = string.Empty;
     private string BancoVazio { get; set; } = string.Empty;
 
+    private List<Produto>? produtos = new();
+    private int IdProduto { get; set; } = 0;
+    private string? NomeProduto { get; set; } = string.Empty;
 
-    public List<Produto>? produtos = null!;
-    public int IdProduto { get; set; } = 0;
-    public string? NomeProduto { get; set; } = string.Empty;
-    public Produto Pro = new();
+
+    // Propriedades do Componente Paginação
+
+    private int BtnInicial { get; set; } = 1;
+    private int PageSize { get; set; } = 12;
+    private int PageNumber { get; set; } = 1;
+    private int TotPag = 0;
+    private int NroReg = 0;
+
+    private RetGetProdutos? Registro { get; set; } = null;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            produtos = await _http.GetFromJsonAsync<List<Produto>>(@"/api/v1/produtos");
+            await CarregarDados();
         }
         catch
         {
@@ -95,7 +104,25 @@ else
         }
     }
 
-    public void Confirma(Produto pro)
+    private async Task CarregarDados()
+    {
+        Registro = await _http.GetFromJsonAsync<RetGetProdutos>(@$"/api/v1/produtos/{PageNumber.ToString()}/{PageSize.ToString()}");
+
+        produtos = Registro.ListaProdutos;
+
+        NroReg = Registro.TotalReg;
+
+        if (NroReg % PageSize == 0)
+        {
+            TotPag = NroReg / PageSize;
+        }
+        else
+        {
+            TotPag = NroReg / PageSize + 1;
+        }
+    }
+
+    public void ExcProduto(Produto pro)
     {
         IdProduto = pro.IdProduto;
         NomeProduto = pro.NomeProduto;
@@ -116,7 +143,7 @@ else
         ProService.IdCategoria = produto.IdCategoria;
         ProService.Und = produto.Und;
 
-        Topag.NavigateTo("/conproduto");
+        ToPag.NavigateTo("/conproduto");
     }
 
     private void AltProduto(Produto produto)
@@ -130,7 +157,7 @@ else
         ProService.IdCategoria = produto.IdCategoria;
         ProService.Und = produto.Und;
 
-        Topag.NavigateTo("/altproduto");
+        ToPag.NavigateTo("/altproduto");
     }
 
     public async Task ReturnFuncao()
@@ -143,20 +170,24 @@ else
         Mostr = "none";
     }
 
+    public async Task ReturnFunc()
+    {
+        PageNumber = Muda.PageNumb;
+        BtnInicial = Muda.BtnInicial;
+        await CarregarDados();
+    }
+
     public async Task ApagaRegistro()
     {
         await _http.DeleteFromJsonAsync<Produto>($@"/api/v1/produtos/{IdProduto}");
+        PageNumber = 1;
+        BtnInicial = 1;
         await OnInitializedAsync();
-        Topag.NavigateTo("/listprodutos");
-    }
-
-    public void Seleciona(Produto produto)
-    {
-
+        ToPag.NavigateTo("/listprodutos");
     }
 
     public void NewProduto()
     {
-        Topag.NavigateTo("/newProduto");
+        ToPag.NavigateTo("/newProduto");
     }
 }

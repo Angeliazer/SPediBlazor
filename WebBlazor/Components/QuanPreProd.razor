@@ -1,0 +1,79 @@
+﻿@rendermode InteractiveServer
+
+<div class="modal shadow-lg" id="CaixaMensagem" tabindex="-1" style="display:@Mostra">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background-color:azure">
+            <div class="modal-body">
+
+                <div class="row d-flex flex-row justify-content-lg-start">
+                    <div class="col-8">
+                        <label><em>Produto: @Prod.NomeProduto</em></label>
+                    </div>
+                    <p></p>
+                    <div class="row">
+                        <div class="col-3">
+                            <label style="text-align: right; width: 100%; font-style: italic">Quantidade</label>
+                        </div>
+                        <div class="col-5">
+                            <label style="text-align: right; width: 100%; font-style: italic">Vlr Unitário</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <InputNumber style="width:100%; font-style:italic; border-radius:3px; text-align:right" @bind-Value="@Quantidade"></InputNumber>
+                        </div>
+                        <div class="col-5">
+                            <InputNumber style="width:100%; font-style: italic; border-radius:3px; text-align:right" @bind-Value="@VlrUnit"></InputNumber>
+                        </div>
+                    </div>
+
+
+                    <div class="modal-footer">
+                        <button class="btn-sm btn-danger" style="color:white" @onclick="(()=>Exclui())">
+                            <i class="bi-save"></i>  Confirma
+                        </button>
+
+                        <button class="btn-sm btn-secondary" data-bs-dismiss="modal" style="color:white" @onclick="(()=>Fechar())">
+                            <i class="bi-x-circle"></i>  Cancelar
+                        </button>
+                    </div>
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@code
+{
+
+    [Parameter] public string Mostra { get; set; } = "none";
+    [Parameter] public bool Confirma { get; set; } = false;
+    [Parameter] public EventCallback EventoRetorno { get; set; }
+    [Parameter] public Produto Prod { get; set; } = new();
+    [Parameter] public int Quantidade { get; set; }
+    [Parameter] public Decimal VlrUnit { get; set; }
+
+    public async void Fechar()
+    {
+        Mostra = "none";
+        Confirma = false;
+        await FuncaoCalback();
+    }
+
+    public async void Exclui()
+    {
+        Mostra = "none";
+        Confirma = true;
+        await FuncaoCalback();
+    }
+
+    public async Task FuncaoCalback()
+    {
+        await EventoRetorno.InvokeAsync();
+    }
+}
+

@@ -1,5 +1,4 @@
 ﻿using LibraryShared.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
 
@@ -58,9 +57,14 @@ namespace WebApi.Repository
                 .AsNoTracking()
                 .ToListAsync();
 
-            if (categorias.Count == 0) return null;
-
-            return categorias;
+            if (categorias != null)
+            {
+                return categorias;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<Categoria> PesqCategorias(int id)
@@ -81,7 +85,7 @@ namespace WebApi.Repository
         public async Task<Categoria>? PesquisaNome(string nome)
         {
             var categoria = await _context.Categorias
-                .Where(e=>e.NomeCategoria == nome)
+                .Where(e => e.NomeCategoria == nome)
                 .FirstOrDefaultAsync();
 
             if (categoria != null)

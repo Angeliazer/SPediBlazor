@@ -9,7 +9,7 @@ namespace WebApi.Controllers
     [ApiController]
     public class CategoriasController : ControllerBase
     {
-        private readonly ICategoriaRepository _repository;
+        private readonly ICategoriaRepository? _repository;
 
         public CategoriasController(ICategoriaRepository repository)
         {
@@ -17,7 +17,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("nomecategoria/")]
-        public async Task<ActionResult<Categoria>> PesquisaNome([FromQuery] string nome)
+        public async Task<ActionResult<Categoria>> PesquisaNome(string nome)
         {
             var categoria = await _repository.PesquisaNome(nome);
 

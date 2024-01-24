@@ -9,5 +9,7 @@ namespace WebApi.Data
         public DbSet<Endereco> Enderecos { get; set; } = default!;
         public DbSet<Produto> Produtos { get; set; } = default!;
         public DbSet<Categoria> Categorias { get; set; } = default!;
+        public DbSet<Pedido> Pedidos { get; set; } = default!;
+        public DbSet<ItPedido> ItPedidos { get; set; } = default!;
     }
 }

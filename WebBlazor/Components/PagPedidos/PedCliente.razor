@@ -1,0 +1,129 @@
+﻿@page "/pedcliente"
+@rendermode @(new InteractiveServerRenderMode (prerender:false))
+@inject ItPedido ItemPedido
+
+<TopBanner Texto="Novo Pedido Cliente"></TopBanner>
+
+<div class="card-title mt-1 border-2 justify-content-center border-primary border" style="border-radius:3px; width:100%">
+    <div class="row d-flex flex-row">
+        <label class="col mx-2" style="font-size:16px; font-style:italic">Cliente: <span em style="color:darkred"><em>@CliService.NomeCliente</em></span></label>
+    </div>
+    <div class="row d-flex flex-row">
+        <label class="col mx-2" style="font-size:16px; font-style:italic">
+            Endereço: <span em style="color:darkred">
+                <em>
+                    @CliService.Endereco.NomeRua - @CliService.Endereco.Numero - @CliService.Endereco.Bairro - @CliService.Endereco.Cidade -
+                    @CliService.Endereco.Estado.ToString() - Cep: @CliService.Endereco.Cep
+                </em>
+            </span>
+        </label>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <button class="col-2 btn btn-sm btn-success shadow-none" style="color:white" @onclick="PagProdutoNome">
+            <i class="bi bi-file-earmark-plus"</i> Adicionar Item
+        </button>
+    </div>
+</div>
+<div class="card-body mt-1 border-2 justify-content-xl-center border-primary border" style="border-radius:3px; height:470px">
+    <div class="row d-flex flex-row">
+        @if (VarGlobal.ListaItensPedidos != null)
+        {
+            <table class="table col-md-12">
+                <thead>
+                    <tr>
+                        <th>Nome Produto</th>
+                        <th style="text-align:right">Quantidade</th>
+                        <th style="text-align:right">Vlr Unit.</th>
+                        <th style="text-align:right">Vlr Total Item</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (ItPedido item in VarGlobal.ListaItensPedidos)
+                    {
+                        <tr>
+                            <td>@item.NomeProduto</td>
+                            <td style="text-align:right">@item.Quantidade</td>
+                            <td style="text-align:right">@item.VlrUndItem</td>
+                            <td style="text-align:right">@item.VlrTotalItem</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger border-dark shadow-none" style="color:white">
+                                    <i class="bi-trash"></i>  Apaga
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<div class="card-footer mt-1 border-2 justify-content-xl-center border-primary border" style="border-radius:3px">
+    <div class="row d-flex flex-row">
+        <label class="mb-1" style="font-size:16px; font-style:italic">Total do Pedido: <span em style="color:darkred"><em>@FormatarNumero(@VarGlobal.TotalPedido) </em></span></label>
+    </div>
+
+</div>
+<div class="col">
+    <button class="mt-1 col-1 btn btn-sm btn-primary shadow-none" style="color:white" @onclick="Voltar">
+        <i class="bi-arrow-left-circle"></i> Voltar
+    </button>
+    <button class="mt-1 col-1 btn btn-sm btn-success shadow-none" style="color:white" @onclick="()=>GravarPedido()">
+        <i class="bi-save"></i> Salvar
+    </button>
+</div>
+
+@code
+{
+    private CultureInfo cultura = new CultureInfo("pt-BR"); // Configuração para o Brasil
+    private Pedido Pedido = new();
+
+    protected override void OnInitialized()
+    {
+        if (VarGlobal.IniciaLista == false)
+        {
+            VarGlobal.ListaItensPedidos = [];
+            VarGlobal.TotalPedido = 0;
+            VarGlobal.IniciaLista = true;
+        }
+    }
+
+    private void Voltar()
+    {
+        ToPag.NavigateTo("/listclientes");
+    }
+
+    private void PagProdutoNome()
+    {
+        ToPag.NavigateTo("/prodnome");
+    }
+
+    private string FormatarNumero(decimal numero)
+    {
+        //decimal nro = Convert.ToDecimal(numero);
+
+        string numeroFormatado = numero.ToString("N2", cultura);
+
+        return numeroFormatado;
+    }
+
+    private async Task GravarPedido()
+    {
+
+        Pedido.IdCliente = CliService.ClienteId;
+        Pedido.TotalPedido = VarGlobal.TotalPedido;
+        foreach (var item in VarGlobal.ListaItensPedidos)
+        {
+            Pedido.ListaItPedidos.Add(item);
+        }
+
+        HttpResponseMessage pedido = await _http.PostAsJsonAsync<Pedido>("/api/v1/pedidos", Pedido);
+
+        ToPag.NavigateTo("/listpedidos");
+    }
+
+}

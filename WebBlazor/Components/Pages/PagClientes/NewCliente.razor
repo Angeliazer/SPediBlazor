@@ -1,8 +1,6 @@
 ﻿@page "/newcliente"
-@inject NavigationManager ToPag
 @rendermode @(new InteractiveServerRenderMode (prerender:false))
-@inject HttpClient _http
-
+@using System.Reflection
 
 <TopBanner Texto="Novo Cliente"></TopBanner>
 <br />
@@ -14,7 +12,7 @@
         <div class="row d-flex flex-row">
             <div class="col-8">
                 <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="Cliente.NomeCliente" placeholder="Razão Cliente"></InputText>
-                <ValidationMessage For="@(() => Cliente.NomeCliente)"/>
+                <ValidationMessage For="@(() => Cliente.NomeCliente)" />
             </div>
             <div class="col-4">
                 <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="Cliente.NomeContato" placeholder="Contato"></InputText>
@@ -42,14 +40,14 @@
                     case 1:
                         <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
                                    @bind-Value="Cliente.CpfCliente" placeholder="Nro CPF"></InputText>
-                        <ValidationMessage For="@(() => Cliente.CpfCliente)"/>
+                        <ValidationMessage For="@(() => Cliente.CpfCliente)" />
                         Cliente.CnpjCliente = null;
 
                         break;
                     case 2:
                         <InputText style="width:100%; font-style: italic; border-radius: 3px; text-align: right"
                                    @bind-Value="Cliente.CnpjCliente" placeholder="Nro CNPJ"></InputText>
-                        <ValidationMessage For="@(() => Cliente.CnpjCliente)"/>
+                        <ValidationMessage For="@(() => Cliente.CnpjCliente)" />
                         Cliente.CpfCliente = null;
 
                         break;
@@ -108,7 +106,7 @@
                         <option>@opc_est</option>
                     }
                 </InputSelect>
-                <ValidationMessage For="@(() =>Cliente.Endereco.Estado)"></ValidationMessage>
+                <ValidationMessage For="@(() => Cliente.Endereco.Estado)"></ValidationMessage>
             </div>
         </div>
     </div>
@@ -155,6 +153,8 @@
     public bool EnabledSalvar = true;
     public string DataCadastro = $"{DateTime.Now:dd/MM/yyy}";
     private string mensagemTexto { get; set; } = string.Empty;
+
+    private Endereco Endereco = new();
 
     public EEstado estado = new();
 
@@ -232,9 +232,11 @@
     private void HandledSalvar()
     {
 
-        //isValid = VerificaClasse(Cliente);
+        //isValid = Cliente.BuscarValoresClasse(Cliente);
 
-        //isValid = true;
+        //Endereco.BuscarValoresClasse(Cliente.Endereco);
+
+        //isValid = Cliente.VerificaClasse();
 
         if (Cliente.NomeCliente == null || Cliente.NomeContato == null || Cliente.NomeCliente == "" || Cliente.NomeContato == "" ||
             (Cliente.CpfCliente == null && Cliente.CnpjCliente == null) || (Cliente.CpfCliente == "" && Cliente.CnpjCliente == "") ||
@@ -249,7 +251,6 @@
         {
             isValid = true;
         }
-
 
         if (isValid)
         {

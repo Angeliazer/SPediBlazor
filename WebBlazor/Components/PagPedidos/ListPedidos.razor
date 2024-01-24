@@ -1,0 +1,100 @@
+﻿@page "/listpedidos"
+@attribute [StreamRendering]
+@rendermode @(new InteractiveServerRenderMode (prerender:false))
+
+<PageTitle>Lista Pedidos</PageTitle>
+
+<TopBanner Texto=@Cabecalho></TopBanner>
+
+
+@if (ListaPedidos == null)
+{
+    <p><em>Aguarde...</em></p>
+}
+else
+{
+    <button class="mt-1 btn-sm btn-primary shadow-none" style="font-style:italic" @onclick="NewPedido">
+        <i class="bi-person-plus"></i> Novo Pedido
+    </button>
+
+    @if (ListaPedidos.Count != 0)
+    {
+        <table class="table col-md-12">
+            <thead>
+                <tr>
+                    <th>Nro Pedido</th>
+                    <th style="text-align:right">Data Pedido</th>
+                    <th style="text-align:right">Vlr Total</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ListaPedidos)
+                {
+                    <tr>
+                        <td>@item.IdPedido</td>
+                        <td style="text-align:right">@DateOnly.FromDateTime(@item.DataCadastro)</td>
+                        <td style="text-align:right">@item.TotalPedido</td>
+                        <td></td>
+                        <td>
+                            <button class="btn btn-sm btn-info border-dark shadow-none" style="color:white" @onclick="(() => ConPedido(item))">
+                                <i class="bi bi-search"></i> Consulta
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-primary border-dark shadow-none" style="color:white" @onclick="(() => Seleciona(item))">
+                                <i class="bi-cart"></i> Pedidos
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-md-6">
+                    <h5 class="text-center">Bando de Dados Vazio.....!</h5>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+
+@code {
+
+    private string? Cabecalho { get; set; }
+    private List<Pedido>? ListaPedidos { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        Cabecalho = "Pedidos - " + CliService.NomeCliente;
+
+        ListaPedidos = await _http.GetFromJsonAsync<List<Pedido>?>(@$"api/v1/pedidos/{CliService.ClienteId}");
+    }
+
+
+
+    private void ConPedido(Pedido pedido)
+    {
+
+    }
+
+    private void Seleciona(Pedido pedido)
+    {
+
+    }
+
+    private void NewPedido()
+    {
+        ToPag.NavigateTo("/pedcliente");
+        VarGlobal.IniciaLista = false;
+    }
+
+}

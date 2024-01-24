@@ -1,5 +1,7 @@
 ﻿using LibraryShared.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
 using WebApi.Repository;
 
 namespace WebApi.Controllers
@@ -71,18 +73,22 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<Produto>>> GetProdutos()
+        [HttpGet("{page:int}/{size:int}")]
+        public async Task<ActionResult<RetGetProdutos>> GetProdutos(int page, int size)
         {
             try
             {
-                var produtos = await _repository.GetProdutos();
+                var retorno = await _repository.GetProdutos(page, size);
 
-                if (produtos?.Count != 0)
+                if (retorno.ListaProdutos.Count != 0)
                 {
-                    return Ok(produtos);
+
+                    return Ok(retorno);
                 }
-                return Ok("Banco de dados Vazio....!");
+                else
+                {
+                    return BadRequest(retorno=new());
+                }
             }
             catch
             {
@@ -90,16 +96,16 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet("{nome}")]
-        public async Task<ActionResult<List<Produto>>> GetProdutosNome(string nome)
+        [HttpGet("getprodutosnome/")]
+        public async Task<ActionResult<RetGetProdutos>?> GetProdutosNome(string nome, int PageNumber, int PageSize)
         {
             try
             {
-                var produtos = await _repository.GetProdutosNome(nome);
+                var retorno = await _repository.GetProdutosNome(nome, PageNumber, PageSize);
 
-                if (produtos?.Count != 0)
+                if (retorno.ListaProdutos?.Count != 0)
                 {
-                    return Ok(produtos);
+                    return Ok(retorno);
                 }
                 return NotFound("Banco de dados Vazio....!");
             }

@@ -12,32 +12,44 @@
         <div class="row d-flex justify-content-center align-items-center">
             <div class="col-6">
                 <label for="select">Lista de Categorias</label>
-                <InputSelect class="form-select-sm" style="width:100%; font-style: italic; border-radius: 3px" id="select" @bind-Value="@NomeCategoria">
+                <InputSelect class="form-select-sm" style="width:100%; font-style: italic; border-radius: 3px" id="select" @bind-Value="@NomeCategoria"
+                             @onfocus="LimpaAlertas">
                     @foreach (var opc in ListaCategorias)
                     {
                         <option>@opc.NomeCategoria</option>
                     }
                 </InputSelect>
             </div>
-            <div class="col-3">
+            <div class="col-2">
                 <label for="button"> </label>
                 <button type="submit" class="btn btn-sm btn-danger shadow-none" style="width:100%; color:white" id="button" @onclick="() => Excluir()">
-                    <i class="bi-x-circle m-3"></i> Exclui
+                    <i class="bi-x-circle m-2"></i> Exclui
                 </button>
             </div>
             <p></p>
             <div class="col-6">
                 <label for="nome">Nova Categoria</label>
-                <InputText style="width:100%; font-style:italic; border-radius:3px" id="nome" @bind-Value="@Nome"></InputText>
+                <InputText style="width:100%; font-style:italic; border-radius:3px" id="nome" @bind-Value="@Nome"
+                           @onfocus="LimpaAlertas"></InputText>
             </div>
-            <div class="col-3">
+            <div class="col-2">
                 <label for="gravar"> </label>
                 <button type="submit" class="btn btn-sm btn-primary shadow-none" style="width:100%; color:white" for="gravar" @onclick="() => Gravar()">
-                    <i class="bi-floppy m-3"></i> Add
+                    <i class="bi-floppy m-2"></i> Add
                 </button>
             </div>
         </div>
     </EditForm>
+</div>
+
+
+@*<div class="container d-flex mx-auto" style="width:100%">*@
+
+<p></p>
+<div class="card-footer mx-auto border-2 border-primary border d-flex col-lg-8" style="width:80%; border-radius:3px">
+    <button class="col-1 btn btn-sm btn-primary shadow-none" style="color:white" @onclick="Voltar">
+        <i class="bi-arrow-left-circle"></i> Voltar
+    </button>
 </div>
 
 @if (SimExc)
@@ -56,8 +68,8 @@
 {
     <p></p>
     <div class="container d-flex align-items-center justify-content-center col-lg-10 mx-auto" style="width:100%">
-        <div class="alert alert-danger alert-dismissible border-2" role="alert" >
-            <strong>Atenção!</strong> Categoria não pode ser <span><em> Incluída </em></span>, categoria já cadastradaa.
+        <div class="alert alert-danger alert-dismissible border-2" role="alert">
+            <strong>Atenção!</strong> Categoria não pode ser <span><em> Incluída </em></span>, categoria já cadastrada.
             <button type="button" style="padding:4px 7px 2px 4px; font-size:10px" class="btn btn-sm btn-close" data-bs-dismiss="alert" aria-label="Close"
                     @onclick="Sair"></button>
         </div>
@@ -111,6 +123,11 @@
         }
     }
 
+    private void Voltar()
+    {
+        ToPag.NavigateTo("/newproduto");
+    }
+
     private void Sair()
     {
         SimInc = false;
@@ -145,5 +162,10 @@
         {
             SimExc = true;
         }
+    }
+
+    private void LimpaAlertas()
+    {
+        SimInc = SimExc = false;
     }
 }

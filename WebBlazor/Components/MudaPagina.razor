@@ -1,0 +1,87 @@
+﻿@inject HttpClient _http
+
+<div class="btn-group mx-2">
+    <button class="btn btn-sm border-info shadow-none" @onclick="AnteriorPag" style="border-top-left-radius:3px; border-bottom-left-radius:3px">&laquo</button>
+    @foreach (var i in Enumerable.Range(BtnInicial, 5))
+    {
+        if ((i) == PageNumb)
+        {
+            <button class="btn btn-sm border-info shadow-none" @onclick="()=>PagNumero(i)" style="background-color:blue">@(i)</button>
+        }
+        else
+        {
+            <button class="btn btn-sm border-info shadow-none" @onclick="()=>PagNumero(i)" style="background-color:@corPag">@(i)</button>
+        }
+    }
+    <button class="btn btn-sm border-info shadow-none" @onclick="ProximaPag" style="border-top-left-radius:3px; border-bottom-left-radius:3px">&raquo</button>
+</div>
+
+@code {
+
+    [Parameter] public int PageNumb { get; set; } = 1;
+    [Parameter] public int TotPa { get; set; }
+    [Parameter] public int PageSiz { get; set; } = 11;
+    [Parameter] public EventCallback EventoRet { get; set; }
+    [Parameter] public int BtnInicial { get; set; }
+
+    private ElementReference meuBotao { get; set; }
+
+    private string corPag = "none";
+
+    private async Task PagNumero(int nro)
+    {
+        PageNumb = nro;
+        await FuncaoVolta();
+    }
+
+    private async Task AnteriorPag()
+    {
+        PageNumb--;
+        if (PageNumb == 0)
+        {
+            PageNumb = 1;
+            await FuncaoVolta();
+            return;
+        }
+
+        if (PageNumb < BtnInicial)
+        {
+            BtnInicial--;
+            await FuncaoVolta();
+            return;
+        }
+        await FuncaoCalback();
+    }
+
+    private async Task ProximaPag()
+    {
+        PageNumb++;
+
+        if (PageNumb > TotPa)
+        {
+            PageNumb--;
+            await FuncaoVolta();
+            return;
+        }
+
+        if (PageNumb > 5)  
+        {
+            BtnInicial++;
+            await FuncaoVolta();
+            return;
+        }
+
+        await FuncaoVolta();
+    }
+
+    private async Task FuncaoVolta()
+    {
+        await FuncaoCalback();
+    }
+
+    public async Task FuncaoCalback()
+    {
+        await EventoRet.InvokeAsync();
+    }
+
+}

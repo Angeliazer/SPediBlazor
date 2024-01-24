@@ -1,80 +1,81 @@
 ﻿@page "/conproduto"
 @rendermode @(new InteractiveServerRenderMode (prerender:false))
-@inject Produto ProService
-@inject NavigationManager ToPag
-@inject HttpClient _http
 
 <TopBanner Texto="Consulta Cliente"></TopBanner>
 <br />
 
-<EditForm Model="@ProService">
-    <DataAnnotationsValidator />
-    <div class="card-header border-2 justify-content-center border-primary border" style="border-radius:3px">
-        <div class="row d-flex flex-row">
-            <div class="col-8">
-                <label>Nome do Produto</label>
-            </div>
-            <div class="col-4">
-                <label>Descrição do Produto</label>
-            </div>
-            <div class="col-8 mb-2">
-                <InputText style="width:100%; font-style:italic; border-radius:3px" disabled="true" @bind-Value="@ProService.NomeProduto" placeholder="Nome do Produto"></InputText>
-                <ValidationMessage For="@(() => ProService.NomeProduto)" />
-            </div>
-            <div class="col-4 mb-2">
-                <InputText style="width:100%; font-style:italic; border-radius:3px" disabled="true" @bind-Value="@ProService.Descricao" placeholder="Descrição Produto"></InputText>
-                <ValidationMessage For="@(() => ProService.Descricao)" />
-            </div>
-        </div>
-    <div class="row d-flex flex-row">
-            <div class="col-3">
-                <label>Preço Unidade</label>
-            </div>
-            <div class="col-2">
-                <label>Quant Estoque</label>
-            </div>
-            <div class="col-2">
-                <label>Unidade</label>
-            </div>
-            <div class="col-2">
-                <label>Data Cadastro</label>
-            </div>
-            <div class="col-3">
-                <label>Categorias</label>
-            </div>
-        </div>
-        <div class="row d-flex flex-row">
-            <div class="col-3">
-                <InputNumber style="text-align:right; width:100%; font-style:italic; border-radius:3px" disabled="true" @bind-Value="@ProService.Preco" placeholder="Preço Unidade"></InputNumber>
-                <ValidationMessage For="@(() => ProService.Preco)" />
-            </div>
-            <div class="col-2">
-                <InputNumber style="text-align:right; width:100%; font-style:italic; border-radius:3px" disabled="true" @bind-Value="@ProService.QuantEstoque" placeholder="Quantidade Estoque"></InputNumber>
-                <ValidationMessage For="@(() => ProService.QuantEstoque)" />
-            </div>
-            <div class="col-2">
-                <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@ProService.Und" disabled="true" placeholder="Und"></InputText>
-                <ValidationMessage For="@(() => ProService.Und)" />
-            </div>
-            <div class="col-2">
-                <InputText style="width:100%; font-style:italic; border-radius:3px; text-align:right" disabled="true" @bind-Value="@DataCadastro"></InputText>
-            </div>
-            <div class="col-3">
-                <InputSelect class="form-select-sm" style="width:100%; font-style:italic; border-radius:3px" disabled="true" @bind-Value="@NomeCategoria">
-                    @foreach (var opc in listaCategorias)
-                    {
-                        <option>@opc</option>
-                    }
-                </InputSelect>
-            </div>
-        </div>
-</div>
-</EditForm>
+<FixedCard>
+    <EditForm Model="@ProService">
+        <DataAnnotationsValidator />
+        <div class="card-header border-2 justify-content-center border-primary border" style="border-radius:3px">
 
+            <div class="row d-flex flex-row">
+                <div class="col-8">
+                    <label>Nome do Produto</label>
+                </div>
+                <div class="col-4">
+                    <label>Descrição do Produto</label>
+                </div>
+                <div class="col-8 mb-2">
+                    <InputText style="width:100%; font-style:italic; border-radius:3px" disabled="true" @bind-Value="@ProService.NomeProduto" placeholder="Nome do Produto"></InputText>
+                    <ValidationMessage For="@(() => ProService.NomeProduto)" />
+                </div>
+                <div class="col-4 mb-2">
+                    <InputText style="width:100%; font-style:italic; border-radius:3px" disabled="true" @bind-Value="@ProService.Descricao" placeholder="Descrição Produto"></InputText>
+                    <ValidationMessage For="@(() => ProService.Descricao)" />
+                </div>
+            </div>
+            <div class="row d-flex flex-row">
+                <div class="col-3">
+                    <label>Preço Unidade</label>
+                </div>
+                <div class="col-2">
+                    <label>Quant Estoque</label>
+                </div>
+                <div class="col-2">
+                    <label>Unidade</label>
+                </div>
+                <div class="col-2">
+                    <label>Data Cadastro</label>
+                </div>
+                <div class="col-3">
+                    <label>Categorias</label>
+                </div>
+            </div>
+            <div class="row d-flex flex-row">
+                <div class="col-3">
+                    <InputNumber style="text-align:right; width:100%; font-style:italic; border-radius:3px" disabled="true" @bind-Value="@ProService.Preco" placeholder="Preço Unidade"></InputNumber>
+                    <ValidationMessage For="@(() => ProService.Preco)" />
+                </div>
+                <div class="col-2">
+                    <InputNumber style="text-align:right; width:100%; font-style:italic; border-radius:3px" disabled="true" @bind-Value="@ProService.QuantEstoque" placeholder="Quantidade Estoque"></InputNumber>
+                    <ValidationMessage For="@(() => ProService.QuantEstoque)" />
+                </div>
+                <div class="col-2">
+                    <InputText style="width:100%; font-style:italic; border-radius:3px" @bind-Value="@ProService.Und" disabled="true" placeholder="Und"></InputText>
+                    <ValidationMessage For="@(() => ProService.Und)" />
+                </div>
+                <div class="col-2">
+                    <InputText style="width:100%; font-style:italic; border-radius:3px; text-align:right" disabled="true" @bind-Value="@DataCadastro"></InputText>
+                </div>
+                <div class="col-3">
+                    <InputSelect class="form-select-sm" style="width:100%; font-style:italic; border-radius:3px" disabled="true" @bind-Value="@NomeCategoria">
+                        @foreach (var opc in listaCategorias)
+                        {
+                            <option>@opc</option>
+                        }
+                    </InputSelect>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+
+</FixedCard>
 <p></p>
 <button class="col-1 btn btn-sm btn-primary shadow-none" style="color:white" @onclick="Voltar">
     <i class="bi-arrow-left-circle"></i> Voltar
 </button>
+
 
 @code{
     public string DataCadastro = null!;

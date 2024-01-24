@@ -9,6 +9,11 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped<Cliente>();
 builder.Services.AddScoped<Produto>();
+builder.Services.AddScoped<Pedido>();
+builder.Services.AddScoped<ItPedido>();
+builder.Services.AddScoped<VariaveisGlobais>();
+builder.Services.AddScoped<List<ItPedido>>();
+
 
 builder.Services.AddScoped<HttpClient>(x =>
    {

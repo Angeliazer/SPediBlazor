@@ -1,7 +1,5 @@
 ﻿@page "/newproduto"
-@inject NavigationManager ToPag
 @rendermode @(new InteractiveServerRenderMode (prerender:false))
-@inject HttpClient _http
 
 <TopBanner Texto="Novo Produto"></TopBanner>
 
@@ -181,8 +179,6 @@
 
     public async Task Salvar()
     {
-        //Produto.IdCategoria = Convert.ToInt32(NomeCategoria.Substring(0, 1));
-
         foreach (KeyValuePair<int, string> kvp in Dic_lista)
         {
             if (kvp.Value == NomeCategoria)
@@ -191,6 +187,8 @@
                 break;
             };
         }
+
+        Console.WriteLine(Produto);
 
         HttpResponseMessage produto = await _http.PostAsJsonAsync<Produto>("/api/v1/produtos", Produto);
 

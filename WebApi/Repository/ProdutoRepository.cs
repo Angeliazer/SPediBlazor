@@ -1,5 +1,6 @@
 ﻿using LibraryShared.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using WebApi.Data;
 
 namespace WebApi.Repository
@@ -8,14 +9,13 @@ namespace WebApi.Repository
     {
         private readonly DBPedDataContext _context;
 
-        public ProdutoRepository (DBPedDataContext context)
+        public ProdutoRepository(DBPedDataContext context)
         {
             _context = context;
         }
 
-        public async Task<Produto?> AddProduto(Produto produto)
+        public async Task<Produto> AddProduto(Produto produto)
         {
-            if (produto != null)
             {
                 using var trans = _context.Database.BeginTransaction();
                 try
@@ -32,13 +32,14 @@ namespace WebApi.Repository
                     trans.Rollback();
                 }
             }
-            return null;
+            return null!;
         }
 
-        public async Task<Produto?> GetProduto(int id)
+        public async Task<Produto> GetProduto(int id)
         {
             var produto = await _context.Produtos
                 .FirstOrDefaultAsync(x => x.IdProduto == id);
+
             if (produto != null)
             {
                 return produto;
@@ -49,38 +50,55 @@ namespace WebApi.Repository
             }
         }
 
-        public async Task<List<Produto>?> GetProdutos()
+        public async Task<RetGetProdutos> GetProdutos(int pageNumber, int pageSize)
         {
-            var produtos = await _context.Produtos
-           .OrderBy(x => x.NomeProduto)
-           .AsNoTracking()
-           .ToListAsync();
+            var nroReg = await _context.Produtos.CountAsync();
 
-            if (produtos != null)
+            RetGetProdutos retorno = new();
+
+            var produtos = await _context.Produtos
+                           .OrderBy(x => x.NomeProduto)
+                           .Skip((pageNumber - 1) * pageSize)
+                           .Take(pageSize)
+                           .ToListAsync();
+
+            retorno.ListaProdutos = produtos;
+            retorno.TotalReg = nroReg;
+
+            if (produtos.Count != 0)
             {
-                return produtos;
+                return retorno;
             }
             else
             {
-                return null;
+                return (retorno = new());
             }
         }
 
-        public async Task<List<Produto>?> GetProdutosNome(string nome)
+        public async Task<RetGetProdutos>? GetProdutosNome(string nome, int PageNumber, int PageSize)
         {
+            var nroReg = await _context.Produtos.CountAsync();
+
+            RetGetProdutos retorno = new();
+
             var produtos = await _context.Produtos
-              .Where(x => x.Descricao != null && x.Descricao.Contains(nome))
-              .OrderBy(x => x.Descricao)
-              //.AsNoTracking()
+              .Where(x => string.IsNullOrEmpty(nome) || EF.Functions.Like (x.NomeProduto, nome + "%") )
+              .OrderBy(x => x.NomeProduto)
+              .AsNoTracking()
+              .Skip((PageNumber - 1) * PageSize)
+              .Take(PageSize)
               .ToListAsync();
 
-            if (produtos != null)
+            retorno.ListaProdutos = produtos;
+            retorno.TotalReg = produtos.Count();
+
+            if (produtos.Count != 0)
             {
-                return produtos;
+                return retorno;
             }
             else
             {
-                return null;
+                return (retorno = new());
             }
         }
 

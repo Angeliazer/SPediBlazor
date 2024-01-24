@@ -1,0 +1,14 @@
+﻿<div class="fixed-card">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Título do Card</h5>
+            <div class="card-text" style="max-height: fit-content; overflow-y: auto;">
+                @ChildContent
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}

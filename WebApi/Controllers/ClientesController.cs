@@ -1,6 +1,5 @@
 ﻿using LibraryShared.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WebApi.Repository;
 
 namespace WebApi.Controllers
