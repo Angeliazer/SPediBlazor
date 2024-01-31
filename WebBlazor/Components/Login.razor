@@ -1,0 +1,50 @@
+﻿@page "/login"
+@rendermode InteractiveServer
+<div class="container">
+    <EditForm Model="User">
+        <div class="row item">
+            <label>Usuário</label>
+            <InputText type="text" @bind-Value="@usuario"> </InputText>
+        </div>
+        <div class="row item">
+            <label>Senha</label>
+            <InputText type="password" @bind-Value="@password"> </InputText>
+        </div>
+        <br />
+        <div class="botao">
+            <button class="itens" @onclick="()=>Logando()">Login</button>
+        </div>
+    </EditForm>
+</div>
+
+@if (MostaLogin)
+{
+    <MostraUsuario></MostraUsuario>
+}
+
+
+@code {
+    public Usuario User { get; set; } = new();
+    private string? usuario { get; set; } = string.Empty;
+    private string? password { get; set; } = string.Empty;
+    private bool MostaLogin { get; set; } = false;
+
+    protected override void OnInitialized()
+    {
+        usuario = password = string.Empty;
+    }
+
+    private async Task Logando()
+    {
+
+        User.Nome = usuario;
+        User.Password = password;
+
+        var usuar = await _http.PostAsJsonAsync<Usuario>($@"/api/v1/usuarios", User);
+        if (usuar != null)
+        {
+            VarGlobal.NomeUsuario = User.Nome;
+            ToPag.NavigateTo("/");
+        }
+    }
+}

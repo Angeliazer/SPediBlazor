@@ -39,11 +39,11 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{idCliente:int}")]
-        public async Task<ActionResult<List<Pedido>>> GetAllCliente(int idCliente)
+        public async Task<ActionResult<List<Pedido>>> GetAllPedido(int idCliente)
         {
             try
             {
-                var pedidos = await _repository.GetAllCliente(idCliente);
+                var pedidos = await _repository.GetAllPedido(idCliente);
 
                 if (pedidos?.Count != 0)
                 {

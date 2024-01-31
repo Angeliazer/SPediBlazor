@@ -41,6 +41,7 @@ namespace WebApi.Repository
             var cliente = await _context.Clientes
                 .Include("Endereco")
                 .FirstOrDefaultAsync(x => x.ClienteId == id);
+
             if (cliente != null)
             {
                 return cliente;

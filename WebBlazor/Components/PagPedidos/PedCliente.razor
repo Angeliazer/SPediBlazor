@@ -26,38 +26,56 @@
         </button>
     </div>
 </div>
-<div class="card-body mt-1 border-2 justify-content-xl-center border-primary border" style="border-radius:3px; height:470px">
-    <div class="row d-flex flex-row">
-        @if (VarGlobal.ListaItensPedidos != null)
-        {
-            <table class="table col-md-12">
-                <thead>
-                    <tr>
-                        <th>Nome Produto</th>
-                        <th style="text-align:right">Quantidade</th>
-                        <th style="text-align:right">Vlr Unit.</th>
-                        <th style="text-align:right">Vlr Total Item</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
 
-                    @foreach (ItPedido item in VarGlobal.ListaItensPedidos)
-                    {
-                        <tr>
-                            <td>@item.NomeProduto</td>
-                            <td style="text-align:right">@item.Quantidade</td>
-                            <td style="text-align:right">@item.VlrUndItem</td>
-                            <td style="text-align:right">@item.VlrTotalItem</td>
-                            <td>
-                                <button class="btn btn-sm btn-danger border-dark shadow-none" style="color:white">
-                                    <i class="bi-trash"></i>  Apaga
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+<div class="card-title mt-1 border-2 justify-content-center border-primary border" style="border-radius:3px; width:100%">
+    <div class="row mx-auto">
+        <div class="col-4">
+            Nome do Produto
+        </div>
+        <div class="col-1" style="text-align:right">
+            <span>Quant</span>
+        </div>
+        <div class="col-1">
+            Und
+        </div>
+        <div class="col-2" style="text-align:right">
+            Vlr Und
+        </div>
+        <div class="col-2" style="text-align:right">
+            Total Item
+        </div>
+        <div class="col-1">
+            <button class="btn btn-sm btn-danger border-dark shadow-none invisible" style="color:white">
+                <i class="bi-trash"></i>  Exclui
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="card-body mt-0 border-2 justify-content-center border-primary border overflow-auto" style="border-radius:3px; width:100%; font-style:italic; height:440px">
+    <div class="row">
+        @foreach (ItPedido item in VarGlobal.ListaItensPedidos)
+        {
+            <div class="col-4">
+                @item.NomeProduto
+            </div>
+            <div class="col-1" style="text-align:right">
+                @item.Quantidade
+            </div>
+            <div class="col-1">
+                @item.UndMed
+            </div>
+            <div class="col-2" style="text-align:right">
+                @FormatarNumero(@item.VlrUndItem)
+            </div>
+            <div class="col-2" style="text-align:right">
+                @FormatarNumero(@item.VlrTotalItem)
+            </div>
+            <div class="col-1">
+                <button class="btn btn-sm btn-danger border-dark shadow-none" style="color:white" @onclick=@(()=>ApagaItem(item))>
+                    <i class="bi-trash"></i>  Exclui
+                </button>
+            </div>
         }
     </div>
 </div>
@@ -90,6 +108,11 @@
             VarGlobal.TotalPedido = 0;
             VarGlobal.IniciaLista = true;
         }
+        else
+        {
+            VarGlobal.ListaItensPedidos = VarGlobal.ListaItensPedidos.OrderBy(p => p.NomeProduto).ToList();
+        }
+
     }
 
     private void Voltar()
@@ -100,6 +123,12 @@
     private void PagProdutoNome()
     {
         ToPag.NavigateTo("/prodnome");
+    }
+
+    private void ApagaItem(ItPedido itpedido)
+    {
+        VarGlobal.ListaItensPedidos.Remove(itpedido);
+        VarGlobal.TotalPedido = VarGlobal.TotalPedido - itpedido.VlrTotalItem;
     }
 
     private string FormatarNumero(decimal numero)
@@ -113,17 +142,18 @@
 
     private async Task GravarPedido()
     {
-
-        Pedido.IdCliente = CliService.ClienteId;
-        Pedido.TotalPedido = VarGlobal.TotalPedido;
-        foreach (var item in VarGlobal.ListaItensPedidos)
+        if (VarGlobal.TotalPedido != 0)
         {
-            Pedido.ListaItPedidos.Add(item);
-        }
+            Pedido.IdCliente = CliService.ClienteId;
+            Pedido.TotalPedido = VarGlobal.TotalPedido;
+            foreach (var item in VarGlobal.ListaItensPedidos)
+            {
+                Pedido.ListaItPedidos.Add(item);
+            }
 
-        HttpResponseMessage pedido = await _http.PostAsJsonAsync<Pedido>("/api/v1/pedidos", Pedido);
+            HttpResponseMessage pedido = await _http.PostAsJsonAsync<Pedido>("/api/v1/pedidos", Pedido);
+        }
 
         ToPag.NavigateTo("/listpedidos");
     }
-
 }

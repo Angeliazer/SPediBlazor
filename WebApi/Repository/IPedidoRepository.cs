@@ -6,6 +6,6 @@ namespace WebApi.Repository
     {
         Task<Pedido?> AddPedido(Pedido pedido);
 
-        Task<List<Pedido>?> GetAllCliente(int idCliente);
+        Task<List<Pedido>?> GetAllPedido(int idCliente);
     }
 }

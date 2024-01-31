@@ -32,7 +32,7 @@ namespace WebApi.Repository
         }
 
 
-        public async Task<List<Pedido>?> GetAllCliente(int idCliente)
+        public async Task<List<Pedido>?> GetAllPedido(int idCliente)
         {
             var pedidos = await _context.Pedidos
                 .Where(y => y.IdCliente == idCliente)

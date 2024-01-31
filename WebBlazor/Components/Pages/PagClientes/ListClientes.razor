@@ -16,51 +16,51 @@ else
         <i class="bi-person-plus"></i> Novo Cliente
     </button>
 
-        <table class="table col-md-12">
-            <thead>
+    <table class="table col-md-12">
+        <thead>
+            <tr>
+                <th>Nome Cliente</th>
+                <th>Nro Telefone</th>
+                <th>Contato     </th>
+                <th>Data Cadastro</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Cliente item in clientes)
+            {
                 <tr>
-                    <th>Nome Cliente</th>
-                    <th>Nro Telefone</th>
-                    <th>Contato     </th>
-                    <th>Data Cadastro</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
+                    <td>@item.NomeCliente</td>
+                    <td>@item.NroTelefone</td>
+                    <td>@item.NomeContato</td>
+                    <td>@DateOnly.FromDateTime(@item.DataCadastro)</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning border-dark shadow-none" style="color:black" @onclick="(() => AltCliente(item))">
+                            <i class="bi-pencil-square"></i> Alterar
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-danger border-dark shadow-none" style="color:black" @onclick="(() => Confirma(item))">
+                            <i class="bi-trash"></i>  Apaga
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-info border-dark shadow-none" style="color: black" @onclick="(() => ConCliente(item))">
+                            <i class="bi bi-search"></i> Consulta
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-primary border-dark shadow-none" style="color: black" @onclick="(() => Seleciona(item))">
+                            <i class="bi-cart"></i> Pedidos
+                        </button>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (Cliente item in clientes)
-                {
-                    <tr>
-                        <td>@item.NomeCliente</td>
-                        <td>@item.NroTelefone</td>
-                        <td>@item.NomeContato</td>
-                        <td>@DateOnly.FromDateTime(@item.DataCadastro)</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning border-dark shadow-none" style="color:white" @onclick="(() => AltCliente(item))">
-                                <i class="bi-pencil-square"></i> Alterar
-                            </button>
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-danger border-dark shadow-none" style="color:white" @onclick="(() => Confirma(item))">
-                                <i class="bi-trash"></i>  Apaga
-                            </button>
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-info border-dark shadow-none" style="color:white" @onclick="(() => ConCliente(item))">
-                                <i class="bi bi-search"></i> Consulta
-                            </button>
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-primary border-dark shadow-none" style="color:white" @onclick="(() => Seleciona(item))">
-                                <i class="bi-cart"></i> Pedidos
-                            </button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+            }
+        </tbody>
+    </table>
 }
 
 <Mensagens @ref="Mensa" BotaoTrue=@MsgBotton Titulo=@Titul Mostra=@Mostr Msg=@Mensag Confirma=@Confirm EventoRetorno="(() => ReturnFuncao())"> </Mensagens>

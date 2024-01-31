@@ -11,48 +11,47 @@
     </div>
 </div>
 
-<div class="card mt-1" style="height:580px;">
-    <div class="card-body d-flex flex-column  mx-auto" style="width:80%">
-        @if (produtos == null)
-        {
-            <p><em>Aguarde...</em></p>
-        }
-        else
-        {
-            <table class="table col-md-12">
-                <thead>
+
+<div class="card-body mt-1 border-2 justify-content-xl-center border-primary border my-auto mx-auto" style="width:100%; border-radius:3px; height:585px">
+    @if (produtos == null)
+    {
+        <p><em>Aguarde...</em></p>
+    }
+    else
+    {
+        <table class="table col-md-12">
+            <thead>
+                <tr>
+                    <th>Nome Produto</th>
+                    <th style="text-align:right">Estoque</th>
+                    <th style="text-align:right">Preço   </th>
+                    <th style="text-align:right">Data Cadastro</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Produto item in produtos)
+                {
+                    if (Linha++ % 2 == 0) { cor = "lightgray"; }
+                    else { cor = "white"; }
                     <tr>
-                        <th>Nome Produto</th>
-                        <th style="text-align:right">Estoque</th>
-                        <th style="text-align:right">Preço   </th>
-                        <th style="text-align:right">Data Cadastro</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
+                        <td style="background-color:@cor">@item.NomeProduto</td>
+                        <td style="text-align:right; background-color:@cor">@item.QuantEstoque</td>
+                        <td style="text-align:right; background-color:@cor">@item.Preco</td>
+                        <td style="text-align:right; background-color:@cor">@DateOnly.FromDateTime(@item.DataCadastro)</td>
+                        <td>
+                            <button class="btn btn-sm border-dark shadow-none btn-primary" style="font-style:italic; color:white" @onclick="(() => Seleciona(item))">
+                                <i class="bi-search"></i> Seleciona
+                            </button>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (Produto item in produtos)
-                    {
-                        if (Linha++ % 2 == 0) { cor = "lightgray"; }
-                        else { cor = "white"; }
-                        <tr>
-                            <td style="background-color:@cor">@item.NomeProduto</td>
-                            <td style="text-align:right; background-color:@cor">@item.QuantEstoque</td>
-                            <td style="text-align:right; background-color:@cor">@item.Preco</td>
-                            <td style="text-align:right; background-color:@cor">@DateOnly.FromDateTime(@item.DataCadastro)</td>
-                            <td>
-                                <button class="btn btn-sm border-dark shadow-none btn-primary" style="font-style:italic; color:white" @onclick="(() => Seleciona(item))">
-                                    <i class="bi-search"></i> Seleciona
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-    </div>
+                }
+            </tbody>
+        </table>
+    }
 </div>
 
 <div>
@@ -61,9 +60,7 @@
     </button>
 </div>
 
-
-<QuanPreProd @ref="QuanPre" Quantidade=@Quant VlrUnit=@VlrUnt Prod=@Prod Mostra=@Mostra Confirma=@Confirma EventoRetorno="(() => EvenQuanPreProd())"></QuanPreProd>
-
+<QuanPreProd @ref="QuanPre" Quantidade=@Quant VlrUnit=@VlrUnt Prod=@Prod Mostra=@Mostra Confirm=@Confirma EventoRetorno="(() => EvenQuanPreProd())"></QuanPreProd>
 
 @code
 {
@@ -72,8 +69,8 @@
     [Parameter] public bool Confirma { get; set; } = false;
     [Parameter] public Produto Prod { get; set; } = new();
 
-    private int Quant { get; set; } = 0;
-    private Decimal VlrUnt { get; set; } = 0;
+    private int Quant { get; set; } = 1;
+    private Decimal VlrUnt { get; set; } 
 
     MudaPagina? Muda = null;
 
@@ -99,7 +96,6 @@
         await CarregarDadosIniciais();
     }
 
-
     private async void Inicio(ChangeEventArgs e)
     {
         NomeProduto = e.Value.ToString();
@@ -119,8 +115,6 @@
         Registro = await _http.GetFromJsonAsync<RetGetProdutos>(@$"/api/v1/produtos/{PageNumber.ToString()}/{PageSize.ToString()}");
 
         produtos = Registro.ListaProdutos;
-
-        //NomeProduto = produtos[0].NomeProduto;
 
         NroReg = Registro.TotalReg;
 
@@ -161,14 +155,13 @@
 
     public void EvenQuanPreProd()
     {
+        if (QuanPre.Confirm && QuanPre.Quantidade != 0)
 
-        decimal tot = 0;
-
-        tot = QuanPre.VlrUnit * QuanPre.Quantidade;
-
-        if (QuanPre.Confirma)
         {
+            decimal tot = QuanPre.VlrUnit * QuanPre.Quantidade;
+            
             //Adiciona o Item de Pedido a Lista de Itens de Pedidos
+
             ItPedido ItemPedido = new();
             ItemPedido.VlrUndItem = QuanPre.VlrUnit;
             ItemPedido.VlrTotalItem = tot;
@@ -180,7 +173,7 @@
         }
 
         Mostra = "none";
-        QuanPre.Confirma = false;
+        QuanPre.Confirm = false;
     }
 
     public async Task ReturnFunc()
@@ -201,6 +194,7 @@
         Prod.NomeProduto = produto.NomeProduto;
         Prod.Preco = produto.Preco;
         Prod.Und = produto.Und;
+        VlrUnt = produto.Preco;
     }
 
 }

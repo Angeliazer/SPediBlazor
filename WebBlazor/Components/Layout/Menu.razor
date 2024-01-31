@@ -1,0 +1,57 @@
+﻿@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<div class="navbar">
+    <img src="/images/pngwing.png" class="logotipo" />
+
+    <span class="text-center">Sistema de Pedido</span>
+
+    <button class="button-normal" @onclick="Clientes">
+        <img src="/images/cliente.png" class="icon" />
+        Clientes
+    </button>
+
+    <button class="button-normal" @onclick="Produtos">
+        <img src="/images/produtos.png" class="icon" />
+        Produtos
+    </button>
+
+    <button class="button-login" @onclick="()=>Login()">
+        <img src="/images/bag.png" class="icon" />
+        Login
+    </button>
+
+</div>
+
+@*@if (VarGlobal.NomeUsuario != null)
+{
+    <div class="container-login">
+        <span><em>Usuário: @VarGlobal.NomeUsuario</em> </span>
+    </div>
+}*@
+
+@code{
+
+    private bool Ativo { get; set; } = false;
+
+    protected override void OnInitialized()
+    {
+        if (VarGlobal.NomeUsuario != null) Ativo = true;
+    }
+
+
+    private void Clientes()
+    {
+        ToPag.NavigateTo("/listclientes");
+    }
+
+    private void Produtos()
+    {
+        ToPag.NavigateTo("/listprodutos");
+    }
+
+    public void Login()
+    {
+        ToPag.NavigateTo("/login");
+    }
+}

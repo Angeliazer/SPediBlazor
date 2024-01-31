@@ -11,5 +11,6 @@ namespace WebApi.Data
         public DbSet<Categoria> Categorias { get; set; } = default!;
         public DbSet<Pedido> Pedidos { get; set; } = default!;
         public DbSet<ItPedido> ItPedidos { get; set; } = default!;
+        public DbSet<Usuario> Usuarios { get; set; } = default!;
     }
 }

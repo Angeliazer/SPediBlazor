@@ -1,5 +1,6 @@
 using WebBlazor.Components;
 using LibraryShared.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +12,8 @@ builder.Services.AddScoped<Cliente>();
 builder.Services.AddScoped<Produto>();
 builder.Services.AddScoped<Pedido>();
 builder.Services.AddScoped<ItPedido>();
+builder.Services.AddScoped<Usuario>();
 builder.Services.AddScoped<VariaveisGlobais>();
-builder.Services.AddScoped<List<ItPedido>>();
 
 
 builder.Services.AddScoped<HttpClient>(x =>
